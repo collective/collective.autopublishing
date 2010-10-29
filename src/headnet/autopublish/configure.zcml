@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="headnet.autopublish">
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <include package=".browser" />
+   
+    <i18n:registerTranslations directory="locales" />
+
+    <genericsetup:registerProfile
+        name="headnet.autopublish"
+        title="headnet.autopublish profile"
+        directory="profiles/default"
+        description="Extension profile for headnet.autopublish"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+    />
+
+    <!-- How to subscribe AutoPublish to the hourly cron job:  -->
+    <!-- <subscriber
+        for="headnet.cronmanager.events.ICronHourlyEvent"
+        handler="headnet.autopublish.cron.CronAutoPublishHandler"
+    /> -->
+
+</configure>

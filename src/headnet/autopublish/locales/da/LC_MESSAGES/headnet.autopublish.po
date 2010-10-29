@@ -1,0 +1,39 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: da\n"
+"Language-Name: Danish\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: headnet.autopublish\n"
+
+#: ./browser/autopublishsettings.py:58
+msgid "Autopublishing"
+msgstr "Autopublicering"
+
+#: ./browser/autopublishsettings.py:31
+msgid "Initial states"
+msgstr "Start-tilstande"
+
+#: ./browser/autopublishsettings.py:32
+msgid "The states need to supply a publish action."
+msgstr "Tilstandende skal have en publicer-handling."
+
+#: ./patch_types
+msgid "help_publish_on_date"
+msgstr "Hvis der er sat en publiceringsdato, og objektets nuværende workflowtilstand er valgt i kontrolpanelet under autopublicering, publiceres objektet når publiceringsdatoen nås."
+
+#: ./patch_types
+msgid "label_publish_on_date"
+msgstr "Autopublicér"
+
