@@ -1,12 +1,14 @@
 from Acquisition import aq_base
-from Products.CMFPlone.CatalogTool import registerIndexableAttribute
+#from Products.CMFPlone.CatalogTool import registerIndexableAttribute
+from plone.indexer.decorator import indexer
 from zope.i18nmessageid import MessageFactory
 MyMessageFactory = MessageFactory('headnet.autopublish')
+from zope.interface import Interface
 
 def initialize(context):
     """Initializer called when used as a Zope 2 product."""
 
-
+@indexer(Interface)
 def _publish_on_date(obj, portal, **kwargs):
     """for portal_catalog to index publishOnDate field"""
 
@@ -17,7 +19,7 @@ def _publish_on_date(obj, portal, **kwargs):
 from cron import has_publishondate_index
 
 if has_publishondate_index():
-    registerIndexableAttribute('publishOnDate', _publish_on_date)
+    #registerIndexableAttribute('publishOnDate', _publish_on_date)
 
     # patch ATCT Types
     from patch_types import makeATCTTypesAutoPublishAware

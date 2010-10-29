@@ -27,7 +27,7 @@ atct_types = (
                content.event.ATEvent,
                content.newsitem.ATNewsItem,
                content.folder.ATFolder,
-               content.favorite.ATFavorite,
+#               content.favorite.ATFavorite,
                content.topic.ATTopic,
              )
 
