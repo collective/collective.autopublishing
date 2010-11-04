@@ -7,6 +7,8 @@
 
     <five:registerPackage package="." initialize=".initialize" />
 
+    <adapter name="publishOnDate" factory="._publish_on_date" />
+    
     <include package=".browser" />
    
     <i18n:registerTranslations directory="locales" />
