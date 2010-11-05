@@ -9,7 +9,7 @@ def initialize(context):
     """Initializer called when used as a Zope 2 product."""
 
 @indexer(Interface)
-def _publish_on_date(obj, portal, **kwargs):
+def _publish_on_date(obj, **kwargs):
     """for portal_catalog to index publishOnDate field"""
 
     if obj.schema.has_key('publishOnDate'):
