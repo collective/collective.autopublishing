@@ -1,8 +1,8 @@
-collective.autopublishing Package Readme
-========================================
+# collective.autopublishing
 
-Overview
---------
+## Package under construction
+
+## Overview
 
 Sets the workflow state to 'published' on publishing date if is specified
 
