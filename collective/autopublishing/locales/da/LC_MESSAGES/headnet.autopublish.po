@@ -1,6 +1,3 @@
-# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
-# SOME DESCRIPTIVE TITLE.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -14,8 +11,8 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "Language-Code: da\n"
 "Language-Name: Danish\n"
-"Preferred-Encodings: utf-8 latin1\n"
-"Domain: headnet.autopublish\n"
+"Preferred-Encodings: utf-8\n"
+"Domain: collective.autopublishing\n"
 
 #: ./browser/autopublishsettings.py:58
 msgid "Autopublishing"
@@ -30,10 +27,10 @@ msgid "The states need to supply a publish action."
 msgstr "Tilstandende skal have en publicer-handling."
 
 #: ./patch_types
-msgid "help_publish_on_date"
-msgstr "Hvis der er sat en publiceringsdato, og objektets nuværende workflowtilstand er valgt i kontrolpanelet under autopublicering, publiceres objektet når publiceringsdatoen nås."
+msgid "help_enable_autopublishing"
+msgstr "Slår automatisk publicering eller tilbagetrækning til for denne side. Publicering eller tilbagetrækning sker når publiceringsdato eller udløbsdato indtræffer."
 
 #: ./patch_types
-msgid "label_publish_on_date"
-msgstr "Autopublicér"
+msgid "label_enable_autopublishing"
+msgstr "Slå autopublicering til"
 

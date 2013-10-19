@@ -1,28 +1,18 @@
-#from plone.fieldsets.fieldsets import FormFieldsets
+from persistent.list import PersistentList
+
 from zope.formlib.form import FormFields
-
-
 from zope.interface import Interface
 from zope.component import adapts
 from zope.interface import implements
 from zope import schema
-from zope.app.form import CustomWidgetFactory
-from zope.app.form.browser import ObjectWidget
-from zope.app.form.browser import ListSequenceWidget
 from zope.component import getUtility
-from zope.schema.interfaces import IVocabularyFactory
-from persistent.dict import PersistentDict
-from persistent.list import PersistentList
 
 from Products.Five import BrowserView
-
 from Products.CMFDefault.formlib.schema import SchemaAdapterBase
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-#from Products.PortalTransforms.transforms.safe_html import VALID_TAGS
-
 from plone.app.controlpanel.form import ControlPanelForm
 
-from headnet.autopublish import MyMessageFactory as _
+from collective.autopublishing import MyMessageFactory as _
 
 
 class IAutopublishSettingsSchema(Interface):
@@ -56,7 +46,7 @@ class AutopublishSettingsControlPanel(ControlPanelForm):
     form_fields = FormFields(IAutopublishSettingsSchema)
 
     label = _("Autopublishing")
-    description = _("")
+    description = _("Controls the initial workflow states autopublishing will make transitions from.")
     form_name = _("")
 
 class AutopublishSettingsView(BrowserView):

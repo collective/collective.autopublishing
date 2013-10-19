@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.autopublishing">
+
+  <genericsetup:registerProfile
+      name="default"
+      title="collective.autopublishing"
+      directory="profiles/default"
+      description="Installs the collective.autopublishing package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:importStep
+      name="collective.autopublishing.various"
+      title="collective.autopublishing: miscellaneous import steps"
+      description="Various import steps that are not handled by GS import/export handlers."
+      handler="collective.autopublishing.setuphandlers.setupVarious">
+  </genericsetup:importStep>
+
+  <genericsetup:registerProfile
+      name="migrate"
+      title="collective.autopublishing migrate"
+      directory="profiles/migrate"
+      description="Performs various migrations of the collective.autopublishing module"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:importStep
+      name="collective.autopublishing.various-migrate"
+      title="collective.autopublishing: miscellaneous import steps of the collective.autopublishing migrate profile"
+      description="Various import steps that are not handled by GS import/export handlers."
+      handler="collective.autopublishing.setuphandlers.variousMigrateSteps">
+  </genericsetup:importStep>
+
+</configure>

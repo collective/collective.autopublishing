@@ -1,5 +1,5 @@
-headnet.autopublish Package Readme
-==================================
+collective.autopublishing Package Readme
+========================================
 
 Overview
 --------
@@ -12,7 +12,7 @@ Install
 =======
 
 You have to add the state to publish and if we have to patch
-atct types in your buildout.cfg file in the zope instance section. 
+atct types in your buildout.cfg file in the zope instance section.
 For example, to publish the ``pending``
 state::
 
@@ -23,5 +23,4 @@ state::
                  </product-config>
 
 
-Dont forget to add the headnet.autopublish egg in your buildout.
 

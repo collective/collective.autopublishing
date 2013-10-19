@@ -3,7 +3,7 @@ from persistent.list import PersistentList
 from zope.interface import implements
 from zope.component import getUtility
 
-from headnet.autopublish.browser.autopublishsettings import IAutopublishSettingsSchema
+from collective.autopublishing.browser.autopublishsettings import IAutopublishSettingsSchema
 
 class AutopublishSettings(Persistent):
     """We use raw fields here so that we can more easily use a zope.formlib

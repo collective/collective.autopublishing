@@ -7,7 +7,7 @@ from Products.AdvancedQuery import Eq, In, Le, Ge, And
 from browser.autopublishsettings import IAutopublishSettingsSchema
 
 
-logger = logging.getLogger('headnet.autopublish')
+logger = logging.getLogger('collective.autopublishing')
 
 #
 # Cron job handler
@@ -24,7 +24,7 @@ logger = logging.getLogger('headnet.autopublish')
 def get_config_value(key, default=None):
     """return a package config param"""
     config = getConfiguration().product_config
-    autopublish_config = config.get('headnet.autopublish', {})
+    autopublish_config = config.get('collective.autopublishing', {})
     value = autopublish_config.get(key, default)
     return value
 
@@ -33,8 +33,9 @@ def getStatesToPublish():
     myutil = getUtility(IAutopublishSettingsSchema)
     return [s.encode('utf-8') for s in myutil.initial_states_publishing]
 
-def has_publishondate_index():
-    return get_config_value('add-publishondate-index', 'yes') in ['yes', 'true', 'on']
+# TODO rename
+def has_enableautopublishing_field():
+    return get_config_value('add-enableautopublishing-field', 'yes') in ['yes', 'true', 'on']
 
 def dry_run():
     return get_config_value('dry-run', 'yes') in ['yes', 'true', 'on']
@@ -42,27 +43,22 @@ def dry_run():
 
 def CronAutoPublishHandler(event):
     '''
-
-    @param event:
-    @type event:
     '''
-
     context = event.context
 
     catalog = context.portal_catalog
     wf = context.portal_workflow
 
-    from ipdb import set_trace; set_trace()
     #wrap with new security
     originalUser = context.portal_membership.getAuthenticatedMember()
     newSecurityManager(context.REQUEST, originalUser)
     user = context.getWrappedOwner()
     newSecurityManager(context.REQUEST, user)
 
-    has_pod_index= has_publishondate_index()
+    has_enableautopublishing_field = has_enableautopublishing_field()
 
-    if has_pod_index and 'publishOnDate' not in catalog.indexes():
-        logger.info('Catalog does not have a publishOnDate index')
+    if has_enableautopublishing_field and 'enableAutopublishing' not in catalog.indexes():
+        logger.info('Catalog does not have a enableAutopublishing index')
         return
 
     states_to_publish = getStatesToPublish()
@@ -70,6 +66,7 @@ def CronAutoPublishHandler(event):
         logger.info('You have to define state-to-publish in the plone control panel')
         return
 
+    # TODO: move to eva
     # For EvaProject instances we need to look at the date in the
     # field projectPublicationDate.
     query_normal = (In('review_state', states_to_publish) \
@@ -80,9 +77,9 @@ def CronAutoPublishHandler(event):
             & Le('getProjectPublicationDate', context.ZopeTime()) \
             & Eq('portal_type', 'EvaProject'))
 
-    if has_pod_index:
-        query_normal = query_normal & Eq('publishOnDate', True)
-        query_project = query_project & Eq('publishOnDate', True)
+    if has_enableautopublishing_field:
+        query_normal = query_normal & Eq('enableAutopublishing', True)
+        query_project = query_project & Eq('enableAutopublishing', True)
 
     query = query_normal | query_project
     brains = catalog.evalAdvancedQuery(query)
@@ -106,8 +103,8 @@ def CronAutoPublishHandler(event):
                 try:
                     # this is a naive approach - and will throw an exception if the state
                     # don't provide the publish workflow action.
-                    if has_pod_index:
-                        o.setPublishOnDate(False)
+                    if has_enableautopublishing_field:
+                        o.setEnableAutopublishing(False)
                     wf.doActionFor(o, 'publish')
                     o.reindexObject()
                     affected += 1
@@ -116,7 +113,7 @@ def CronAutoPublishHandler(event):
                                    object at '%s' does not provide the publish action
                                 """ % (brain.review_state, o.getURL()))
 
-    logger.info("""Ran headnet.autopublish. %d objects found, %d affected
+    logger.info("""Ran collective.autopublishing. %d objects found, %d affected
                 """ % (total, affected))
     #set back the security
     newSecurityManager(context.REQUEST, originalUser)

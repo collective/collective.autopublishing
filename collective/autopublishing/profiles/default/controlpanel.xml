@@ -1,10 +1,21 @@
 <?xml version="1.0"?>
-<object name="portal_controlpanel" meta_type="Plone Control Panel Tool"
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="plone">
- <configlet title="Autopublishing" action_id="Autopublishing"
-    appId="Autopublishing" category="Products" condition_expr=""
-    url_expr="string:${portal_url}/@@autopublish-controlpanel"
-    visible="True" i18n:attributes="title">
-  <permission>Manage portal</permission>
- </configlet>
+<object
+    name="portal_controlpanel"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="collective.autopublishing"
+    purge="False">
+
+  <configlet
+      title="Autopublishing"
+      action_id="Autopublishing"
+      appId="collective.autopublishing"
+      category="Products"
+      condition_expr=""
+      url_expr="string:${portal_url}/@@autopublish-controlpanel"
+      icon_expr="string:$portal_url/product_icon.png"
+      visible="True"
+      i18n:attributes="title">
+    <permission>Manage portal</permission>
+  </configlet>
+
 </object>

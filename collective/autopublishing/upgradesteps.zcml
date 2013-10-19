@@ -1,0 +1,15 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+
+<!--   <genericsetup:upgradeSteps
+     profile="collective.autopublishing:default"
+     source="*"
+     destination="1">
+    <genericsetup:upgradeStep
+      handler=".upgradesteps.runDefaultProfile"
+      title="Run collective.autopublishing profile"
+      description=""
+      />
+  </genericsetup:upgradeSteps>
+ -->
+</configure>
