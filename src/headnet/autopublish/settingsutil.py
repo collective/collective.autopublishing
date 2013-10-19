@@ -10,8 +10,8 @@ class AutopublishSettings(Persistent):
     form in the control panel to configure it. This is registered as a
     persistent local utility
     """
-    
+
     implements(IAutopublishSettingsSchema)
-    
-    initial_states = PersistentList()
+
+    initial_states_publishing = PersistentList()
 

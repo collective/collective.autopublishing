@@ -27,7 +27,7 @@ from headnet.autopublish import MyMessageFactory as _
 
 class IAutopublishSettingsSchema(Interface):
 
-    initial_states = schema.Text(
+    initial_states_publishing = schema.Text(
         title=_(u'Initial states'),
         description=_(u"The states need to supply a publish action."),
         required=False)
@@ -42,12 +42,12 @@ class AutopublishSettingsControlPanelAdapter(SchemaAdapterBase):
         self.settings = getUtility(IAutopublishSettingsSchema)
 
     @apply
-    def initial_states():
+    def initial_states_publishing():
         def get(self):
-            return '\n'.join(self.settings.initial_states)
+            return '\n'.join(self.settings.initial_states_publishing)
         def set(self, value):
-            initial_states = PersistentList(value.split('\n'))
-            self.settings.initial_states = initial_states
+            initial_states_publishing = PersistentList(value.split('\n'))
+            self.settings.initial_states_publishing = initial_states_publishing
         return property(get, set)
 
 
@@ -60,9 +60,9 @@ class AutopublishSettingsControlPanel(ControlPanelForm):
     form_name = _("")
 
 class AutopublishSettingsView(BrowserView):
-    
-    def initial_states(self):
+
+    def initial_states_publishing(self):
         myutil = getUtility(IAutopublishSettingsSchema)
-        initial_states = myutil.initial_states
-        return initial_states
+        initial_states_publishing = myutil.initial_states_publishing
+        return initial_states_publishing
 

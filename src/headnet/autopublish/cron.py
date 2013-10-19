@@ -31,7 +31,7 @@ def get_config_value(key, default=None):
 def getStatesToPublish():
     """Get state to publish from the persistent utility"""
     myutil = getUtility(IAutopublishSettingsSchema)
-    return [s.encode('utf-8') for s in myutil.initial_states]
+    return [s.encode('utf-8') for s in myutil.initial_states_publishing]
 
 def has_publishondate_index():
     return get_config_value('add-publishondate-index', 'yes') in ['yes', 'true', 'on']
@@ -52,6 +52,7 @@ def CronAutoPublishHandler(event):
     catalog = context.portal_catalog
     wf = context.portal_workflow
 
+    from ipdb import set_trace; set_trace()
     #wrap with new security
     originalUser = context.portal_membership.getAuthenticatedMember()
     newSecurityManager(context.REQUEST, originalUser)
@@ -69,12 +70,12 @@ def CronAutoPublishHandler(event):
         logger.info('You have to define state-to-publish in the plone control panel')
         return
 
-    # For EvaProject instances we need to look at the date in the 
+    # For EvaProject instances we need to look at the date in the
     # field projectPublicationDate.
     query_normal = (In('review_state', states_to_publish) \
             & Eq('effectiveRange', context.ZopeTime()) \
-            & ~ Eq('portal_type', 'EvaProject')) 
-            
+            & ~ Eq('portal_type', 'EvaProject'))
+
     query_project = (Eq('review_state', 'in_progress') \
             & Le('getProjectPublicationDate', context.ZopeTime()) \
             & Eq('portal_type', 'EvaProject'))
@@ -82,7 +83,7 @@ def CronAutoPublishHandler(event):
     if has_pod_index:
         query_normal = query_normal & Eq('publishOnDate', True)
         query_project = query_project & Eq('publishOnDate', True)
-            
+
     query = query_normal | query_project
     brains = catalog.evalAdvancedQuery(query)
 
@@ -93,7 +94,7 @@ def CronAutoPublishHandler(event):
         o = brain.getObject()
         eff_date = o.getEffectiveDate()
         # The dates in the indexes are always set, see below. So unless we test for actual
-        # dates on the objects, objects with no EffectiveDate are also published. 
+        # dates on the objects, objects with no EffectiveDate are also published.
         # ipdb> brain.effective
         # Out[0]: DateTime('1000/01/01')
         # ipdb> brain.expires
@@ -104,16 +105,16 @@ def CronAutoPublishHandler(event):
             if not dry_run():
                 try:
                     # this is a naive approach - and will throw an exception if the state
-                    # don't provide the publish workflow action. 
+                    # don't provide the publish workflow action.
                     if has_pod_index:
                         o.setPublishOnDate(False)
                     wf.doActionFor(o, 'publish')
                     o.reindexObject()
-                    affected += 1 
+                    affected += 1
                 except WorkflowException:
                     logger.info("""The state '%s' of the workflow associated with the
                                    object at '%s' does not provide the publish action
-                                """ % (state_to_publish, o.getURL()))
+                                """ % (brain.review_state, o.getURL()))
 
     logger.info("""Ran headnet.autopublish. %d objects found, %d affected
                 """ % (total, affected))
