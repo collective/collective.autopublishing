@@ -23,9 +23,12 @@ logger = logging.getLogger('collective.autopublishing')
 
 def get_config_value(key, default=None):
     """return a package config param"""
-    config = getConfiguration().product_config
-    autopublish_config = config.get('collective.autopublishing', {})
-    value = autopublish_config.get(key, default)
+    try:
+        config = getConfiguration().product_config
+        autopublish_config = config.get('collective.autopublishing', {})
+        value = autopublish_config.get(key, default)
+    except AttributeError:
+        value = default
     return value
 
 def getStatesToPublish():
