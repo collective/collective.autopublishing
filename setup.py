@@ -29,7 +29,7 @@ setup(name='collective.autopublishing',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
-          'headnet.cronmanager',
+          'collective.timedevents',
       ],
       entry_points="""
       [z3c.autoinclude.plugin]
