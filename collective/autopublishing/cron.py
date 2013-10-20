@@ -12,13 +12,8 @@ logger = logging.getLogger('collective.autopublishing')
 #
 # Cron job handler
 #
-# should be registered in the ZCML file as subscribers to
-# one of:
-#  headnet.cronmanager.interfaces.ICronHourlyEvent
-#  headnet.cronmanager.interfaces.ICronDailyEvent
-#  headnet.cronmanager.interfaces.ICronWeeklyEvent
-#  headnet.cronmanager.interfaces.ICronMonthlyEvent
-# events
+# should be registered in zcml as subscribers to
+# one of the tick events from collective.timedevents
 
 
 def get_config_value(key, default=None):
@@ -51,12 +46,6 @@ def CronAutoPublishHandler(event):
 
     catalog = context.portal_catalog
     wf = context.portal_workflow
-
-    #wrap with new security
-    originalUser = context.portal_membership.getAuthenticatedMember()
-    newSecurityManager(context.REQUEST, originalUser)
-    user = context.getWrappedOwner()
-    newSecurityManager(context.REQUEST, user)
 
     has_enableautopublishing_field = has_enableautopublishing_field()
 
@@ -118,6 +107,3 @@ def CronAutoPublishHandler(event):
 
     logger.info("""Ran collective.autopublishing. %d objects found, %d affected
                 """ % (total, affected))
-    #set back the security
-    newSecurityManager(context.REQUEST, originalUser)
-
