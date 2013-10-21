@@ -52,6 +52,8 @@ Add a behavior for dexterity.
 
 Modernize the patching of types.
 
+What if an object is published, but effective date are in the future? Should we retract, to enforce that the workflow state always mirrors the setting of the dates?
 
+What if the effective date is larger that expiration date? Can this happen?
 
 
