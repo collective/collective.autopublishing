@@ -29,11 +29,12 @@ class IAutopublishSettingsSchema(Interface):
                       u"there is a publication date or the expiration "
                       u"date is in the future."),
         default=False)
-    email_log = schema.TextLine(
-        title=_(u'Email address for audit log'),
-        description=_(u"If an email address is supplied, "
-                      u"an audit log of the actions taken is sent."),
-        required=False)
+    # TODO: implement mailing an audit log.
+    # email_log = schema.TextLine(
+    #     title=_(u'Email address for audit log'),
+    #     description=_(u"If an email address is supplied, "
+    #                   u"an audit log of the actions taken is sent."),
+    #     required=False)
     dry_run = schema.Bool(
         title=_(u'Dry run'),
         description=_(u"Dry run simulates the publishing process. "

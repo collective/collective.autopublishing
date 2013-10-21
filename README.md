@@ -67,4 +67,5 @@ What if an object is in the state published, but effective date are in the futur
 
 What if the effective date is larger that expiration date? Can this happen?
 
+Audit logging of some kind, to enable editors to what actually happens. Via mail perhaps.
 
