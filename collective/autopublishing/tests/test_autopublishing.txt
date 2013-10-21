@@ -33,8 +33,8 @@ We need to subscribe to a tick event from collective.timedevents::
 
     >>> from zope import component
     >>> from collective.timedevents.interfaces import IIntervalTicksHourlyEvent
-    >>> from collective.autopublishing.eventhandler import AutoPublishHandler
-    >>> component.getSiteManager().registerHandler(AutoPublishHandler, [IIntervalTicksHourlyEvent])
+    >>> from collective.autopublishing.eventhandler import autopublish_handler
+    >>> component.getSiteManager().registerHandler(autopublish_handler, [IIntervalTicksHourlyEvent])
 
 We need to set initial states in the registry::
 
@@ -460,3 +460,90 @@ And that enableAutopublishing is still true::
 
     >>> portal['document2'].getEnableAutopublishing()
     True
+
+
+Special cases
+=============
+
+If we add private to initial publication states::
+
+    >>> settings.initial_states_publishing = [u'private', u'pending']
+    >>> print settings.initial_states_publishing
+    [u'private', u'pending']
+
+And we have a content object, that is published, with a publication date in the past::
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+    >>> portal['document2'].setEnableAutopublishing(True)
+    >>> portal['document2'].getEnableAutopublishing()
+    True
+
+    >>> portal['document2'].setEffectiveDate(past_date)
+    >>> portal['document2'].getEffectiveDate() == past_date
+    True
+
+    >>> portal['document2'].setExpirationDate(future_date)
+    >>> portal['document2'].getExpirationDate() == future_date
+    True
+
+    >>> portal['document2'].reindexObject()
+
+Dates are now set, so that the object will be published on next run of autopublishing - if it was not already published.
+
+The editor retracts the object manually::
+
+    >>> wf.doActionFor(portal['document2'], 'retract')
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'private'
+
+The next run of autopublishing will publish the object again::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+This is not good. The editor could clear the publication date or set an expiration date to the day of the retraction, but it is easy to forget. We add
+
+There is an event handler for changing workflow state, where an expiration date it set if it is None. There is also a setting to allow overwriting expiration date if it is already set::
+
+    >>> settings.overwrite_expiration_on_retract = True
+    >>> print settings.overwrite_expiration_on_retract
+    True
+
+Let's try again::
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+    >>> portal['document2'].setEnableAutopublishing(True)
+    >>> portal['document2'].getEnableAutopublishing()
+    True
+
+    >>> portal['document2'].reindexObject()
+
+The editor retracts the object manually::
+
+    >>> now = DateTime()
+    >>> portal['document2'].getExpirationDate() < now
+    False
+
+    >>> wf.doActionFor(portal['document2'], 'retract')
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'private'
+
+    >>> now = DateTime()
+    >>> portal['document2'].getExpirationDate() < now
+    True
+
+The next run of autopublishing will no longer publish the object again::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'private'
+

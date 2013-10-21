@@ -16,7 +16,7 @@ logger = logging.getLogger('collective.autopublishing')
 # Should be registered in zcml as subscribers to
 # one of the tick events from collective.timedevents
 
-def AutoPublishHandler(event):
+def autopublish_handler(event):
     catalog = event.context.portal_catalog
 
     try:
@@ -141,3 +141,28 @@ def handle_retracting(event, settings, has_field):
 
     logger.info("""Ran collective.autopublishing retract: %d objects found, %d affected
                 """ % (total, affected))
+
+def transition_handler(event):
+    # set expiration date if not already set, when
+    # depublishing, to make sure we do not autopublish
+    # again if an effective date is set. Really, it is
+    # the editors responsibility (the effective date should
+    # be checked, but it is a common mistake
+    # to expect withdrawal to private to be final.
+    if not event.transition:
+        return
+    if not event.object:
+        return
+    if event.transition.id in ['retract', 'reject']:
+        overwrite = False
+        try:
+            settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema)
+        except (ComponentLookupError, KeyError):
+            logger.info('The product needs to be installed. No settings in the registry.')
+            settings = None
+        if settings and settings.overwrite_expiration_on_retract:
+            overwrite = True
+        if event.object.getExpirationDate() is None or overwrite:
+            now = event.object.ZopeTime()
+            event.object.setExpirationDate(now)
+

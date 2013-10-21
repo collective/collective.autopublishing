@@ -17,10 +17,15 @@
 
     <i18n:registerTranslations directory="locales" />
 
-    <!-- How to subscribe AutoPublish to the hourly cron job:  -->
+    <!-- How to subscribe to the event ticks from collective.timedevents: -->
     <!-- <subscriber
         for="collective.timedevents.interfaces.IIntervalTicks15Event"
-        handler="collective.autopublishing.eventhandler.AutoPublishHandler"
+        handler="collective.autopublishing.eventhandler.autopublish_handler"
     /> -->
+
+    <subscriber
+        for="Products.DCWorkflow.interfaces.IAfterTransitionEvent"
+        handler="collective.autopublishing.eventhandler.transition_handler"
+    />
 
 </configure>

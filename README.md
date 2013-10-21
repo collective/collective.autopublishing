@@ -16,7 +16,7 @@ Example:
 
      <subscriber
         for="collective.timedevents.interfaces.IIntervalTicks15Event"
-        handler="collective.autopublishing.eventhandler.AutoPublishHandler"
+        handler="collective.autopublishing.eventhandler.autopublish_handler"
 
 To enable the event ticks from collective.timedevents you can either use zope clockserver or a cronjob as the trigger. (See the documentation for collective.timedevents to set this up).
 
@@ -45,6 +45,17 @@ The use of the field can be disabled in zope.conf. You can do that via buildout 
 
 If disabled, only the initial workflow states and the effective and expiration dates control the publishing or retracting of content.
 
+## Setting the expiration date on retraction
+
+In some cases, the automatic publication can republish an item that is retracted.
+
+For instance: if private is added to initial publication states, and we have a published content object with a publication date in the past.
+
+If the expiration date is not set, and the item is (manually) retracted, the publication machinery will republish the item unless the editor clears the publication date.
+
+To solve that problem an event handler for workflow transitions sets the expiration date, if it is not already set, when withdrawing an item.
+
+There is a control panel setting to allow overwriting the expiration date.
 
 ## Todo
 
@@ -52,7 +63,7 @@ Add a behavior for dexterity.
 
 Modernize the patching of types.
 
-What if an object is published, but effective date are in the future? Should we retract, to enforce that the workflow state always mirrors the setting of the dates?
+What if an object is in the state published, but effective date are in the future? Should we retract, to enforce that the workflow state always mirrors the setting of the dates?
 
 What if the effective date is larger that expiration date? Can this happen?
 
