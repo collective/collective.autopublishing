@@ -1,7 +1,5 @@
 # collective.autopublishing
 
-## Package under construction
-
 ## Overview
 
 Publishes or retracts Plone content items depending on the effective and expiration dates.
