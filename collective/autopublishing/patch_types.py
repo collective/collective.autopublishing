@@ -3,7 +3,7 @@ from Products.ATContentTypes import content
 from Products.Archetypes.ClassGen import generateMethods
 
 enableAutopublishingField = atapi.BooleanField('enableAutopublishing',
-            default = False,
+            default = True,
             required = False,
             languageIndependent = True,
             isMetadata = True,
@@ -11,7 +11,8 @@ enableAutopublishingField = atapi.BooleanField('enableAutopublishing',
             widget = atapi.BooleanWidget(
                 description="Enables automatically publishing or retracting "
                             "this item when the publishing or the expiration date is "
-                            "met.",
+                            "met. After an autopublishing event on this item, this "
+                            "setting is set to false.",
                 description_msgid = "help_enable_autopublishing",
                 label = "Enable autopublishing",
                 label_msgid = "label_enable_autopublishing",

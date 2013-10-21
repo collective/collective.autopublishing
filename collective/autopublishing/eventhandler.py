@@ -6,7 +6,6 @@ from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.AdvancedQuery import Eq, In, Le
 
 from browser.autopublishsettings import IAutopublishSettingsSchema
-from collective.autopublishing import has_enableautopublishing_field
 
 logger = logging.getLogger('collective.autopublishing')
 
@@ -25,16 +24,14 @@ def autopublish_handler(event):
         logger.info('The product needs to be installed. No settings in the registry.')
         return
 
-    has_field = has_enableautopublishing_field()
-
-    if has_field and 'enableAutopublishing' not in catalog.indexes():
+    if 'enableAutopublishing' not in catalog.indexes():
         logger.info('Catalog does not have a enableAutopublishing index')
         return
 
-    handle_publishing(event, settings, has_field)
-    handle_retracting(event, settings, has_field)
+    handle_publishing(event, settings)
+    handle_retracting(event, settings)
 
-def handle_publishing(event, settings, has_field):
+def handle_publishing(event, settings):
     '''
     '''
     catalog = event.context.portal_catalog
@@ -47,10 +44,8 @@ def handle_publishing(event, settings, has_field):
 
     now = event.context.ZopeTime()
     query = (In('review_state', states_to_publish)
-             & Eq('effectiveRange', now))
-
-    if has_field:
-        query = query & Eq('enableAutopublishing', True)
+             & Eq('effectiveRange', now)
+             & Eq('enableAutopublishing', True))
 
     brains = catalog.evalAdvancedQuery(query)
 
@@ -78,8 +73,7 @@ def handle_publishing(event, settings, has_field):
             total += 1
             if not settings.dry_run:
                 try:
-                    if has_field:
-                        o.setEnableAutopublishing(False)
+                    o.setEnableAutopublishing(False)
                     wf.doActionFor(o, 'publish')
                     o.reindexObject()
                     affected += 1
@@ -91,7 +85,7 @@ def handle_publishing(event, settings, has_field):
     logger.info("""Ran collective.autopublishing publish: %d objects found, %d affected
                 """ % (total, affected))
 
-def handle_retracting(event, settings, has_field):
+def handle_retracting(event, settings):
     '''
     '''
     catalog = event.context.portal_catalog
@@ -104,10 +98,8 @@ def handle_retracting(event, settings, has_field):
 
     now = event.context.ZopeTime()
     query = (In('review_state', states_to_retract)
-             & Le('expires', now))
-
-    if has_field:
-        query = query & Eq('enableAutopublishing', True)
+             & Le('expires', now)
+             & Eq('enableAutopublishing', True))
 
     brains = catalog.evalAdvancedQuery(query)
 
@@ -129,8 +121,7 @@ def handle_retracting(event, settings, has_field):
             total += 1
             if not settings.dry_run:
                 try:
-                    if has_field:
-                        o.setEnableAutopublishing(False)
+                    o.setEnableAutopublishing(False)
                     wf.doActionFor(o, 'retract')
                     o.reindexObject()
                     affected += 1

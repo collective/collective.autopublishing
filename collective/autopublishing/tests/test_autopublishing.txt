@@ -13,7 +13,7 @@ Login::
 
     >>> self.loginAsPortalOwner()
 
-First we check that our patch is applied to all atct types::
+First we check that our field is applied to all atct types::
 
     >>> from collective.autopublishing.patch_types import atct_types
     >>> False in ['enableAutopublishing' in tp.schema for tp in atct_types]
@@ -69,20 +69,17 @@ Let's create some objects for our tests::
     >>> portal.invokeFactory(id='news1', type_name='News Item', title='News 1')
     'news1'
 
-First here is what we have. Our objects have their enableAutopublishing set to false and their review state set to private::
+First here is what we have. Our objects have their enableAutopublishing set to true and their review state set to private::
 
     >>> wf = portal.portal_workflow
 
     >>> portal['document1'].getEnableAutopublishing(), wf.getInfoFor(portal['document1'], 'review_state')
-    (False, 'private')
+    (True, 'private')
 
     >>> portal['news1'].getEnableAutopublishing(), wf.getInfoFor(portal['news1'], 'review_state')
-    (False, 'private')
+    (True, 'private')
 
-Set their 'enableAutopublishing' field to true and their review state to pending.
-
-    >>> portal['document1'].setEnableAutopublishing(True)
-    >>> portal['news1'].setEnableAutopublishing(True)
+Set their review state to pending.
 
     >>> wf.doActionFor(portal['document1'], 'submit')
     >>> wf.doActionFor(portal['news1'], 'submit')

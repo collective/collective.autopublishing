@@ -32,18 +32,9 @@ All items that are in the workflow states set in the control panel, having an ex
 
 ## Archetypes field
 
-Unless disabled in zope.conf, the module adds a field `enableAutopublishing` to Archetypes content types.
+The module adds a field `enableAutopublishing` to Archetypes content types, with default set to True.
 
-To enable autopublishing (or retracting) this has to be set on every content instance.
-
-The use of the field can be disabled in zope.conf. You can do that via buildout by adding this bit to your instance section:
-
-    zope-conf-additional =
-        <product-config collective.autopublishing>
-          add-enableautopublishing-field off
-        </product-config>
-
-If disabled, only the initial workflow states and the effective and expiration dates control the publishing or retracting of content.
+When am autopublishing event happens to an item, this is set to False, to mark that autopublishing has run.
 
 ## Setting the expiration date on retraction
 
@@ -51,7 +42,7 @@ In some cases, the automatic publication can republish an item that is retracted
 
 For instance: if private is added to initial publication states, and we have a published content object with a publication date in the past.
 
-If the expiration date is not set, and the item is (manually) retracted, the publication machinery will republish the item unless the editor clears the publication date.
+If the expiration date is not set, and the item is (manually) retracted, the publication machinery will republish the item unless the editor clears the publication date or turns of autopublishing for the item with the `enableAutopublishing` option.
 
 To solve that problem an event handler for workflow transitions sets the expiration date, if it is not already set, when withdrawing an item.
 
