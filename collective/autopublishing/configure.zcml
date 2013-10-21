@@ -19,8 +19,8 @@
 
     <!-- How to subscribe AutoPublish to the hourly cron job:  -->
     <!-- <subscriber
-        for="headnet.cronmanager.events.ICronHourlyEvent"
-        handler="collective.autopublishing.cron.CronAutoPublishHandler"
+        for="collective.timedevents.interfaces.IIntervalTicks15Event"
+        handler="collective.autopublishing.eventhandler.AutoPublishHandler"
     /> -->
 
 </configure>

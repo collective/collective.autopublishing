@@ -7,7 +7,7 @@ enableAutopublishingField = atapi.BooleanField('enableAutopublishing',
             required = False,
             languageIndependent = True,
             isMetadata = True,
-            schemata = 'settings',
+            schemata = 'dates',
             widget = atapi.BooleanWidget(
                 description="Enables automatically publishing or retracting "
                             "this item when the publishing or the expiration date is "
@@ -41,7 +41,7 @@ def makeTypesAutoPublishAware(types):
     """
     for t in types:
         t.schema.addField(enableAutopublishingField.copy())
-        t.schema.moveField('enableAutopublishing', after='effectiveDate')
+        t.schema.moveField('enableAutopublishing', after='expirationDate')
         generateMethods(t, t.schema.fields())
 
 

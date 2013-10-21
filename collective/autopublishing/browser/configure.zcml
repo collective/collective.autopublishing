@@ -4,13 +4,12 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="collective.autopublishing">
 
-    <adapter factory=".autopublishsettings.AutopublishSettingsControlPanelAdapter" />
-
     <browser:page
       name="autopublish-controlpanel"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      class=".autopublishsettings.AutopublishSettingsControlPanel"
+      class=".autopublishsettings.AutopublishControlPanel"
       permission="cmf.ManagePortal"
+      layer="collective.autopublishing.interfaces.IBrowserLayer"
       />
 
 </configure>

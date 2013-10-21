@@ -14,23 +14,7 @@ def setupVarious(context):
         return
 
     site = context.getSite()
-    setup_components(site)
     setup_indexes(site)
-
-def setup_components(site):
-    myfactory="collective.autopublishing.settingsutil.AutopublishSettings"
-    myinterface="collective.autopublishing.browser.autopublishsettings.IAutopublishSettingsSchema"
-    provided = _resolveDottedName(myinterface)
-    myfactory = myfactory and _resolveDottedName(myfactory) or None
-    sm = getSiteManager(site)
-    utilities = sm.registeredUtilities()
-
-    for i in utilities:
-        if provided == i.provided:
-            print 'Utility implementing IAutopublishSettingsSchema already exists'
-            return
-    sm.registerUtility(myfactory(), provided, '')
-
 
 def setup_indexes(portal):
     ct = getToolByName(portal, 'portal_catalog')

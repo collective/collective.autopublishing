@@ -1,9 +1,0 @@
-Changelog for headnet.autopublish
-
-    (name of developer listed in brackets)
-
-headnet.autopublish - 0.1 Unreleased
-
-    - Initial package structure.
-      [zopeskel]
-

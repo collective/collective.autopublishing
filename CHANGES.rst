@@ -1,0 +1,30 @@
+Changes
+=======
+
+0.5 (2013-10-21) Unreleased
+---------------------------
+
+Features:
+
+- Added retracting
+- Added modern control panel
+- Replaced persistent utility with p.a.registry based settings
+- Require event ticks to run as manager
+- Depend on collective.timedevents
+  [sunew]
+
+Bugfixes:
+ - don't make testing other modules fail
+   [sunew]
+
+0.4
+----------------
+
+ - Plone 4 compatibility
+   [kroman0]
+
+0.1
+----------------
+ - Initial package
+   [mustap]
+
