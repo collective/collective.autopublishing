@@ -46,6 +46,9 @@ To solve that problem an event handler for workflow transitions sets the expirat
 
 There is a control panel setting to allow overwriting the expiration date.
 
+## Audit
+A very simple form of audit logging can be done: If email addresses are supplied in the control panel a mail will be sent with info about published and retracted items.
+
 ## Todo
 
 Add a behavior for dexterity.
@@ -55,6 +58,4 @@ Modernize the patching of types.
 What if an object is in the state published, but effective date are in the future? Should we retract, to enforce that the workflow state always mirrors the setting of the dates?
 
 What if the effective date is larger that expiration date? Can this happen?
-
-Audit logging of some kind, to enable editors to what actually happens. Via mail perhaps.
 

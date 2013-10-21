@@ -4,6 +4,7 @@ from zope.component import ComponentLookupError, getUtility
 from plone.registry.interfaces import IRegistry
 from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.AdvancedQuery import Eq, In, Le
+from Products.CMFCore.utils import getToolByName
 
 from browser.autopublishsettings import IAutopublishSettingsSchema
 
@@ -28,8 +29,23 @@ def autopublish_handler(event):
         logger.info('Catalog does not have a enableAutopublishing index')
         return
 
-    handle_publishing(event, settings)
-    handle_retracting(event, settings)
+    p_result = handle_publishing(event, settings)
+    r_result = handle_retracting(event, settings)
+
+    if settings.email_log and (p_result or r_result):
+        # Send audit mail
+        messageText = 'Autopublishing results\n\n' + p_result + '\n\n' + r_result
+        email_addresses = settings.email_log
+        mh = getToolByName(event.context, 'MailHost')
+        portal = getToolByName(event.context, 'portal_url').getPortalObject()
+        mh.send(messageText,
+                mto=email_addresses,
+                mfrom=portal.getProperty('email_from_address'),
+                subject='Autopublishing results',
+                encode=None,
+                immediate=False,
+                charset='utf8',
+                msg_type=None)
 
 def handle_publishing(event, settings):
     '''
@@ -51,6 +67,7 @@ def handle_publishing(event, settings):
 
     affected = 0
     total = 0
+    audit = ''
     for brain in brains:
         logger.info('Found %s' % brain.getURL())
         o = brain.getObject()
@@ -70,6 +87,7 @@ def handle_publishing(event, settings):
         if eff_date is not None and eff_date < now and \
           (exp_date is None or exp_date > now):
             logger.info('Publishing %s' % brain.getURL())
+            audit += 'Publishing %s\n' % brain.getURL()
             total += 1
             if not settings.dry_run:
                 try:
@@ -84,6 +102,7 @@ def handle_publishing(event, settings):
 
     logger.info("""Ran collective.autopublishing publish: %d objects found, %d affected
                 """ % (total, affected))
+    return audit
 
 def handle_retracting(event, settings):
     '''
@@ -105,6 +124,7 @@ def handle_retracting(event, settings):
 
     affected = 0
     total = 0
+    audit = ''
     for brain in brains:
         logger.info('Found %s' % brain.getURL())
         o = brain.getObject()
@@ -118,6 +138,7 @@ def handle_retracting(event, settings):
         # the expiration date is set and is in the past:
         if exp_date is not None and exp_date < now:
             logger.info('Retracting %s' % brain.getURL())
+            audit += 'Retracting %s\n' % brain.getURL()
             total += 1
             if not settings.dry_run:
                 try:
@@ -132,6 +153,7 @@ def handle_retracting(event, settings):
 
     logger.info("""Ran collective.autopublishing retract: %d objects found, %d affected
                 """ % (total, affected))
+    return audit
 
 def transition_handler(event):
     # set expiration date if not already set, when
