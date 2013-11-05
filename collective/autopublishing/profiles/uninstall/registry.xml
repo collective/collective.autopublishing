@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<registry>
+
+    <!-- records doesnt support delete, sigh. -->
+    <record interface="collective.autopublishing.browser.autopublishsettings.IAutopublishSettingsSchema"
+      field="publish_actions"
+      delete="True"/>
+    <record interface="collective.autopublishing.browser.autopublishsettings.IAutopublishSettingsSchema"
+      field="_retract_actions"
+      delete="True"/>
+
+</registry>

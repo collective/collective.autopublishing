@@ -5,7 +5,7 @@ collective.autopublishing
 setup
 =====
 
-To get a pdb prompt in the doctest::
+To get a pdb prompt in the doctest (with interlude installed)::
 
     >>> #interact(locals())
 
@@ -36,6 +36,7 @@ We need to subscribe to a tick event from collective.timedevents::
     >>> from collective.autopublishing.eventhandler import autopublish_handler
     >>> component.getSiteManager().registerHandler(autopublish_handler, [IIntervalTicksHourlyEvent])
 
+TODO
 We need to set initial states in the registry::
 
     >>> from zope.component import getUtility
@@ -504,6 +505,7 @@ The next run of autopublishing will publish the object again::
     'published'
 
 This is not good. The editor could clear the publication date or set an expiration date to the day of the retraction, but it is easy to forget. We add
+TODO?
 
 There is an event handler for changing workflow state, where an expiration date it set if it is None. There is also a setting to allow overwriting expiration date if it is already set::
 

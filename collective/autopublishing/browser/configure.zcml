@@ -12,4 +12,7 @@
       layer="collective.autopublishing.interfaces.IBrowserLayer"
       />
 
+  <adapter factory=".autopublishsettings.AutopublishSpecificationFactory"
+    name="collective.autopublishing.browser.autopublishsettings.IAutopublishSpecification" />
+
 </configure>

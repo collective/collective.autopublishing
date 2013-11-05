@@ -34,7 +34,7 @@ def autopublish_handler(event):
 
     if settings.email_log and (p_result or r_result):
         # Send audit mail
-        messageText = 'Autopublishing results\n\n' + p_result + '\n\n' + r_result
+        messageText = 'Autopublishing results:\n\n' + p_result + '\n\n' + r_result
         email_addresses = settings.email_log
         mh = getToolByName(event.context, 'MailHost')
         portal = getToolByName(event.context, 'portal_url').getPortalObject()
@@ -52,56 +52,64 @@ def handle_publishing(event, settings):
     '''
     catalog = event.context.portal_catalog
     wf = event.context.portal_workflow
-
-    states_to_publish = settings.initial_states_publishing
-    if not states_to_publish:
-        logger.info('You have to define state-to-publish in the plone control panel')
-        return
-
     now = event.context.ZopeTime()
-    query = (In('review_state', states_to_publish)
-             & Eq('effectiveRange', now)
-             & Eq('enableAutopublishing', True))
 
-    brains = catalog.evalAdvancedQuery(query)
-
-    affected = 0
-    total = 0
+    actions = settings.publish_actions
     audit = ''
-    for brain in brains:
-        logger.info('Found %s' % brain.getURL())
-        o = brain.getObject()
-        eff_date = o.getEffectiveDate()
-        exp_date = o.getExpirationDate()
-        # The dates in the indexes are always set!
-        # So unless we test for actual dates on the
-        # objects, objects with no EffectiveDate are also published.
-        # ipdb> brain.effective
-        # Out[0]: DateTime('1000/01/01')
-        # ipdb> brain.expires
-        # Out[0]: DateTime('2499/12/31')
+    for a in actions:
+        audit += '\n\nRunning autopublishing (publish) for ' + \
+                 'portal_types: %s, initial state: %s, transition: %s \n' \
+                 % (str(a.portal_types), str(a.initial_state), str(a.transition))
 
-        # we only publish if:
-        # a) the effective date is set and is in the past, and if
-        # b) the expiration date has not been set or is in the future:
-        if eff_date is not None and eff_date < now and \
-          (exp_date is None or exp_date > now):
-            logger.info('Publishing %s' % brain.getURL())
-            audit += 'Publishing %s\n' % brain.getURL()
-            total += 1
-            if not settings.dry_run:
-                try:
-                    o.setEnableAutopublishing(False)
-                    wf.doActionFor(o, 'publish')
-                    o.reindexObject()
-                    affected += 1
-                except WorkflowException:
-                    logger.info("""The state '%s' of the workflow associated with the
-                                   object at '%s' does not provide the publish action
-                                """ % (brain.review_state, o.getURL()))
+        query = (Eq('review_state', a.initial_state)
+                 & Eq('effectiveRange', now)
+                 & Eq('enableAutopublishing', True)
+                 & In('portal_type', a.portal_types))
 
-    logger.info("""Ran collective.autopublishing publish: %d objects found, %d affected
-                """ % (total, affected))
+        brains = catalog.evalAdvancedQuery(query)
+
+        affected = 0
+        total = 0
+        for brain in brains:
+            logger.info('Found %s' % brain.getURL())
+            o = brain.getObject()
+            eff_date = o.getEffectiveDate()
+            exp_date = o.getExpirationDate()
+            # The dates in the indexes are always set!
+            # So unless we test for actual dates on the
+            # objects, objects with no EffectiveDate are also published.
+            # ipdb> brain.effective
+            # Out[0]: DateTime('1000/01/01')
+            # ipdb> brain.expires
+            # Out[0]: DateTime('2499/12/31')
+
+            # we only publish if:
+            # a) the effective date is set and is in the past, and if
+            # b) the expiration date has not been set or is in the future:
+            if eff_date is not None and eff_date < now and \
+              (exp_date is None or exp_date > now):
+                logger.info('Transitioning (%s) %s' % (
+                            brain.getURL(),
+                            a.transition))
+                audit += 'Transitioning (%s) %s\n' % (
+                            brain.getURL(),
+                            a.transition)
+                total += 1
+                if not settings.dry_run:
+                    try:
+                        o.setEnableAutopublishing(False)
+                        wf.doActionFor(o, a.transition)
+                        o.reindexObject()
+                        affected += 1
+                    except WorkflowException:
+                        logger.info("""The state '%s' of the workflow associated with the
+                                       object at '%s' does not provide the '%s' action
+                                    """ % (brain.review_state,
+                                           o.getURL()),
+                                           str(a.transition))
+
+        logger.info("""Ran collective.autopublishing (publish): %d objects found, %d affected
+                    """ % (total, affected))
     return audit
 
 def handle_retracting(event, settings):
@@ -109,50 +117,58 @@ def handle_retracting(event, settings):
     '''
     catalog = event.context.portal_catalog
     wf = event.context.portal_workflow
-
-    states_to_retract = settings.initial_states_retracting
-    if not states_to_retract:
-        logger.info('You have to define state-to-retract in the plone control panel')
-        return
-
     now = event.context.ZopeTime()
-    query = (In('review_state', states_to_retract)
-             & Le('expires', now)
-             & Eq('enableAutopublishing', True))
 
-    brains = catalog.evalAdvancedQuery(query)
-
-    affected = 0
-    total = 0
+    actions = settings.retract_actions
     audit = ''
-    for brain in brains:
-        logger.info('Found %s' % brain.getURL())
-        o = brain.getObject()
-        eff_date = o.getEffectiveDate()
-        exp_date = o.getExpirationDate()
-        # The dates in the indexes are always set.
-        # So we need to test on the objects if the dates
-        # are set.
+    for a in actions:
+        audit += '\n\nRunning autopublishing (publish) for ' + \
+                 'portal_types: %s, initial state: %s, transition: %s \n' \
+                 % (str(a.portal_types), str(a.initial_state), str(a.transition))
 
-        # we only retract if:
-        # the expiration date is set and is in the past:
-        if exp_date is not None and exp_date < now:
-            logger.info('Retracting %s' % brain.getURL())
-            audit += 'Retracting %s\n' % brain.getURL()
-            total += 1
-            if not settings.dry_run:
-                try:
-                    o.setEnableAutopublishing(False)
-                    wf.doActionFor(o, 'retract')
-                    o.reindexObject()
-                    affected += 1
-                except WorkflowException:
-                    logger.info("""The state '%s' of the workflow associated with the
-                                   object at '%s' does not provide the retract action
-                                """ % (brain.review_state, o.getURL()))
+        query = (In('review_state', a.initial_state)
+                 & Le('expires', now)
+                 & Eq('enableAutopublishing', True)
+                 & In('portal_type', a.portal_types))
 
-    logger.info("""Ran collective.autopublishing retract: %d objects found, %d affected
-                """ % (total, affected))
+        brains = catalog.evalAdvancedQuery(query)
+
+        affected = 0
+        total = 0
+        for brain in brains:
+            logger.info('Found %s' % brain.getURL())
+            o = brain.getObject()
+            eff_date = o.getEffectiveDate()
+            exp_date = o.getExpirationDate()
+            # The dates in the indexes are always set.
+            # So we need to test on the objects if the dates
+            # are set.
+
+            # we only retract if:
+            # the expiration date is set and is in the past:
+            if exp_date is not None and exp_date < now:
+                logger.info('Transitioning (%s) %s' % (
+                            brain.getURL(),
+                            a.transition))
+                audit += 'Transitioning (%s) %s\n' % (
+                            brain.getURL(),
+                            a.transition)
+                total += 1
+                if not settings.dry_run:
+                    try:
+                        o.setEnableAutopublishing(False)
+                        wf.doActionFor(o, a.transition)
+                        o.reindexObject()
+                        affected += 1
+                    except WorkflowException:
+                        logger.info("""The state '%s' of the workflow associated with the
+                                       object at '%s' does not provide the '%s' action
+                                    """ % (brain.review_state,
+                                           o.getURL()),
+                                           str(a.transition))
+
+        logger.info("""Ran collective.autopublishing (retract): %d objects found, %d affected
+                    """ % (total, affected))
     return audit
 
 def transition_handler(event):

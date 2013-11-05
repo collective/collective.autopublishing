@@ -1,6 +1,14 @@
 Changes
 =======
 
+0.6 (2013-11-05) Unreleased
+---------------------------
+
+Features:
+
+- Now it is possible to make time-based transitions of any workflow transition, and for individual content types. Rules are triggered on either the publication date or the retraction date.
+  [sunew]
+
 0.5 (2013-10-21) Unreleased
 ---------------------------
 

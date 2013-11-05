@@ -12,4 +12,16 @@
       />
   </genericsetup:upgradeSteps>
  -->
+
+  <genericsetup:upgradeSteps
+     profile="collective.autopublishing:default"
+     source="*"
+     destination="1001">
+    <genericsetup:upgradeStep
+      handler=".upgradesteps.runDefaultProfile"
+      title="Run collective.autopublishing profile"
+      description=""
+      />
+  </genericsetup:upgradeSteps>
+
 </configure>

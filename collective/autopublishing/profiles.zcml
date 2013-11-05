@@ -33,4 +33,19 @@
       handler="collective.autopublishing.setuphandlers.variousMigrateSteps">
   </genericsetup:importStep>
 
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="collective.autopublishing uninstall"
+      directory="profiles/uninstall"
+      description="Uninstalls the collective.autopublishing module"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:importStep
+      name="collective.autopublishing.various-uninstall"
+      title="collective.autopublishing: uninstall collective.autopublishing"
+      description="Various import steps that are not handled by GS import/export handlers."
+      handler="collective.autopublishing.setuphandlers.variousUninstallSteps">
+  </genericsetup:importStep>
+
 </configure>

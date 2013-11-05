@@ -9,7 +9,8 @@ enableAutopublishingField = atapi.BooleanField('enableAutopublishing',
             isMetadata = True,
             schemata = 'dates',
             widget = atapi.BooleanWidget(
-                description="Enables automatically publishing or retracting "
+                description="Enables automatically activating af workflow transition "
+                            "(for instance publishing or retracting) for "
                             "this item when the publishing or the expiration date is "
                             "met. After an autopublishing event on this item, this "
                             "setting is set to false.",
