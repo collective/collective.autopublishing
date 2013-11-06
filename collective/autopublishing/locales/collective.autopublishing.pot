@@ -1,0 +1,88 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2013-11-06 21:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.autopublishing\n"
+
+#: ../browser/autopublishsettings.py:72
+msgid "Action"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:122
+#: ../profiles/default/controlpanel.xml
+msgid "Autopublishing"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:24
+msgid "Content types"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:25
+msgid "Content types this rule applies to."
+msgstr ""
+
+#: ../browser/autopublishsettings.py:123
+msgid "Controls the workflow actions autopublishing will make."
+msgstr ""
+
+#: ../browser/autopublishsettings.py:112
+msgid "Dry run"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:113
+msgid "Dry run simulates the publishing process. Nothing is actually published."
+msgstr ""
+
+#: ../browser/autopublishsettings.py:107
+msgid "Email addresses for audit log"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:108
+msgid "If one or more email addresses is supplied, an audit log of the actions taken is sent."
+msgstr ""
+
+#: ../browser/autopublishsettings.py:98
+msgid "If this is set, the expiration date will be overwritten with the current time when reatrcting an item, to avoid republication if there is a publication date or the expiration date is in the future."
+msgstr ""
+
+#: ../browser/autopublishsettings.py:31
+msgid "Initial workflow state"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:74
+msgid "Publish actions"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:84
+msgid "Retract actions"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:97
+msgid "Set expiration date on retraction"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:35
+msgid "Transition from initial state"
+msgstr ""
+
+#: ../browser/autopublishsettings.py:85
+msgid "Workflow actions initiated by the autopublishing module when the expiration date is met."
+msgstr ""
+
+#: ../browser/autopublishsettings.py:75
+msgid "Workflow actions initiated by the autopublishing module when the publishing date is met."
+msgstr ""
+
