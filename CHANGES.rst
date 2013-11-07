@@ -6,6 +6,15 @@ Changes
 
 Features:
 
+- Added buildout configuration for test this package in plone 4
+  [macagua]
+
+- Added bash script for update po file
+  [macagua]
+
+- Added Spanish translation
+  [macagua]
+
 - Now it is possible to make time-based transitions of any workflow transition, and for individual content types. Rules are triggered on either the publication date or the retraction date.
   [sunew]
 
