@@ -66,7 +66,7 @@ msgstr ""
 msgid "If this is set, the expiration date will be overwritten with the current time when reatrcting an item, to avoid republication if there is a publication date or the expiration date is in the future."
 msgstr ""
 "Si se define, la fecha de caducidad se sobrescribirá con la hora actual en "
-"la retracción de un elemento, para evitar la republicación si hay una fecha "
+"el retiro de un elemento, para evitar la republicación, si hay una fecha "
 "de publicación o de la fecha de caducidad es en el futuro."
 
 #: ../browser/autopublishsettings.py:31
@@ -79,15 +79,15 @@ msgstr "Acciones de publicación"
 
 #: ../browser/autopublishsettings.py:84
 msgid "Retract actions"
-msgstr "Acciones de retractar"
+msgstr "Acciones de retirar"
 
 #: ../browser/autopublishsettings.py:97
 msgid "Set expiration date on retraction"
-msgstr "Establecer fecha de caducidad en la retracción"
+msgstr "Establecer fecha de caducidad del retiro"
 
 #: ../browser/autopublishsettings.py:35
 msgid "Transition from initial state"
-msgstr "Estado iniciar de la Transición"
+msgstr "Estado inicial de la transición"
 
 #: ../browser/autopublishsettings.py:85
 msgid "Workflow actions initiated by the autopublishing module when the expiration date is met."
