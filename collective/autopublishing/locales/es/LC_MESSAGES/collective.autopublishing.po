@@ -1,0 +1,102 @@
+# translation of collective.autopublishing.po to Spanish
+# Gettext Message File for collective.autopublishing
+# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: collective.autopublishing\n"
+"POT-Creation-Date: 2013-11-06 21:41+0000\n"
+"PO-Revision-Date: 2013-11-06 17:52-0430\n"
+"Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
+"Language-Team: ES <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+"Language-Code: es\n"
+"Language-Name: Español\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.autopublishing\n"
+"X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
+
+#: ../browser/autopublishsettings.py:72
+msgid "Action"
+msgstr "Acción"
+
+#: ../browser/autopublishsettings.py:122
+#: ../profiles/default/controlpanel.xml
+msgid "Autopublishing"
+msgstr "Auto-publicación"
+
+#: ../browser/autopublishsettings.py:24
+msgid "Content types"
+msgstr "Tipos de contenido"
+
+#: ../browser/autopublishsettings.py:25
+msgid "Content types this rule applies to."
+msgstr "Tipos de contenido a aplicar esta regla."
+
+#: ../browser/autopublishsettings.py:123
+msgid "Controls the workflow actions autopublishing will make."
+msgstr ""
+"Controla las acciones de flujo de trabajo de auto-publicación se realicen."
+
+#: ../browser/autopublishsettings.py:112
+msgid "Dry run"
+msgstr "Corrida en frío"
+
+#: ../browser/autopublishsettings.py:113
+msgid "Dry run simulates the publishing process. Nothing is actually published."
+msgstr ""
+"Corrida en frío simula le proceso de publicación. Nada es en realidad se "
+"publicara."
+
+#: ../browser/autopublishsettings.py:107
+msgid "Email addresses for audit log"
+msgstr "Direcciones de correo electrónico para registrar la auditoría"
+
+#: ../browser/autopublishsettings.py:108
+msgid "If one or more email addresses is supplied, an audit log of the actions taken is sent."
+msgstr ""
+"Si se suministra una o más direcciones de correo electrónico, se envía un "
+"registro de auditoría de las acciones tomadas."
+
+#: ../browser/autopublishsettings.py:98
+msgid "If this is set, the expiration date will be overwritten with the current time when reatrcting an item, to avoid republication if there is a publication date or the expiration date is in the future."
+msgstr ""
+"Si se define, la fecha de caducidad se sobrescribirá con la hora actual en "
+"la retracción de un elemento, para evitar la republicación si hay una fecha "
+"de publicación o de la fecha de caducidad es en el futuro."
+
+#: ../browser/autopublishsettings.py:31
+msgid "Initial workflow state"
+msgstr "Estado de flujo de trabajo inicial"
+
+#: ../browser/autopublishsettings.py:74
+msgid "Publish actions"
+msgstr "Acciones de publicación"
+
+#: ../browser/autopublishsettings.py:84
+msgid "Retract actions"
+msgstr "Acciones de retractar"
+
+#: ../browser/autopublishsettings.py:97
+msgid "Set expiration date on retraction"
+msgstr "Establecer fecha de caducidad en la retracción"
+
+#: ../browser/autopublishsettings.py:35
+msgid "Transition from initial state"
+msgstr "Estado iniciar de la Transición"
+
+#: ../browser/autopublishsettings.py:85
+msgid "Workflow actions initiated by the autopublishing module when the expiration date is met."
+msgstr ""
+"Las acciones de flujo de trabajo iniciada por le módulo autopublishing "
+"cuando la fecha de caducidad se cumpla."
+
+#: ../browser/autopublishsettings.py:75
+msgid "Workflow actions initiated by the autopublishing module when the publishing date is met."
+msgstr ""
+"Las acciones de flujo de trabajo iniciada por le módulo autopublishing "
+"cuando la fecha de publicación se cumpla."
