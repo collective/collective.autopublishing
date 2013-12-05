@@ -97,7 +97,7 @@ class IAutopublishSettingsSchema(Interface):
         title=_(u'Set expiration date on retraction'),
         description=_(u"If this is set, the expiration date "
                       u"will be overwritten with the current time "
-                      u"when reatrcting an item, to avoid republication if "
+                      u"when retracting an item, to avoid republication if "
                       u"there is a publication date or the expiration "
                       u"date is in the future."),
         default=False)
