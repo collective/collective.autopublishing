@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.6'
+version = '0.7'
 
 def read(*pathnames):
     return open(os.path.join(os.path.dirname(__file__), *pathnames)).read().\
@@ -36,7 +36,7 @@ setup(name='collective.autopublishing',
       ),
       install_requires=[
           'setuptools',
-          'plone.app.registry',
+          'plone.app.registry>=1.2',
           'plone.z3cform',
           'Products.AdvancedQuery',
           'collective.timedevents>=0.3',
