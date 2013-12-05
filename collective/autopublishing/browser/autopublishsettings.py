@@ -109,10 +109,12 @@ class IAutopublishSettingsSchema(Interface):
                       u"an audit log of the actions taken is sent."),
         required=False)
     dry_run = schema.Bool(
-        title=_(u'Dry run'),
-        description=_(u"Dry run simulates the publishing process. "
-                      u"Nothing is actually published."),
-        default=False)
+        title=_(u'Simulate'),
+        description=_(u"Simulates the process of changing workflow state. "
+                      u"Nothing actually changes state, but it is possible to "
+                      u"review what actions will be taken. To activate "
+                      u"the module, remove the checkmark."),
+        default=True)
 
 
 class AutopublishControlPanelEditForm(controlpanel.RegistryEditForm):
