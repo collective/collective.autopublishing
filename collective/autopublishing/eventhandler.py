@@ -34,7 +34,7 @@ def autopublish_handler(event):
 
     if settings.email_log and (p_result or r_result):
         # Send audit mail
-        messageText = 'Autopublishing results:\n\n' + p_result + '\n\n' + r_result
+        messageText = 'Autopublishing results:\n' + p_result + '\n' + r_result
         email_addresses = settings.email_log
         mh = getToolByName(event.context, 'MailHost')
         portal = getToolByName(event.context, 'portal_url').getPortalObject()
@@ -57,8 +57,10 @@ def handle_publishing(event, settings):
     actions = settings.publish_actions
     audit = ''
     for a in actions:
-        audit += '\n\nRunning autopublishing (publish) for ' + \
-                 'portal_types: %s, initial state: %s, transition: %s \n' \
+        audit += '\n\nAction triggered by Publishing Date:\n' + \
+                 '  content types: \n%s\n' + \
+                 '  initial state: %s\n' + \
+                 '  transition: %s\n' \
                  % (str(a.portal_types), str(a.initial_state), str(a.transition))
 
         query = (Eq('review_state', a.initial_state)
@@ -122,8 +124,10 @@ def handle_retracting(event, settings):
     actions = settings.retract_actions
     audit = ''
     for a in actions:
-        audit += '\n\nRunning autopublishing (publish) for ' + \
-                 'portal_types: %s, initial state: %s, transition: %s \n' \
+        audit += '\n\nAction triggered by Expiration Date:\n' + \
+                 '  content types: \n%s\n' + \
+                 '  initial state: %s\n' + \
+                 '  transition: %s\n' \
                  % (str(a.portal_types), str(a.initial_state), str(a.transition))
 
         query = (In('review_state', a.initial_state)
@@ -138,7 +142,6 @@ def handle_retracting(event, settings):
         for brain in brains:
             logger.info('Found %s' % brain.getURL())
             o = brain.getObject()
-            eff_date = o.getEffectiveDate()
             exp_date = o.getExpirationDate()
             # The dates in the indexes are always set.
             # So we need to test on the objects if the dates
