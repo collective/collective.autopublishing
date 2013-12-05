@@ -20,3 +20,8 @@ def runDefaultProfile(tool):
     """ Run default profile """
     site = tool.aq_parent
     runProfiles(site, ('collective.autopublishing:default',))
+
+def runMigrateProfile(tool):
+    """  """
+    site = tool.aq_parent
+    runProfiles(site, ('collective.autopublishing:migrate',))
