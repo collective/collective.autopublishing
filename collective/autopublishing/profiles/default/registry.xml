@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
 <registry>
-  <records interface="collective.autopublishing.browser.autopublishsettings.IAutopublishSettingsSchema" />
+  <records interface="collective.autopublishing.browser.autopublishsettings.IAutopublishSettingsSchema">
+    <omit>publish_actions</omit>
+    <omit>retract_actions</omit>
+  </records>
 </registry>

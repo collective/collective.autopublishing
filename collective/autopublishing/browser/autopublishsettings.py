@@ -1,22 +1,18 @@
 from zope.interface import Interface, implements
-from zope.component import adapts
+from zope.component import getUtility
 from zope import schema
 from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent
 
 from z3c.form import field
-from z3c.form.interfaces import IObjectFactory, IFormLayer, IWidget
 from z3c.form.object import FactoryAdapter
 
 from plone.z3cform import layout
 from plone.app.registry.browser import controlpanel
-from plone.registry.field import PersistentField
+from plone.registry.interfaces import IRegistry
+from plone.registry.recordsproxy import RecordsProxy
 
 from collective.autopublishing import MyMessageFactory as _
-
-
-class PersistentObject(PersistentField, schema.Object):
-    pass
 
 
 class IAutopublishSpecification(Interface):
@@ -47,28 +43,17 @@ class AutopublishSpecification(object):
 
 
 class AutopublishSpecificationFactory(FactoryAdapter):
-     # adapts(Interface,     #context
-     #        IFormLayer,    #request
-     #        Interface,     #form -- but can become None easily (in tests)
-     #        IWidget)       #widget
-     # implements(IObjectFactory)
-
-     # def __init__(self, context, request, form, widget):
-     #     pass
 
      def __call__(self, value):
         obj = AutopublishSpecification(value)
         notify(ObjectCreatedEvent(obj))
         return obj
 
-# registerFactoryAdapter(IAutopublishSpecification,
-#                        AutopublishSpecification)
-
 
 class IAutopublishSettingsSchema(Interface):
 
     publish_actions = schema.Tuple(
-        value_type=PersistentObject(
+        value_type=schema.Object(
             title=_(u'Action'),
             schema=IAutopublishSpecification),
         title=_(u'Publish actions'),
@@ -78,7 +63,7 @@ class IAutopublishSettingsSchema(Interface):
         default=(),
         missing_value=())
     retract_actions = schema.Tuple(
-        value_type=PersistentObject(
+        value_type=schema.Object(
             title=_(u'Action'),
             schema=IAutopublishSpecification),
         title=_(u'Retract actions'),
@@ -87,12 +72,6 @@ class IAutopublishSettingsSchema(Interface):
         required=False,
         default=(),
         missing_value=())
-    # initial_states_retracting = schema.List(
-    #     value_type=schema.TextLine(
-    #         title=u'State'),
-    #     title=_(u'Initial states for retracting'),
-    #     description=_(u"The states need to supply a retract action."),
-    #     required=False)
     overwrite_expiration_on_retract = schema.Bool(
         title=_(u'Set expiration date on retraction'),
         description=_(u"If this is set, the expiration date "
@@ -117,6 +96,56 @@ class IAutopublishSettingsSchema(Interface):
         default=True)
 
 
+_marker = object()
+
+class ComplexRecordsProxy(RecordsProxy):
+
+    object_fields = ('publish_actions', 'retract_actions')
+
+    def __getattr__(self, name):
+        reg = self.__registry__
+        if name not in self.__schema__:
+            raise AttributeError(name)
+        if name in self.object_fields:
+            coll_prefix = IAutopublishSpecification.__identifier__ + '.' + name
+            collection = reg.collectionOfInterface(
+                           IAutopublishSpecification,
+                           prefix=coll_prefix)
+            value = [
+                AutopublishSpecification({'portal_types': item.portal_types,
+                                          'initial_state': item.initial_state,
+                                          'transition': item.transition
+                                         })
+                for item in collection.values()
+                ] or _marker
+        else:
+            value = reg.get(self.__prefix__ + name, _marker)
+        if value is _marker:
+            value = self.__schema__[name].missing_value
+        return value
+
+    def __setattr__(self, name, value):
+        if name in self.__schema__:
+            reg = self.__registry__
+            if name in self.object_fields:
+                # create a new record in the collection for the object interface:
+                coll_prefix = IAutopublishSpecification.__identifier__ + '.' + name
+                collection = reg.collectionOfInterface(
+                               IAutopublishSpecification,
+                               prefix=coll_prefix)
+                # existing values? Clear all and reapply? Better: have some id.
+                for idx, val in enumerate(value):
+                    # the value is a tuple in our case - is this always so?
+                    collection['r' + str(idx)] = val
+            else:
+                full_name = self.__prefix__ + name
+                if full_name not in reg:
+                    raise AttributeError(name)
+                reg[full_name] = value
+        else:
+            self.__dict__[name] = value
+
+
 class AutopublishControlPanelEditForm(controlpanel.RegistryEditForm):
     schema = IAutopublishSettingsSchema
     fields = field.Fields(IAutopublishSettingsSchema)
@@ -125,6 +154,13 @@ class AutopublishControlPanelEditForm(controlpanel.RegistryEditForm):
     description = _(
         u"Controls the workflow actions autopublishing will make."
         )
+
+    def getContent(self):
+        return getUtility(IRegistry).forInterface(
+            self.schema,
+            omit=('publish_actions', 'retract_actions'),
+            prefix=self.schema_prefix,
+            factory=ComplexRecordsProxy)
 
 
 AutopublishControlPanel = layout.wrap_form(
