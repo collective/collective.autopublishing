@@ -73,7 +73,6 @@ def handle_publishing(event, settings):
         affected = 0
         total = 0
         for brain in brains:
-            logger.info('Found %s' % brain.getURL())
             o = brain.getObject()
             eff_date = o.getEffectiveDate()
             exp_date = o.getExpirationDate()
@@ -112,7 +111,10 @@ def handle_publishing(event, settings):
 
         logger.info("""Ran collective.autopublishing (publish): %d objects found, %d affected
                     """ % (total, affected))
-    return audit
+    if total:
+        return audit
+    else:
+        return ''
 
 def handle_retracting(event, settings):
     '''
@@ -140,7 +142,6 @@ def handle_retracting(event, settings):
         affected = 0
         total = 0
         for brain in brains:
-            logger.info('Found %s' % brain.getURL())
             o = brain.getObject()
             exp_date = o.getExpirationDate()
             # The dates in the indexes are always set.
@@ -172,7 +173,10 @@ def handle_retracting(event, settings):
 
         logger.info("""Ran collective.autopublishing (retract): %d objects found, %d affected
                     """ % (total, affected))
-    return audit
+    if total:
+        return audit
+    else:
+        return ''
 
 def transition_handler(event):
     # set expiration date if not already set, when
