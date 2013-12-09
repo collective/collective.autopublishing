@@ -98,7 +98,6 @@ def handle_publishing(event, settings):
                 total += 1
                 if not settings.dry_run:
                     try:
-                        o.setEnableAutopublishing(False)
                         wf.doActionFor(o, a.transition)
                         o.reindexObject()
                         affected += 1
@@ -160,7 +159,6 @@ def handle_retracting(event, settings):
                 total += 1
                 if not settings.dry_run:
                     try:
-                        o.setEnableAutopublishing(False)
                         wf.doActionFor(o, a.transition)
                         o.reindexObject()
                         affected += 1
