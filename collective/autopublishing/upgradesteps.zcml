@@ -14,7 +14,7 @@
   <genericsetup:upgradeSteps
      profile="collective.autopublishing:default"
      source="*"
-     destination="1002">
+     destination="1003">
     <genericsetup:upgradeStep
       handler=".upgradesteps.runMigrateProfile"
       title="collective.autopublishing migrate: remove old fields"
