@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 from zope.component import ComponentLookupError, getUtility
 
@@ -20,7 +21,8 @@ def autopublish_handler(event):
     catalog = event.context.portal_catalog
 
     try:
-        settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema)
+        settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema,
+                                                      check=False)
     except (ComponentLookupError, KeyError):
         logger.info('The product needs to be installed. No settings in the registry.')
         return
@@ -190,7 +192,8 @@ def transition_handler(event):
     if event.transition.id in ['retract', 'reject']:
         overwrite = False
         try:
-            settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema)
+            settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema,
+                                                          check=False)
         except (ComponentLookupError, KeyError):
             logger.info('The product needs to be installed. No settings in the registry.')
             settings = None
