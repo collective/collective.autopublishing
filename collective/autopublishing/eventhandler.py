@@ -189,6 +189,8 @@ def transition_handler(event):
         return
     if not event.object:
         return
+    now = event.object.ZopeTime()
+    # todo: make states into a setting
     if event.transition.id in ['retract', 'reject']:
         overwrite = False
         try:
@@ -200,6 +202,19 @@ def transition_handler(event):
         if settings and settings.overwrite_expiration_on_retract:
             overwrite = True
         if event.object.getExpirationDate() is None or overwrite:
-            now = event.object.ZopeTime()
             event.object.setExpirationDate(now)
+    if event.transition.id in ['publish']:
+        overwrite = False
+        try:
+            settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema,
+                                                          check=False)
+        except (ComponentLookupError, KeyError):
+            logger.info('collective.autopublishing needs to be installed. No settings in the registry.')
+            settings = None
+        if settings and settings.clear_expiration_on_publish:
+            overwrite = True
+        if overwrite:
+            if event.object.getExpirationDate() < now:
+                # to avoid immediate re-retraction
+                event.object.setExpirationDate(None)
 

@@ -21,5 +21,15 @@
       description=""
       />
   </genericsetup:upgradeSteps>
+  <genericsetup:upgradeSteps
+     profile="collective.autopublishing:default"
+     source="*"
+     destination="1004">
+    <genericsetup:upgradeStep
+      handler=".upgradesteps.importDefaultProfileRegistry"
+      title="Run collective.autopublishing registry step"
+      description=""
+      />
+  </genericsetup:upgradeSteps>
 
 </configure>

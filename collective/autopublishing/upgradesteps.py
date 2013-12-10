@@ -25,3 +25,11 @@ def runMigrateProfile(tool):
     """  """
     site = tool.aq_parent
     runProfiles(site, ('collective.autopublishing:migrate',))
+
+def importDefaultProfileRegistry(tool):
+    """ """
+    site = tool.aq_parent
+    setup_tool = getattr(site, 'portal_setup')
+    setup_tool.runImportStepFromProfile(
+        'profile-collective.autopublishing:default', 'plone.app.registry',
+        run_dependencies=False)

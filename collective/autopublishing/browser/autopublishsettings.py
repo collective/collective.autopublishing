@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from zope.interface import Interface, implements
 from zope.component import getUtility
 from zope import schema
@@ -76,9 +77,15 @@ class IAutopublishSettingsSchema(Interface):
         title=_(u'Set expiration date on retraction'),
         description=_(u"If this is set, the expiration date "
                       u"will be overwritten with the current time "
-                      u"when retracting an item, to avoid republication if "
-                      u"there is a publication date or the expiration "
-                      u"date is in the future."),
+                      u"when manually retracting an item, to avoid republication if "
+                      u"there is a publication date in the past."),
+        default=False)
+    clear_expiration_on_publish = schema.Bool(
+        title=_(u'Clear expiration date on publication'),
+        description=_(u"If this is set, an expiration date "
+                      u"in the past will be cleared "
+                      u"when manually publishing an item, to avoid "
+                      u"immediate retraction."),
         default=False)
     email_log = schema.List(
         value_type=schema.TextLine(
@@ -107,6 +114,8 @@ class ComplexRecordsProxy(RecordsProxy):
         if name not in self.__schema__:
             raise AttributeError(name)
         if name in self.object_fields:
+            # todo: test på valuetype
+            # todo: få schema fra valuetype
             coll_prefix = IAutopublishSpecification.__identifier__ + '.' + name
             collection = reg.collectionOfInterface(
                            IAutopublishSpecification,
@@ -136,6 +145,7 @@ class ComplexRecordsProxy(RecordsProxy):
                 # existing values? Clear all and reapply? Better: have some id.
                 for idx, val in enumerate(value):
                     # the value is a tuple in our case - is this always so?
+                    # and val is our obj created by the z3cform factory
                     collection['r' + str(idx)] = val
             else:
                 full_name = self.__prefix__ + name
