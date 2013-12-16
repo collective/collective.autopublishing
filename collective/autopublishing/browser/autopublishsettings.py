@@ -11,8 +11,8 @@ from z3c.form.object import FactoryAdapter
 from plone.z3cform import layout
 from plone.app.registry.browser import controlpanel
 from plone.registry.interfaces import IRegistry
-from plone.registry.recordsproxy import RecordsProxy
 
+from collective.complexrecordsproxy import ComplexRecordsProxy
 from collective.autopublishing import MyMessageFactory as _
 
 
@@ -101,59 +101,6 @@ class IAutopublishSettingsSchema(Interface):
                       u"review what actions will be taken. To activate "
                       u"the module, remove the checkmark."),
         default=True)
-
-
-_marker = object()
-
-class ComplexRecordsProxy(RecordsProxy):
-
-    object_fields = ('publish_actions', 'retract_actions')
-
-    def __getattr__(self, name):
-        reg = self.__registry__
-        if name not in self.__schema__:
-            raise AttributeError(name)
-        if name in self.object_fields:
-            # todo: test på valuetype
-            # todo: få schema fra valuetype
-            coll_prefix = IAutopublishSpecification.__identifier__ + '.' + name
-            collection = reg.collectionOfInterface(
-                           IAutopublishSpecification,
-                           prefix=coll_prefix)
-            value = [
-                AutopublishSpecification({'portal_types': item.portal_types,
-                                          'initial_state': item.initial_state,
-                                          'transition': item.transition
-                                         })
-                for item in collection.values()
-                ] or _marker
-        else:
-            value = reg.get(self.__prefix__ + name, _marker)
-        if value is _marker:
-            value = self.__schema__[name].missing_value
-        return value
-
-    def __setattr__(self, name, value):
-        if name in self.__schema__:
-            reg = self.__registry__
-            if name in self.object_fields:
-                # create a new record in the collection for the object interface:
-                coll_prefix = IAutopublishSpecification.__identifier__ + '.' + name
-                collection = reg.collectionOfInterface(
-                               IAutopublishSpecification,
-                               prefix=coll_prefix)
-                # existing values? Clear all and reapply? Better: have some id.
-                for idx, val in enumerate(value):
-                    # the value is a tuple in our case - is this always so?
-                    # and val is our obj created by the z3cform factory
-                    collection['r' + str(idx)] = val
-            else:
-                full_name = self.__prefix__ + name
-                if full_name not in reg:
-                    raise AttributeError(name)
-                reg[full_name] = value
-        else:
-            self.__dict__[name] = value
 
 
 class AutopublishControlPanelEditForm(controlpanel.RegistryEditForm):
