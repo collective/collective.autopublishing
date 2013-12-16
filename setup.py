@@ -40,6 +40,7 @@ setup(name='collective.autopublishing',
           'plone.z3cform',
           'Products.AdvancedQuery',
           'collective.timedevents>=0.3',
+          'collective.complexrecordsproxy',
       ],
       entry_points="""
       [z3c.autoinclude.plugin]
