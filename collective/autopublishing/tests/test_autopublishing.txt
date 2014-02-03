@@ -5,7 +5,7 @@ collective.autopublishing
 setup
 =====
 
-To get a pdb prompt in the doctest (with interlude installed)::
+To get a pdb prompt in the doctest (with interlude installed). If Ipython is installed (tested with ipython 0.13.1), you can perform post-mortem debugging with %debug, or enable auto post-mortem debugging with %pdb::
 
     >>> #interact(locals())
 
@@ -13,16 +13,16 @@ Login::
 
     >>> self.loginAsPortalOwner()
 
-First we check that our field is applied to all atct types::
+First we check that our package is installed::
+
+    >>> portal.portal_quickinstaller.isProductInstalled('collective.autopublishing')
+    True
+
+and that our field is applied to all atct types::
 
     >>> from collective.autopublishing.patch_types import atct_types
     >>> False in ['enableAutopublishing' in tp.schema for tp in atct_types]
     False
-
-that our package is installed::
-
-    >>> portal.portal_quickinstaller.isProductInstalled('collective.autopublishing')
-    True
 
 and that a catalog index named ``enableAutopublishing`` is added::
 
@@ -36,23 +36,23 @@ We need to subscribe to a tick event from collective.timedevents::
     >>> from collective.autopublishing.eventhandler import autopublish_handler
     >>> component.getSiteManager().registerHandler(autopublish_handler, [IIntervalTicksHourlyEvent])
 
-TODO
-We need to set initial states in the registry::
+We setup a publish action in the registry. When the publishing date occurs, we will publish all Documents in state private::
 
     >>> from zope.component import getUtility
     >>> from plone.registry.interfaces import IRegistry
-    >>> from collective.autopublishing.browser.autopublishsettings import IAutopublishSettingsSchema
+    >>> from collective.autopublishing.browser.autopublishsettings import IAutopublishSettingsSchema, AutopublishSpecification
     >>> settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema)
-    >>> print settings.initial_states_publishing
-    None
 
-    >>> settings.initial_states_publishing = [u'pending']
-    >>> print settings.initial_states_publishing
+    >>> print settings.publish_actions
+    ()
+
+    >>> publish_action = AutopublishSpecification({'portal_types':(u'Document'), 'initial_state':u'private', 'transition':u'publish'})
+    >>> settings.publish_actions = (publish_action,)
+
+    >>> interact(locals())
+
+    >>> print settings.publish_actions
     [u'pending']
-
-    >>> settings.initial_states_retracting = [u'published']
-    >>> print settings.initial_states_retracting
-    [u'published']
 
 And make sure dry_run is false::
 

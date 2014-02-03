@@ -7,6 +7,7 @@ from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.AdvancedQuery import Eq, In, Le
 from Products.CMFCore.utils import getToolByName
 
+from collective.complexrecordsproxy import ComplexRecordsProxy
 from browser.autopublishsettings import IAutopublishSettingsSchema
 
 logger = logging.getLogger('collective.autopublishing')
@@ -21,8 +22,10 @@ def autopublish_handler(event):
     catalog = event.context.portal_catalog
 
     try:
-        settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema,
-                                                      check=False)
+        settings = getUtility(IRegistry).forInterface(
+            IAutopublishSettingsSchema,
+            omit=('publish_actions', 'retract_actions'),
+            factory=ComplexRecordsProxy)
     except (ComponentLookupError, KeyError):
         logger.info('The product needs to be installed. No settings in the registry.')
         return
@@ -57,6 +60,7 @@ def handle_publishing(event, settings):
     now = event.context.ZopeTime()
 
     actions = settings.publish_actions
+    action_taken = False
     audit = ''
     for a in actions:
         audit += '\n\nAction triggered by Publishing Date:\n' + \
@@ -98,6 +102,7 @@ def handle_publishing(event, settings):
                             brain.getURL(),
                             a.transition)
                 total += 1
+                action_taken = True
                 if not settings.dry_run:
                     try:
                         wf.doActionFor(o, a.transition)
@@ -112,7 +117,7 @@ def handle_publishing(event, settings):
 
         logger.info("""Ran collective.autopublishing (publish): %d objects found, %d affected
                     """ % (total, affected))
-    if total:
+    if action_taken:
         return audit
     else:
         return ''
@@ -125,6 +130,7 @@ def handle_retracting(event, settings):
     now = event.context.ZopeTime()
 
     actions = settings.retract_actions
+    action_taken = False
     audit = ''
     for a in actions:
         audit += '\n\nAction triggered by Expiration Date:\n' + \
@@ -159,6 +165,7 @@ def handle_retracting(event, settings):
                             brain.getURL(),
                             a.transition)
                 total += 1
+                action_taken = True
                 if not settings.dry_run:
                     try:
                         wf.doActionFor(o, a.transition)
@@ -173,7 +180,7 @@ def handle_retracting(event, settings):
 
         logger.info("""Ran collective.autopublishing (retract): %d objects found, %d affected
                     """ % (total, affected))
-    if total:
+    if action_taken:
         return audit
     else:
         return ''
@@ -194,8 +201,10 @@ def transition_handler(event):
     if event.transition.id in ['retract', 'reject']:
         overwrite = False
         try:
-            settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema,
-                                                          check=False)
+            settings = getUtility(IRegistry).forInterface(
+                IAutopublishSettingsSchema,
+                omit=('publish_actions', 'retract_actions'),
+                factory=ComplexRecordsProxy)
         except (ComponentLookupError, KeyError):
             logger.info('The product needs to be installed. No settings in the registry.')
             settings = None
@@ -206,8 +215,10 @@ def transition_handler(event):
     if event.transition.id in ['publish']:
         overwrite = False
         try:
-            settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema,
-                                                          check=False)
+            settings = getUtility(IRegistry).forInterface(
+                IAutopublishSettingsSchema,
+                omit=('publish_actions', 'retract_actions'),
+                factory=ComplexRecordsProxy)
         except (ComponentLookupError, KeyError):
             logger.info('collective.autopublishing needs to be installed. No settings in the registry.')
             settings = None
