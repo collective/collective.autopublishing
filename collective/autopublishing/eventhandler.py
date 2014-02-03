@@ -63,10 +63,10 @@ def handle_publishing(event, settings):
     action_taken = False
     audit = ''
     for a in actions:
-        audit += '\n\nAction triggered by Publishing Date:\n' + \
+        audit += ('\n\nAction triggered by Publishing Date:\n' + \
                  '  content types: \n%s\n' + \
                  '  initial state: %s\n' + \
-                 '  transition: %s\n' \
+                 '  transition: %s\n') \
                  % (str(a.portal_types), str(a.initial_state), str(a.transition))
 
         query = (Eq('review_state', a.initial_state)
@@ -133,10 +133,10 @@ def handle_retracting(event, settings):
     action_taken = False
     audit = ''
     for a in actions:
-        audit += '\n\nAction triggered by Expiration Date:\n' + \
+        audit += ('\n\nAction triggered by Expiration Date:\n' + \
                  '  content types: \n%s\n' + \
                  '  initial state: %s\n' + \
-                 '  transition: %s\n' \
+                 '  transition: %s\n') \
                  % (str(a.portal_types), str(a.initial_state), str(a.transition))
 
         query = (In('review_state', a.initial_state)
