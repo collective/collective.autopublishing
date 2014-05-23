@@ -66,8 +66,10 @@ def handle_publishing(event, settings):
         audit += ('\n\nAction triggered by Publishing Date:\n' + \
                  '  content types: \n%s\n' + \
                  '  initial state: %s\n' + \
-                 '  transition: %s\n') \
-                 % (str(a.portal_types), str(a.initial_state), str(a.transition))
+                 '  transition: %s\n' + \
+                 '  date_field: %s\n')\
+                 % (str(a.portal_types), str(a.initial_state), str(a.transition),
+                   str(a.date_field))
 
         query = (Eq('review_state', a.initial_state)
                  & Eq('effectiveRange', now)
@@ -75,12 +77,16 @@ def handle_publishing(event, settings):
                  & In('portal_type', a.portal_types))
 
         brains = catalog.evalAdvancedQuery(query)
-
         affected = 0
         total = 0
         for brain in brains:
             o = brain.getObject()
             eff_date = o.getEffectiveDate()
+            if a.date_field:
+                try:
+                    eff_date = o.getField(a.date_field).get(o)
+                except:
+                    pass
             exp_date = o.getExpirationDate()
             # The dates in the indexes are always set!
             # So unless we test for actual dates on the

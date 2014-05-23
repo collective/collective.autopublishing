@@ -32,6 +32,10 @@ class IAutopublishSpecification(Interface):
         title=_(u"Transition from initial state"),
         required=True,
         )
+    date_field = schema.TextLine(
+        title=_(u"Transaction triger date field id"),
+        description=_(u"By default publish date is used."),
+        )
 
 
 class AutopublishSpecification(object):
