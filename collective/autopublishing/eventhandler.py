@@ -42,7 +42,38 @@ def autopublish_handler(event):
 
     if settings.email_log and (p_result or r_result):
         # Send audit mail
-        messageText = 'Autopublishing results:\n' + p_result + '\n' + r_result
+        messageText = 'Autopublishing results.\n\n'
+
+        messageText += 'Publish actions:\n'
+        for record in p_result:
+            messageText += record['header'] + '\n'
+            messageText += "Content types:" + str(record['content_types']) + '\n'
+            messageText += "Initial state:" + str(record['initial_state']) + '\n'
+            messageText += "Transition:" + str(record['transition']) + '\n'
+            messageText += "Date index/method:" + str(record['date_index_method']) + '\n'
+            messageText += "Actions:" + '\n'
+            for action in record['actions']:
+                messageText += "Transition:" + str(action['transition']) + '\n'
+                messageText += "Portal type:" + str(action['portal_type']) + '\n'
+                messageText += "Title:" + str(action['title']) + '\n'
+                messageText += "Url:" + str(action['url']) + '\n\n'
+            messageText += '\n\n'
+
+        messageText += '\n\nRetract actions:\n'
+        for record in r_result:
+            messageText += record['header'] + '\n'
+            messageText += "Content types:" + str(record['content_types']) + '\n'
+            messageText += "Initial state:" + str(record['initial_state']) + '\n'
+            messageText += "Transition:" + str(record['transition']) + '\n'
+            messageText += "Date index/method:" + str(record['date_index_method']) + '\n'
+            messageText += "Actions:" + '\n'
+            for action in record['actions']:
+                messageText += "Transition:" + str(action['transition']) + '\n'
+                messageText += "Portal type:" + str(action['portal_type']) + '\n'
+                messageText += "Title:" + str(action['title']) + '\n'
+                messageText += "Url:" + str(action['url']) + '\n\n'
+            messageText += '\n\n'
+
         email_addresses = settings.email_log
         mh = getToolByName(event.context, 'MailHost')
         portal = getToolByName(event.context, 'portal_url').getPortalObject()
@@ -66,17 +97,39 @@ def handle_publishing(context, settings, dry_run=True, log=True):
     actions = settings.publish_actions
     action_taken = False
     audit = ''
+    audit = []
     for a in actions:
-        audit += ('\n\nAction triggered by Publishing Date:\n' +
-                  '  content types: \n%s\n' +
-                  '  initial state: %s\n' +
-                  '  transition: %s\n' +
-                  '  date_field: %s\n')\
-            % (str(a.portal_types), str(a.initial_state), str(a.transition),
-               str(a.date_field))
+        audit_record = {}
+
+        date_index = 'effective'
+        date_method = 'getEffectiveDate'
+        date_index_value = a.date_index
+        if date_index_value:
+            if '|' in date_index_value:
+                items = date_index_value.split('|')
+                _date_index = items[0]
+                _date_method = items[1]
+            else:
+                _date_index = date_index_value
+                _date_method = date_index_value
+            if _date_index in catalog.indexes():
+                date_index = _date_index
+                date_method = _date_method
+            else:
+                logger.warn(
+                    "date index does not exist: %s" % (str(_date_index)))
+                continue
+
+        audit_record['header'] = 'Actions triggered by "%s"' % str(date_index)
+        audit_record['content_types'] = str(a.portal_types)
+        audit_record['initial_state'] = str(a.initial_state)
+        audit_record['transition'] = str(a.transition)
+        audit_record['date_index_method'] = (str(date_index) + '/' +
+                                             str(date_method))
+        audit_record['actions'] = []
 
         query = (Eq('review_state', a.initial_state)
-                 & Eq('effectiveRange', now)
+                 & Le(date_index, now)
                  & Eq('enableAutopublishing', True)
                  & In('portal_type', a.portal_types))
 
@@ -85,12 +138,12 @@ def handle_publishing(context, settings, dry_run=True, log=True):
         total = 0
         for brain in brains:
             o = brain.getObject()
-            eff_date = o.getEffectiveDate()
-            if a.date_field:
-                try:
-                    eff_date = o.getField(a.date_field).get(o)
-                except:
-                    pass
+            try:
+                eff_date = getattr(o, date_method)()
+            except AttributeError:
+                logger.warn(
+                    "date field does not exist: %s" % (str(date_method)))
+                continue
             exp_date = o.getExpirationDate()
             # The dates in the indexes are always set!
             # So unless we test for actual dates on the
@@ -105,13 +158,13 @@ def handle_publishing(context, settings, dry_run=True, log=True):
             # b) the expiration date has not been set or is in the future:
             if (eff_date is not None and eff_date < now and
                (exp_date is None or exp_date > now)):
-                audit_text = 'Transitioning %s (%s) %s' % (
-                    brain.portal_type,
-                    brain.getURL(),
-                    a.transition)
+                audit_action = {}
+                audit_action['portal_type'] = brain.portal_type
+                audit_action['url'] = brain.getURL()
+                audit_action['title'] = brain.Title
+                audit_action['transition'] = a.transition
                 if log:
-                    logger.info(audit_text)
-                audit += audit_text + '\n'
+                    logger.info(str(audit_action))
                 total += 1
                 action_taken = True
                 if not dry_run:
@@ -120,19 +173,22 @@ def handle_publishing(context, settings, dry_run=True, log=True):
                         o.reindexObject()
                         affected += 1
                     except WorkflowException:
-                        logger.info("""The state '%s' of the workflow associated with the
-                                       object at '%s' does not provide the '%s' action
-                                    """ % (brain.review_state,
-                                           o.getURL()),
-                                    str(a.transition))
+                        logger.info(
+                            """The state '%s' of the workflow associated with the
+                               object at '%s' does not provide the '%s' action
+                            """ % (brain.review_state,
+                                   o.getURL()),
+                            str(a.transition))
+                audit_record['actions'].append(audit_action)
 
         if log:
             logger.info("""Ran collective.autopublishing (publish): %d objects found, %d affected
                     """ % (total, affected))
+        audit.append(audit_record)
     if action_taken:
         return audit
     else:
-        return ''
+        return []
 
 
 def handle_retracting(context, settings, dry_run=True, log=True):
@@ -144,16 +200,39 @@ def handle_retracting(context, settings, dry_run=True, log=True):
 
     actions = settings.retract_actions
     action_taken = False
-    audit = ''
+    audit = []
     for a in actions:
-        audit += ('\n\nAction triggered by Expiration Date:\n' +
-                  '  content types: \n%s\n' +
-                  '  initial state: %s\n' +
-                  '  transition: %s\n') \
-            % (str(a.portal_types), str(a.initial_state), str(a.transition))
+        audit_record = {}
+
+        date_index = 'expires'
+        date_method = 'getExpirationDate'
+        date_index_value = a.date_index
+        if date_index_value:
+            if '|' in date_index_value:
+                items = date_index_value.split('|')
+                _date_index = items[0]
+                _date_method = items[1]
+            else:
+                _date_index = date_index_value
+                _date_method = date_index_value
+            if _date_index in catalog.indexes():
+                date_index = _date_index
+                date_method = _date_method
+            else:
+                logger.warn(
+                    "date index does not exist: %s" % (str(_date_index)))
+                continue
+
+        audit_record['header'] = 'Actions triggered by "%s"' % str(date_index)
+        audit_record['content_types'] = str(a.portal_types)
+        audit_record['initial_state'] = str(a.initial_state)
+        audit_record['transition'] = str(a.transition)
+        audit_record['date_index_method'] = (str(date_index) + '/' +
+                                             str(date_method))
+        audit_record['actions'] = []
 
         query = (In('review_state', a.initial_state)
-                 & Le('expires', now)
+                 & Le(date_index, now)
                  & Eq('enableAutopublishing', True)
                  & In('portal_type', a.portal_types))
 
@@ -163,21 +242,26 @@ def handle_retracting(context, settings, dry_run=True, log=True):
         total = 0
         for brain in brains:
             o = brain.getObject()
-            exp_date = o.getExpirationDate()
+            try:
+                exp_date = getattr(o, date_method)()
+            except AttributeError:
+                logger.warn(
+                    "date field does not exist: %s" % (str(date_method)))
+                continue
             # The dates in the indexes are always set.
             # So we need to test on the objects if the dates
-            # are set.
+            # are actually set.
 
             # we only retract if:
             # the expiration date is set and is in the past:
             if exp_date is not None and exp_date < now:
-                audit_text = 'Transitioning %s (%s) %s' % (
-                    brain.portal_type,
-                    brain.getURL(),
-                    a.transition)
+                audit_action = {}
+                audit_action['portal_type'] = brain.portal_type
+                audit_action['url'] = brain.getURL()
+                audit_action['title'] = brain.Title
+                audit_action['transition'] = a.transition
                 if log:
-                    logger.info(audit_text)
-                audit += audit_text + '\n'
+                    logger.info(str(audit_action))
                 total += 1
                 action_taken = True
                 if not dry_run:
@@ -186,19 +270,22 @@ def handle_retracting(context, settings, dry_run=True, log=True):
                         o.reindexObject()
                         affected += 1
                     except WorkflowException:
-                        logger.info("""The state '%s' of the workflow associated with the
-                                       object at '%s' does not provide the '%s' action
-                                    """ % (brain.review_state,
-                                           o.getURL()),
-                                    str(a.transition))
+                        logger.info(
+                            """The state '%s' of the workflow associated with the
+                               object at '%s' does not provide the '%s' action
+                            """ % (brain.review_state,
+                                   o.getURL()),
+                            str(a.transition))
+                audit_record['actions'].append(audit_action)
 
         if log:
             logger.info("""Ran collective.autopublishing (retract): %d objects found, %d affected
                     """ % (total, affected))
+        audit.append(audit_record)
     if action_taken:
         return audit
     else:
-        return ''
+        return []
 
 
 def transition_handler(event):

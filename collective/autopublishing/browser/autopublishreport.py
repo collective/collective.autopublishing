@@ -49,13 +49,6 @@ class AutopublishReport(BrowserView):
                                      dry_run=True, log=False)
 
         result = {}
-        if p_result:
-            result['p_result'] = p_result.split('\n')
-        else:
-            result['p_result'] = 'Nothing to publish'
-        if r_result:
-            result['r_result'] = r_result.split('\n')
-        else:
-            result['r_result'] = 'Nothing to retract'
-
+        result['p_result'] = p_result
+        result['r_result'] = r_result
         return result

@@ -11,16 +11,54 @@
         </h1>
 
         <h2>Publish actions</h2>
-        <p tal:repeat="line view/report/p_result"
-           tal:content="line">
-        </p>
+        <div tal:repeat="record view/report/p_result">
+          <h3 tal:content="record/header"></h3>
+          <label>Content types:</label> <span tal:content="record/content_types"></span><br />
+          <label>Initial state:</label> <span tal:content="record/initial_state"></span><br />
+          <label>Transition:</label> <span tal:content="record/transition"></span><br />
+          <label>Date index/method:</label> <span tal:content="record/date_index_method"></span><br />
+          <label>Actions:</label><br />
+          <table class="listing" border=1>
+            <tr>
+              <th>Transition</th>
+              <th>Portal type</th>
+              <th>Title</th>
+              <th>Url</th>
+            </tr>
+            <tr tal:repeat="action record/actions">
+              <td tal:content="action/transition"></td>
+              <td tal:content="action/portal_type"></td>
+              <td tal:content="action/title"></td>
+              <td><a tal:attributes="href action/url" tal:content="action/url"></a></td>
+            </tr>
+          </table>
+        </div>
 
         <hr />
 
         <h2>Retract actions</h2>
-        <p tal:repeat="line view/report/r_result"
-           tal:content="line">
-        </p>
+        <div tal:repeat="record view/report/r_result">
+          <h3 tal:content="record/header"></h3>
+          <label>Content types:</label> <span tal:content="record/content_types"></span><br />
+          <label>Initial state:</label> <span tal:content="record/initial_state"></span><br />
+          <label>Transition:</label> <span tal:content="record/transition"></span><br />
+          <label>Date index/method:</label> <span tal:content="record/date_index_method"></span><br />
+          <label>Actions:</label><br />
+          <table class="listing" border=1>
+            <tr>
+              <th>Transition</th>
+              <th>Portal type</th>
+              <th>Title</th>
+              <th>Url</th>
+            </tr>
+            <tr tal:repeat="action record/actions">
+              <td tal:content="action/transition"></td>
+              <td tal:content="action/portal_type"></td>
+              <td tal:content="action/title"></td>
+              <td><a tal:attributes="href action/url" tal:content="action/url"></a></td>
+            </tr>
+          </table>
+        </div>
 
   </metal:main>
 

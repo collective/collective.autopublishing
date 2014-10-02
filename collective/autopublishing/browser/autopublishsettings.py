@@ -36,11 +36,14 @@ class IAutopublishSpecification(Interface):
         title=_(u"Transition from initial state"),
         required=True,
         )
-    date_field = schema.TextLine(
-        title=_(u"Transaction trigger date field id"),
-        description=_(u"By default publishing date is used for "
-                      u"'publish actions', and expiration date is "
-                      u"used for 'retract actions'."),
+    date_index = schema.TextLine(
+        title=_(u"Transaction trigger date catalog index / method"),
+        description=_(u"By default publishing date (the 'effective' index) is "
+                      u"used for 'publish actions', and expiration date (the "
+                      u"'expires' index) is used for 'retract actions'."
+                      u" If a custom method is to be used for the date, enter"
+                      u" index_id|object_method_id. If index_id = method_id "
+                      u" just enter index_id."),
         required=False,
         )
 
