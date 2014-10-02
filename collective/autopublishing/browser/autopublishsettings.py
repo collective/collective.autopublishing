@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from zope.interface import Interface, implements
 from zope.component import getUtility
 from zope import schema
@@ -8,12 +9,15 @@ from zope.lifecycleevent import ObjectCreatedEvent
 from z3c.form import field
 from z3c.form.object import FactoryAdapter
 
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.z3cform import layout
 from plone.app.registry.browser import controlpanel
 from plone.registry.interfaces import IRegistry
 
 from collective.complexrecordsproxy import ComplexRecordsProxy
 from collective.autopublishing import MyMessageFactory as _
+
+logger = logging.getLogger('collective.autopublishing')
 
 
 class IAutopublishSpecification(Interface):
@@ -128,7 +132,13 @@ class AutopublishControlPanelEditForm(controlpanel.RegistryEditForm):
             factory=ComplexRecordsProxy)
 
 
+class ControlPanelFormWrapper(layout.FormWrapper):
+    """
+    """
+
+    index = ViewPageTemplateFile('controlpanel_layout.pt')
+
 AutopublishControlPanel = layout.wrap_form(
     AutopublishControlPanelEditForm,
-    controlpanel.ControlPanelFormWrapper
+    ControlPanelFormWrapper
     )

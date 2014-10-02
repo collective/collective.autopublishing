@@ -35,8 +35,10 @@ def autopublish_handler(event):
         logger.info('Catalog does not have a enableAutopublishing index')
         return
 
-    p_result = handle_publishing(event, settings)
-    r_result = handle_retracting(event, settings)
+    p_result = handle_publishing(event.context, settings,
+                                 dry_run=settings.dry_run)
+    r_result = handle_retracting(event.context, settings,
+                                 dry_run=settings.dry_run)
 
     if settings.email_log and (p_result or r_result):
         # Send audit mail
@@ -54,12 +56,12 @@ def autopublish_handler(event):
                 msg_type=None)
 
 
-def handle_publishing(event, settings):
+def handle_publishing(context, settings, dry_run=True, log=True):
     '''
     '''
-    catalog = event.context.portal_catalog
-    wf = event.context.portal_workflow
-    now = event.context.ZopeTime()
+    catalog = context.portal_catalog
+    wf = context.portal_workflow
+    now = context.ZopeTime()
 
     actions = settings.publish_actions
     action_taken = False
@@ -107,11 +109,12 @@ def handle_publishing(event, settings):
                     brain.portal_type,
                     brain.getURL(),
                     a.transition)
-                logger.info(audit_text)
+                if log:
+                    logger.info(audit_text)
                 audit += audit_text + '\n'
                 total += 1
                 action_taken = True
-                if not settings.dry_run:
+                if not dry_run:
                     try:
                         wf.doActionFor(o, a.transition)
                         o.reindexObject()
@@ -123,7 +126,8 @@ def handle_publishing(event, settings):
                                            o.getURL()),
                                     str(a.transition))
 
-        logger.info("""Ran collective.autopublishing (publish): %d objects found, %d affected
+        if log:
+            logger.info("""Ran collective.autopublishing (publish): %d objects found, %d affected
                     """ % (total, affected))
     if action_taken:
         return audit
@@ -131,12 +135,12 @@ def handle_publishing(event, settings):
         return ''
 
 
-def handle_retracting(event, settings):
+def handle_retracting(context, settings, dry_run=True, log=True):
     '''
     '''
-    catalog = event.context.portal_catalog
-    wf = event.context.portal_workflow
-    now = event.context.ZopeTime()
+    catalog = context.portal_catalog
+    wf = context.portal_workflow
+    now = context.ZopeTime()
 
     actions = settings.retract_actions
     action_taken = False
@@ -171,11 +175,12 @@ def handle_retracting(event, settings):
                     brain.portal_type,
                     brain.getURL(),
                     a.transition)
-                logger.info(audit_text)
+                if log:
+                    logger.info(audit_text)
                 audit += audit_text + '\n'
                 total += 1
                 action_taken = True
-                if not settings.dry_run:
+                if not dry_run:
                     try:
                         wf.doActionFor(o, a.transition)
                         o.reindexObject()
@@ -187,7 +192,8 @@ def handle_retracting(event, settings):
                                            o.getURL()),
                                     str(a.transition))
 
-        logger.info("""Ran collective.autopublishing (retract): %d objects found, %d affected
+        if log:
+            logger.info("""Ran collective.autopublishing (retract): %d objects found, %d affected
                     """ % (total, affected))
     if action_taken:
         return audit

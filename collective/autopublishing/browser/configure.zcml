@@ -12,6 +12,14 @@
       layer="collective.autopublishing.interfaces.IBrowserLayer"
       />
 
+    <browser:page
+      name="autopublish-report"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".autopublishreport.AutopublishReport"
+      permission="cmf.ManagePortal"
+      layer="collective.autopublishing.interfaces.IBrowserLayer"
+      />
+
   <adapter factory=".autopublishsettings.AutopublishSpecificationFactory"
     name="collective.autopublishing.browser.autopublishsettings.IAutopublishSpecification" />
 
