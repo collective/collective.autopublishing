@@ -33,24 +33,26 @@ class IAutopublishSpecification(Interface):
         required=True,
         )
     date_field = schema.TextLine(
-        title=_(u"Transaction triger date field id"),
-        description=_(u"By default publish date is used."),
+        title=_(u"Transaction trigger date field id"),
+        description=_(u"By default publishing date is used for "
+                      u"'publish actions', and expiration date is "
+                      u"used for 'retract actions'."),
         required=False,
         )
 
 
 class AutopublishSpecification(object):
-     implements(IAutopublishSpecification)
+    implements(IAutopublishSpecification)
 
-     def __init__(self, value):
-         self.portal_types = value["portal_types"]
-         self.initial_state = value["initial_state"]
-         self.transition = value["transition"]
+    def __init__(self, value):
+        self.portal_types = value["portal_types"]
+        self.initial_state = value["initial_state"]
+        self.transition = value["transition"]
 
 
 class AutopublishSpecificationFactory(FactoryAdapter):
 
-     def __call__(self, value):
+    def __call__(self, value):
         obj = AutopublishSpecification(value)
         notify(ObjectCreatedEvent(obj))
         return obj
@@ -64,7 +66,7 @@ class IAutopublishSettingsSchema(Interface):
             schema=IAutopublishSpecification),
         title=_(u'Publish actions'),
         description=_(u"Workflow actions initiated by the autopublishing "
-                       "module when the publishing date is met."),
+                      u"module when the publishing date is met."),
         required=False,
         default=(),
         missing_value=())
@@ -74,7 +76,7 @@ class IAutopublishSettingsSchema(Interface):
             schema=IAutopublishSpecification),
         title=_(u'Retract actions'),
         description=_(u"Workflow actions initiated by the autopublishing "
-                       "module when the expiration date is met."),
+                      u"module when the expiration date is met."),
         required=False,
         default=(),
         missing_value=())
@@ -82,8 +84,9 @@ class IAutopublishSettingsSchema(Interface):
         title=_(u'Set expiration date on retraction'),
         description=_(u"If this is set, the expiration date "
                       u"will be overwritten with the current time "
-                      u"when manually retracting an item, to avoid republication if "
-                      u"there is a publication date in the past."),
+                      u"when manually retracting an item, to avoid "
+                      u" republication if there is a publication date "
+                      u"in the past."),
         default=False)
     clear_expiration_on_publish = schema.Bool(
         title=_(u'Clear expiration date on publication'),

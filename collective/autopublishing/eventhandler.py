@@ -18,6 +18,7 @@ logger = logging.getLogger('collective.autopublishing')
 # Should be registered in zcml as subscribers to
 # one of the tick events from collective.timedevents
 
+
 def autopublish_handler(event):
     catalog = event.context.portal_catalog
 
@@ -52,6 +53,7 @@ def autopublish_handler(event):
                 charset='utf8',
                 msg_type=None)
 
+
 def handle_publishing(event, settings):
     '''
     '''
@@ -63,13 +65,13 @@ def handle_publishing(event, settings):
     action_taken = False
     audit = ''
     for a in actions:
-        audit += ('\n\nAction triggered by Publishing Date:\n' + \
-                 '  content types: \n%s\n' + \
-                 '  initial state: %s\n' + \
-                 '  transition: %s\n' + \
-                 '  date_field: %s\n')\
-                 % (str(a.portal_types), str(a.initial_state), str(a.transition),
-                   str(a.date_field))
+        audit += ('\n\nAction triggered by Publishing Date:\n' +
+                  '  content types: \n%s\n' +
+                  '  initial state: %s\n' +
+                  '  transition: %s\n' +
+                  '  date_field: %s\n')\
+            % (str(a.portal_types), str(a.initial_state), str(a.transition),
+               str(a.date_field))
 
         query = (Eq('review_state', a.initial_state)
                  & Eq('effectiveRange', now)
@@ -99,14 +101,14 @@ def handle_publishing(event, settings):
             # we only publish if:
             # a) the effective date is set and is in the past, and if
             # b) the expiration date has not been set or is in the future:
-            if eff_date is not None and eff_date < now and \
-              (exp_date is None or exp_date > now):
-                logger.info('Transitioning (%s) %s' % (
-                            brain.getURL(),
-                            a.transition))
-                audit += 'Transitioning (%s) %s\n' % (
-                            brain.getURL(),
-                            a.transition)
+            if (eff_date is not None and eff_date < now and
+               (exp_date is None or exp_date > now)):
+                audit_text = 'Transitioning %s (%s) %s' % (
+                    brain.portal_type,
+                    brain.getURL(),
+                    a.transition)
+                logger.info(audit_text)
+                audit += audit_text + '\n'
                 total += 1
                 action_taken = True
                 if not settings.dry_run:
@@ -119,7 +121,7 @@ def handle_publishing(event, settings):
                                        object at '%s' does not provide the '%s' action
                                     """ % (brain.review_state,
                                            o.getURL()),
-                                           str(a.transition))
+                                    str(a.transition))
 
         logger.info("""Ran collective.autopublishing (publish): %d objects found, %d affected
                     """ % (total, affected))
@@ -127,6 +129,7 @@ def handle_publishing(event, settings):
         return audit
     else:
         return ''
+
 
 def handle_retracting(event, settings):
     '''
@@ -139,11 +142,11 @@ def handle_retracting(event, settings):
     action_taken = False
     audit = ''
     for a in actions:
-        audit += ('\n\nAction triggered by Expiration Date:\n' + \
-                 '  content types: \n%s\n' + \
-                 '  initial state: %s\n' + \
-                 '  transition: %s\n') \
-                 % (str(a.portal_types), str(a.initial_state), str(a.transition))
+        audit += ('\n\nAction triggered by Expiration Date:\n' +
+                  '  content types: \n%s\n' +
+                  '  initial state: %s\n' +
+                  '  transition: %s\n') \
+            % (str(a.portal_types), str(a.initial_state), str(a.transition))
 
         query = (In('review_state', a.initial_state)
                  & Le('expires', now)
@@ -164,12 +167,12 @@ def handle_retracting(event, settings):
             # we only retract if:
             # the expiration date is set and is in the past:
             if exp_date is not None and exp_date < now:
-                logger.info('Transitioning (%s) %s' % (
-                            brain.getURL(),
-                            a.transition))
-                audit += 'Transitioning (%s) %s\n' % (
-                            brain.getURL(),
-                            a.transition)
+                audit_text = 'Transitioning %s (%s) %s' % (
+                    brain.portal_type,
+                    brain.getURL(),
+                    a.transition)
+                logger.info(audit_text)
+                audit += audit_text + '\n'
                 total += 1
                 action_taken = True
                 if not settings.dry_run:
@@ -182,7 +185,7 @@ def handle_retracting(event, settings):
                                        object at '%s' does not provide the '%s' action
                                     """ % (brain.review_state,
                                            o.getURL()),
-                                           str(a.transition))
+                                    str(a.transition))
 
         logger.info("""Ran collective.autopublishing (retract): %d objects found, %d affected
                     """ % (total, affected))
@@ -190,6 +193,7 @@ def handle_retracting(event, settings):
         return audit
     else:
         return ''
+
 
 def transition_handler(event):
     # set expiration date if not already set, when
@@ -234,4 +238,3 @@ def transition_handler(event):
             if event.object.getExpirationDate() < now:
                 # to avoid immediate re-retraction
                 event.object.setExpirationDate(None)
-
