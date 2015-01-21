@@ -51,7 +51,7 @@ A very simple form of audit logging can be done: If email addresses are supplied
 
 ## Todo
 
-Add a behavior for dexterity.
+Dexterity support added - but wierd index logic is removed.
 
 Modernize the patching of types.
 
