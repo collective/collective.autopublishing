@@ -22,7 +22,7 @@
           <label>Content types:</label> <span tal:content="record/content_types"></span><br />
           <label>Initial state:</label> <span tal:content="record/initial_state"></span><br />
           <label>Transition:</label> <span tal:content="record/transition"></span><br />
-          <label>Date index/method:</label> <span tal:content="record/date_index_method"></span><br />
+          <label>Date index/method:</label> <span tal:content="record/date_index_method | nothing"></span><br />
           <label>Actions:</label><br />
           <table class="listing" border=1>
             <tr>
@@ -48,7 +48,7 @@
           <label>Content types:</label> <span tal:content="record/content_types"></span><br />
           <label>Initial state:</label> <span tal:content="record/initial_state"></span><br />
           <label>Transition:</label> <span tal:content="record/transition"></span><br />
-          <label>Date index/method:</label> <span tal:content="record/date_index_method"></span><br />
+          <label>Date index/method:</label> <span tal:content="record/date_index_method | nothing"></span><br />
           <label>Actions:</label><br />
           <table class="listing" border=1>
             <tr>

@@ -80,7 +80,6 @@ def autopublish_handler(event):
             messageText += "Content types:" + str(record['content_types']) + '\n'
             messageText += "Initial state:" + str(record['initial_state']) + '\n'
             messageText += "Transition:" + str(record['transition']) + '\n'
-            messageText += "Date index/method:" + str(record['date_index_method']) + '\n'
             messageText += "Actions:" + '\n'
             for action in record['actions']:
                 messageText += "Transition:" + str(action['transition']) + '\n'
@@ -95,7 +94,6 @@ def autopublish_handler(event):
             messageText += "Content types:" + str(record['content_types']) + '\n'
             messageText += "Initial state:" + str(record['initial_state']) + '\n'
             messageText += "Transition:" + str(record['transition']) + '\n'
-            messageText += "Date index/method:" + str(record['date_index_method']) + '\n'
             messageText += "Actions:" + '\n'
             for action in record['actions']:
                 messageText += "Transition:" + str(action['transition']) + '\n'
@@ -131,12 +129,12 @@ def handle_publishing(context, settings, dry_run=True, log=True):
     for a in actions:
         audit_record = {}
 
+        date_index = getattr(a, 'date_index', 'effective')
+
         audit_record['header'] = 'Actions triggered by "%s"' % str(date_index)
         audit_record['content_types'] = str(a.portal_types)
         audit_record['initial_state'] = str(a.initial_state)
         audit_record['transition'] = str(a.transition)
-        audit_record['date_index_method'] = (str(date_index) + '/' +
-                                             str(date_method))
         audit_record['actions'] = []
 
         query = (Eq('review_state', a.initial_state)
@@ -153,7 +151,7 @@ def handle_publishing(context, settings, dry_run=True, log=True):
                 eff_date = getEffectiveDate(o)
             except AttributeError:
                 logger.warn(
-                    "date field does not exist: %s" % (str(date_method)))
+                    "error getting effective date")
                 continue
 
             exp_date = getExpirationDate(o)
@@ -216,6 +214,8 @@ def handle_retracting(context, settings, dry_run=True, log=True):
     for a in actions:
         audit_record = {}
 
+        date_index = getattr(a, 'date_index', 'effective')
+
         audit_record['header'] = 'Actions triggered by "%s"' % str(date_index)
         audit_record['content_types'] = str(a.portal_types)
         audit_record['initial_state'] = str(a.initial_state)
@@ -237,7 +237,8 @@ def handle_retracting(context, settings, dry_run=True, log=True):
                 exp_date = getExpirationDate(o)
             except AttributeError:
                 logger.warn(
-                    "date field does not exist: %s" % (str(date_method)))
+                    "cannot get expiration date"
+                )
                 continue
             # The dates in the indexes are always set.
             # So we need to test on the objects if the dates
