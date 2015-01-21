@@ -3,6 +3,8 @@ from zope.interface import Interface
 from zope.i18nmessageid import MessageFactory
 from plone.indexer.decorator import indexer
 
+from .behavior import IAutoPublishing
+
 MyMessageFactory = MessageFactory('collective.autopublishing')
 
 
@@ -13,8 +15,13 @@ def initialize(context):
 def _enableautopublishing(obj, **kwargs):
     """for portal_catalog to index enableAutopublishing field"""
 
-    if obj.schema.has_key('enableAutopublishing'):
-        return obj.getEnableAutopublishing()
+    if hasattr(obj, 'schema'):
+        if obj.schema.has_key('enableAutopublishing'):
+            return obj.getEnableAutopublishing()
+
+    if IAutoPublishing.providedBy(obj):
+        return getattr(obj, 'enableAutopublishing', True)
+
     return False
 
 # patch ATCT Types
