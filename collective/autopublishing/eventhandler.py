@@ -19,6 +19,36 @@ logger = logging.getLogger('collective.autopublishing')
 # one of the tick events from collective.timedevents
 
 
+def getExpirationDate(obj):
+    # Archetypes
+    try:
+        date = obj.getExpirationDate()
+        return date
+    # Handle dexterity
+    except AttributeError:
+        date = obj.expiration_date
+        return date
+
+    return None
+
+
+def setExpirationDate(obj, date):
+    obj.setExpirationDate(date)
+
+
+def getEffectiveDate(obj):
+    # Archetypes
+    try:
+        date = obj.getEffectiveDate()
+        return date
+    # Handle dexterity
+    except AttributeError:
+        date = obj.effective()
+        return date
+
+    return None
+
+
 def autopublish_handler(event):
     catalog = event.context.portal_catalog
 
@@ -50,7 +80,6 @@ def autopublish_handler(event):
             messageText += "Content types:" + str(record['content_types']) + '\n'
             messageText += "Initial state:" + str(record['initial_state']) + '\n'
             messageText += "Transition:" + str(record['transition']) + '\n'
-            messageText += "Date index/method:" + str(record['date_index_method']) + '\n'
             messageText += "Actions:" + '\n'
             for action in record['actions']:
                 messageText += "Transition:" + str(action['transition']) + '\n'
@@ -65,7 +94,6 @@ def autopublish_handler(event):
             messageText += "Content types:" + str(record['content_types']) + '\n'
             messageText += "Initial state:" + str(record['initial_state']) + '\n'
             messageText += "Transition:" + str(record['transition']) + '\n'
-            messageText += "Date index/method:" + str(record['date_index_method']) + '\n'
             messageText += "Actions:" + '\n'
             for action in record['actions']:
                 messageText += "Transition:" + str(action['transition']) + '\n'
@@ -101,31 +129,12 @@ def handle_publishing(context, settings, dry_run=True, log=True):
     for a in actions:
         audit_record = {}
 
-        date_index = 'effective'
-        date_method = 'getEffectiveDate'
-        date_index_value = a.date_index
-        if date_index_value:
-            if '|' in date_index_value:
-                items = date_index_value.split('|')
-                _date_index = items[0]
-                _date_method = items[1]
-            else:
-                _date_index = date_index_value
-                _date_method = date_index_value
-            if _date_index in catalog.indexes():
-                date_index = _date_index
-                date_method = _date_method
-            else:
-                logger.warn(
-                    "date index does not exist: %s" % (str(_date_index)))
-                continue
+        date_index = getattr(a, 'date_index', 'effective')
 
         audit_record['header'] = 'Actions triggered by "%s"' % str(date_index)
         audit_record['content_types'] = str(a.portal_types)
         audit_record['initial_state'] = str(a.initial_state)
         audit_record['transition'] = str(a.transition)
-        audit_record['date_index_method'] = (str(date_index) + '/' +
-                                             str(date_method))
         audit_record['actions'] = []
 
         query = (Eq('review_state', a.initial_state)
@@ -139,12 +148,13 @@ def handle_publishing(context, settings, dry_run=True, log=True):
         for brain in brains:
             o = brain.getObject()
             try:
-                eff_date = getattr(o, date_method)()
+                eff_date = getEffectiveDate(o)
             except AttributeError:
                 logger.warn(
-                    "date field does not exist: %s" % (str(date_method)))
+                    "error getting effective date")
                 continue
-            exp_date = o.getExpirationDate()
+
+            exp_date = getExpirationDate(o)
             # The dates in the indexes are always set!
             # So unless we test for actual dates on the
             # objects, objects with no EffectiveDate are also published.
@@ -204,31 +214,12 @@ def handle_retracting(context, settings, dry_run=True, log=True):
     for a in actions:
         audit_record = {}
 
-        date_index = 'expires'
-        date_method = 'getExpirationDate'
-        date_index_value = a.date_index
-        if date_index_value:
-            if '|' in date_index_value:
-                items = date_index_value.split('|')
-                _date_index = items[0]
-                _date_method = items[1]
-            else:
-                _date_index = date_index_value
-                _date_method = date_index_value
-            if _date_index in catalog.indexes():
-                date_index = _date_index
-                date_method = _date_method
-            else:
-                logger.warn(
-                    "date index does not exist: %s" % (str(_date_index)))
-                continue
+        date_index = getattr(a, 'date_index', 'effective')
 
         audit_record['header'] = 'Actions triggered by "%s"' % str(date_index)
         audit_record['content_types'] = str(a.portal_types)
         audit_record['initial_state'] = str(a.initial_state)
         audit_record['transition'] = str(a.transition)
-        audit_record['date_index_method'] = (str(date_index) + '/' +
-                                             str(date_method))
         audit_record['actions'] = []
 
         query = (In('review_state', a.initial_state)
@@ -243,10 +234,11 @@ def handle_retracting(context, settings, dry_run=True, log=True):
         for brain in brains:
             o = brain.getObject()
             try:
-                exp_date = getattr(o, date_method)()
+                exp_date = getExpirationDate(o)
             except AttributeError:
                 logger.warn(
-                    "date field does not exist: %s" % (str(date_method)))
+                    "cannot get expiration date"
+                )
                 continue
             # The dates in the indexes are always set.
             # So we need to test on the objects if the dates
@@ -318,8 +310,8 @@ def transition_handler(event):
             settings = None
         if settings and settings.overwrite_expiration_on_retract:
             overwrite = True
-        if event.object.getExpirationDate() is None or overwrite:
-            event.object.setExpirationDate(now)
+        if getExpirationDate(event.object) is None or overwrite:
+            setExpirationDate(event.object, now)
     if event.transition.id in ['publish']:
         overwrite = False
         try:
@@ -334,6 +326,6 @@ def transition_handler(event):
         if settings and settings.clear_expiration_on_publish:
             overwrite = True
         if overwrite:
-            if event.object.getExpirationDate() < now:
+            if getExpirationDate(event.object) < now:
                 # to avoid immediate re-retraction
-                event.object.setExpirationDate(None)
+                setExpirationDate(event.object, None)

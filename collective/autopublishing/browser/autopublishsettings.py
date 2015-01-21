@@ -45,6 +45,7 @@ class IAutopublishSpecification(Interface):
                       u" index_id|object_method_id. If index_id = method_id "
                       u" just enter index_id."),
         required=False,
+        missing_value=u'effective'
         )
 
 
