@@ -15,8 +15,13 @@ Features:
 - Added Spanish translation
   [macagua]
 
-- Now it is possible to make time-based transitions of any workflow transition, and for individual content types. Rules are triggered on either the publication date or the retraction date.
+- Now it is possible to make time-based transitions of any workflow transition, and for individual content types.
+  Rules are triggered on either the publication date or the retraction date.
   [sunew]
+
+- Added initial dexterity support. date_index, date_index_method removed in the branch, needs to be reimplemented to support
+  both dexterity and archetypes.
+  [bosim]
 
 0.5 (2013-10-21) Unreleased
 ---------------------------
