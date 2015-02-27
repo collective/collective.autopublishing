@@ -313,7 +313,7 @@ def transition_handler(event):
             settings = None
         if settings and settings.overwrite_expiration_on_retract:
             overwrite = True
-        if event.object.getExpirationDate() is None or overwrite:
+        if hasattr(event.object, 'getExpirationDate') and (event.object.getExpirationDate() is None or overwrite):
             event.object.setExpirationDate(now)
     if event.transition.id in ['publish']:
         overwrite = False
