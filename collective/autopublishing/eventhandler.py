@@ -59,7 +59,8 @@ def autopublish_handler(event):
             omit=('publish_actions', 'retract_actions'),
             factory=ComplexRecordsProxy)
     except (ComponentLookupError, KeyError):
-        logger.info('The product needs to be installed. No settings in the registry.')
+        logger.info('The product needs to be installed. '
+                    'No settings in the registry.')
         return
 
     if 'enableAutopublishing' not in catalog.indexes():
@@ -78,29 +79,29 @@ def autopublish_handler(event):
         messageText += 'Publish actions:\n'
         for record in p_result:
             messageText += record['header'] + '\n'
-            messageText += "Content types:" + str(record['content_types']) + '\n'
-            messageText += "Initial state:" + str(record['initial_state']) + '\n'
-            messageText += "Transition:" + str(record['transition']) + '\n'
-            messageText += "Actions:" + '\n'
+            messageText += "Content types:" + str(record['content_types'])
+            messageText += "\nInitial state:" + str(record['initial_state'])
+            messageText += "\nTransition:" + str(record['transition'])
+            messageText += "\nActions:" + '\n'
             for action in record['actions']:
-                messageText += "Transition:" + str(action['transition']) + '\n'
-                messageText += "Portal type:" + str(action['portal_type']) + '\n'
-                messageText += "Title:" + str(action['title']) + '\n'
-                messageText += "Url:" + str(action['url']) + '\n\n'
+                messageText += "Transition:" + str(action['transition'])
+                messageText += "\nPortal type:" + str(action['portal_type'])
+                messageText += "\nTitle:" + str(action['title'])
+                messageText += "\nUrl:" + str(action['url']) + '\n\n'
             messageText += '\n\n'
 
         messageText += '\n\nRetract actions:\n'
         for record in r_result:
             messageText += record['header'] + '\n'
-            messageText += "Content types:" + str(record['content_types']) + '\n'
-            messageText += "Initial state:" + str(record['initial_state']) + '\n'
-            messageText += "Transition:" + str(record['transition']) + '\n'
-            messageText += "Actions:" + '\n'
+            messageText += "Content types:" + str(record['content_types'])
+            messageText += "\nInitial state:" + str(record['initial_state'])
+            messageText += "\nTransition:" + str(record['transition'])
+            messageText += "\nActions:" + '\n'
             for action in record['actions']:
                 messageText += "Transition:" + str(action['transition']) + '\n'
-                messageText += "Portal type:" + str(action['portal_type']) + '\n'
-                messageText += "Title:" + str(action['title']) + '\n'
-                messageText += "Url:" + str(action['url']) + '\n\n'
+                messageText += "\nPortal type:" + str(action['portal_type'])
+                messageText += "\nTitle:" + str(action['title'])
+                messageText += "\nUrl:" + str(action['url']) + '\n\n'
             messageText += '\n\n'
 
         email_addresses = settings.email_log
@@ -138,10 +139,10 @@ def handle_publishing(context, settings, dry_run=True, log=True):
         audit_record['transition'] = str(a.transition)
         audit_record['actions'] = []
 
-        query = (Eq('review_state', a.initial_state)
-                 & Le(date_index, now)
-                 & Eq('enableAutopublishing', True)
-                 & In('portal_type', a.portal_types))
+        query = (Eq('review_state', a.initial_state) &
+                 Le(date_index, now) &
+                 Eq('enableAutopublishing', True) &
+                 In('portal_type', a.portal_types))
 
         brains = catalog.evalAdvancedQuery(query)
         affected = 0
@@ -223,10 +224,10 @@ def handle_retracting(context, settings, dry_run=True, log=True):
         audit_record['transition'] = str(a.transition)
         audit_record['actions'] = []
 
-        query = (In('review_state', a.initial_state)
-                 & Le(date_index, now)
-                 & Eq('enableAutopublishing', True)
-                 & In('portal_type', a.portal_types))
+        query = (In('review_state', a.initial_state) &
+                 Le(date_index, now) &
+                 Eq('enableAutopublishing', True) &
+                 In('portal_type', a.portal_types))
 
         brains = catalog.evalAdvancedQuery(query)
 
@@ -304,7 +305,8 @@ def transition_handler(event):
                 omit=('publish_actions', 'retract_actions'),
                 factory=ComplexRecordsProxy)
         except (ComponentLookupError, KeyError):
-            logger.info('The product needs to be installed. No settings in the registry.')
+            logger.info('The product needs to be installed.'
+                        ' No settings in the registry.')
             settings = None
         if settings and settings.overwrite_expiration_on_retract:
             overwrite = True
@@ -318,7 +320,8 @@ def transition_handler(event):
                 omit=('publish_actions', 'retract_actions'),
                 factory=ComplexRecordsProxy)
         except (ComponentLookupError, KeyError):
-            logger.info('collective.autopublishing needs to be installed. No settings in the registry.')
+            logger.info('collective.autopublishing needs to be installed.'
+                        ' No settings in the registry.')
             settings = None
         if settings and settings.clear_expiration_on_publish:
             overwrite = True
