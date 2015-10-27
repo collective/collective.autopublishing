@@ -9,6 +9,7 @@ from Products.CMFCore.utils import getToolByName
 
 from collective.complexrecordsproxy import ComplexRecordsProxy
 from browser.autopublishsettings import IAutopublishSettingsSchema
+from interfaces import IBrowserLayer
 
 logger = logging.getLogger('collective.autopublishing')
 
@@ -287,6 +288,8 @@ def transition_handler(event):
     # the editors responsibility (the effective date should
     # be checked, but it is a common mistake
     # to expect withdrawal to private to be final.
+    if not IBrowserLayer.providedBy(event.object.REQUEST):
+        return
     if not event.transition:
         return
     if not event.object:
