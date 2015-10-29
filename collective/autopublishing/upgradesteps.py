@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
 from logging import getLogger
 
+
 log = getLogger('collective.autopublishing:upgrades')
+
 
 def runProfiles(site, profile_ids):
     """ """
@@ -16,15 +19,18 @@ def runProfiles(site, profile_ids):
             setup_tool.runAllImportSteps()
         log.info("Ran profile " + profile_id)
 
+
 def runDefaultProfile(tool):
     """ Run default profile """
     site = tool.aq_parent
     runProfiles(site, ('collective.autopublishing:default',))
 
+
 def runMigrateProfile(tool):
     """  """
     site = tool.aq_parent
     runProfiles(site, ('collective.autopublishing:migrate',))
+
 
 def importDefaultProfileRegistry(tool):
     """ """
@@ -33,3 +39,5 @@ def importDefaultProfileRegistry(tool):
     setup_tool.runImportStepFromProfile(
         'profile-collective.autopublishing:default', 'plone.app.registry',
         run_dependencies=False)
+
+# EOF

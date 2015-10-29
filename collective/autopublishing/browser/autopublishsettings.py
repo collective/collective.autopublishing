@@ -25,7 +25,7 @@ class IAutopublishSpecification(Interface):
         title=_(u"Content types"),
         description=_(u"Content types this rule applies to."),
         required=True,
-        missing_value=tuple(),
+        missing_value=(),
         value_type=schema.Choice(
             vocabulary="plone.app.vocabularies.ReallyUserFriendlyTypes"))
     initial_state = schema.TextLine(
@@ -45,6 +45,7 @@ class IAutopublishSpecification(Interface):
                       u" index_id|object_method_id. If index_id = method_id "
                       u" just enter index_id."),
         required=False,
+        default=u'effective',
         missing_value=u'effective'
         )
 
@@ -132,7 +133,6 @@ class AutopublishControlPanelEditForm(controlpanel.RegistryEditForm):
         return getUtility(IRegistry).forInterface(
             self.schema,
             omit=('publish_actions', 'retract_actions'),
-            prefix=self.schema_prefix,
             factory=ComplexRecordsProxy)
 
 
