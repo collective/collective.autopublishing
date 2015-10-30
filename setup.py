@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.7a'
+version = '0.8a0'
 
 def read(*pathnames):
     return open(os.path.join(os.path.dirname(__file__), *pathnames)).read().\
@@ -33,7 +33,9 @@ setup(name='collective.autopublishing',
       zip_safe=False,
       extras_require=dict(
         test=[
-            'collective.testcaselayer',
+            'plone.app.testing',
+            'plone.app.robotframework[debug]',
+            'interlude',
         ]
       ),
       install_requires=[
@@ -42,6 +44,7 @@ setup(name='collective.autopublishing',
           'plone.z3cform',
           'collective.timedevents>=0.3',
           'collective.complexrecordsproxy',
+          'Products.AdvancedQuery',
       ],
       entry_points="""
       [z3c.autoinclude.plugin]

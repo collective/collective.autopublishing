@@ -1,20 +1,34 @@
-from Products.PloneTestCase import ptc
+from plone.app.testing.bbb import PloneTestCase
+from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
+from plone.app.testing import applyProfile
+from plone.app.testing import FunctionalTesting
+from plone.app.testing import PloneSandboxLayer
 
-from collective.testcaselayer import ptc as tcl_ptc
-from collective.testcaselayer import common
 
-class Layer(tcl_ptc.BasePTCLayer):
-    """Install collective.autopublishing"""
 
-    def afterSetUp(self):
+class AutoPublishingLayer(PloneSandboxLayer):
+
+    defaultBases = (PLONE_APP_CONTENTTYPES_FIXTURE,)
+
+    def setUpZope(self, app, configurationContext):
         import collective.timedevents
-        import collective.autopublishing
         self.loadZCML('configure.zcml', package=collective.timedevents)
+        import collective.autopublishing
         self.loadZCML('configure.zcml', package=collective.autopublishing)
-        ptc.installPackage('collective.autopublishing')
-        self.addProfile('collective.autopublishing:default')
 
-layer = Layer([common.common_layer])
+    def setUpPloneSite(self, portal):
+        applyProfile(portal, 'collective.autopublishing:default')
 
-class MyFunctionalTestCase(ptc.FunctionalTestCase):
-    layer = layer
+
+C_AUTOPUBLISHING_FIXTURE = AutoPublishingLayer()
+
+
+C_AUTOPUBLISHING_LAYER = FunctionalTesting(
+    bases=(C_AUTOPUBLISHING_FIXTURE,),
+    name='CollectiveAutopublishingLayer:FunctionalTesting')
+
+
+class MyFunctionalTestCase(PloneTestCase):
+    layer = C_AUTOPUBLISHING_LAYER
+
+# EOF

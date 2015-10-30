@@ -1,28 +1,16 @@
 collective.autopublishing
 =========================
 
-
-setup
-=====
-
-To get a pdb prompt in the doctest (with interlude installed). If Ipython is installed (tested with ipython 0.13.1), you can perform post-mortem debugging with %debug, or enable auto post-mortem debugging with %pdb::
-
-    >>> #interact(locals())
-
-Login::
-
-    >>> self.loginAsPortalOwner()
-
 First we check that our package is installed::
 
+    >>> portal = layer['portal']
     >>> portal.portal_quickinstaller.isProductInstalled('collective.autopublishing')
     True
 
-and that our field is applied to all atct types::
+and that our behavior is applied to Collection, Document, Event and News Item::
 
-    >>> from collective.autopublishing.patch_types import atct_types
-    >>> False in ['enableAutopublishing' in tp.schema for tp in atct_types]
-    False
+    >>> for type_ in ['Collection', 'Document', 'Event', 'News Item']:
+    ...    assert 'collective.autopublishing.behaviors.IAutoPublishing' in portal.portal_types[type_].behaviors
 
 and that a catalog index named ``enableAutopublishing`` is added::
 

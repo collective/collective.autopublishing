@@ -1,17 +1,15 @@
 # encoding: utf-8
 from zope import schema
-from zope.interface import alsoProvides
-
-from plone.directives import form
-
-from plone.namedfile.field import NamedBlobImage
-
-from headnet.base.i18n import MessageFactory as _
+from zope.interface import provider
+from plone.autoform.interfaces import IFormFieldProvider
+from plone.supermodel import model
+from collective.autopublishing import MyMessageFactory as _
 
 
-class IAutoPublishing(form.Schema):
+@provider(IFormFieldProvider)
+class IAutoPublishing(model.Schema):
 
-    form.fieldset(
+    model.fieldset(
         'settings',
         fields=('enableAutopublishing', )
     )
@@ -19,7 +17,4 @@ class IAutoPublishing(form.Schema):
     enableAutopublishing = schema.Bool(
         title=_(u'enableAutopublishing', default=u"Enable autopublishing?"),
         required=False,
-        default=True
-    )
-
-alsoProvides(IAutoPublishing, form.IFormFieldProvider)
+        default=True)
