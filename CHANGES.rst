@@ -1,6 +1,11 @@
 Changes
 =======
 
+1.0 (untreleased)
+-----------------
+
+- Plone 5 compatibility
+
 0.6 (2013-11-05) Unreleased
 ---------------------------
 

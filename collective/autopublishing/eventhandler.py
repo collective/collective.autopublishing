@@ -126,7 +126,6 @@ def handle_publishing(context, settings, dry_run=True, log=True):
 
     actions = settings.publish_actions
     action_taken = False
-    audit = ''
     audit = []
     for a in actions:
         audit_record = {}

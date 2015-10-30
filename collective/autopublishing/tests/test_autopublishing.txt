@@ -10,7 +10,7 @@ First we check that our package is installed::
 and that our behavior is applied to Collection, Document, Event and News Item::
 
     >>> for type_ in ['Collection', 'Document', 'Event', 'News Item']:
-    ...    assert 'collective.autopublishing.behaviors.IAutoPublishing' in portal.portal_types[type_].behaviors
+    ...    assert 'collective.autopublishing.behavior.IAutoPublishing' in portal.portal_types[type_].behaviors
 
 and that a catalog index named ``enableAutopublishing`` is added::
 
@@ -24,28 +24,27 @@ We need to subscribe to a tick event from collective.timedevents::
     >>> from collective.autopublishing.eventhandler import autopublish_handler
     >>> component.getSiteManager().registerHandler(autopublish_handler, [IIntervalTicksHourlyEvent])
 
-We setup a publish action in the registry. When the publishing date occurs, we will publish all Documents in state private::
+We setup a publish action in the registry. When the publishing date occurs,
+we will publish all Documents in state private::
 
     >>> from zope.component import getUtility
     >>> from plone.registry.interfaces import IRegistry
-    >>> from collective.autopublishing.browser.autopublishsettings import IAutopublishSettingsSchema, AutopublishSpecification
-    >>> settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema)
+    >>> from collective.autopublishing.browser.autopublishsettings import IAutopublishSettingsSchema
+    >>> from collective.autopublishing.browser.autopublishsettings import AutopublishSpecification
+    >>> from collective.complexrecordsproxy import ComplexRecordsProxy
+    >>> settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema,
+    ...     omit=('publish_actions', 'retract_actions'), factory=ComplexRecordsProxy)
 
-    >>> print settings.publish_actions
+    >>> settings.publish_actions
     ()
 
-    >>> publish_action = AutopublishSpecification({'portal_types':(u'Document'), 'initial_state':u'private', 'transition':u'publish'})
+    >>> publish_action = AutopublishSpecification({'portal_types':(u'Document',),
+    ...     'initial_state':u'private', 'transition':u'publish'})
     >>> settings.publish_actions = (publish_action,)
-
-    >>> interact(locals())
-
-    >>> print settings.publish_actions
-    [u'pending']
 
 And make sure dry_run is false::
 
-    >>> print settings.dry_run
-    False
+    >>> settings.dry_run = False
 
 Add objects for testing
 =======================
@@ -62,10 +61,10 @@ First here is what we have. Our objects have their enableAutopublishing set to t
 
     >>> wf = portal.portal_workflow
 
-    >>> portal['document1'].getEnableAutopublishing(), wf.getInfoFor(portal['document1'], 'review_state')
+    >>> portal['document1'].enableAutopublishing, wf.getInfoFor(portal['document1'], 'review_state')
     (True, 'private')
 
-    >>> portal['news1'].getEnableAutopublishing(), wf.getInfoFor(portal['news1'], 'review_state')
+    >>> portal['news1'].enableAutopublishing, wf.getInfoFor(portal['news1'], 'review_state')
     (True, 'private')
 
 Set their review state to pending.
@@ -73,13 +72,13 @@ Set their review state to pending.
     >>> wf.doActionFor(portal['document1'], 'submit')
     >>> wf.doActionFor(portal['news1'], 'submit')
 
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     True
 
     >>> wf.getInfoFor(portal['document1'], 'review_state')
     'pending'
 
-    >>> portal['news1'].getEnableAutopublishing()
+    >>> portal['news1'].enableAutopublishing
     True
 
     >>> wf.getInfoFor(portal['news1'], 'review_state')
@@ -106,14 +105,7 @@ Case one: no dates.
 
 Neither effective or expiration dates are set on the objects::
 
-    >>> print portal['document1'].getEffectiveDate()
-    None
-    >>> print portal['document1'].getExpirationDate()
-    None
-    >>> print portal['news1'].getEffectiveDate()
-    None
-    >>> print portal['news1'].getExpirationDate()
-    None
+
 
 Let's fire the hourly cronjob::
 
@@ -133,19 +125,13 @@ Case two: effective date in the past.
 
 Effective date are in the past. Still no expiration date::
 
-    >>> portal['document1'].setEffectiveDate(past_date)
-    >>> portal['document1'].getEffectiveDate() == past_date
+    >>> portal['document1'].effective = past_date
+    >>> portal['document1'].effective == past_date
     True
 
-    >>> print portal['document1'].getExpirationDate()
-    None
-
-    >>> portal['news1'].setEffectiveDate(past_date)
-    >>> portal['news1'].getEffectiveDate() == past_date
+    >>> portal['news1'].effective = past_date
+    >>> portal['news1'].effective == past_date
     True
-
-    >>> print portal['news1'].getExpirationDate()
-    None
 
     >>> portal['document1'].reindexObject()
     >>> portal['news1'].reindexObject()
@@ -165,10 +151,10 @@ Check that our test objects are published::
 
 And that enableAutopublishing is false::
 
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     False
 
-    >>> portal['news1'].getEnableAutopublishing()
+    >>> portal['news1'].enableAutopublishing
     False
 
 Case three: effective date in the future.
@@ -182,13 +168,13 @@ Effective date are in the future. From now on we test just with one document. Fi
     'pending'
 
     >>> portal['document1'].setEnableAutopublishing(True)
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     True
 
 Set the date::
 
     >>> portal['document1'].setEffectiveDate(future_date)
-    >>> portal['document1'].getEffectiveDate() == future_date
+    >>> portal['document1'].effective == future_date
     True
 
     >>> portal['document1'].reindexObject()
@@ -205,7 +191,7 @@ Check that our test object are not published::
 
 And that enableAutopublishing is still true::
 
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     True
 
 Case four: both effective and expiration date: publish.
@@ -219,17 +205,17 @@ Effective date are in the past, and expiration date are in the future. First bri
     'pending'
 
     >>> portal['document1'].setEnableAutopublishing(True)
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     True
 
 Set the dates::
 
     >>> portal['document1'].setEffectiveDate(past_date)
-    >>> portal['document1'].getEffectiveDate() == past_date
+    >>> portal['document1'].effective == past_date
     True
 
     >>> portal['document1'].setExpirationDate(future_date)
-    >>> portal['document1'].getExpirationDate() == future_date
+    >>> portal['document1'].expires == future_date
     True
 
     >>> portal['document1'].reindexObject()
@@ -246,7 +232,7 @@ Check that our object are published::
 
 And that enableAutopublishing is false::
 
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     False
 
 Case five: both effective and expiration date: do not publish.
@@ -260,17 +246,17 @@ Effective date are in the past, and expiration date are in the past. First bring
     'pending'
 
     >>> portal['document1'].setEnableAutopublishing(True)
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     True
 
 Set the dates::
 
     >>> portal['document1'].setEffectiveDate(past_date)
-    >>> portal['document1'].getEffectiveDate() == past_date
+    >>> portal['document1'].effective == past_date
     True
 
     >>> portal['document1'].setExpirationDate(past_date_later)
-    >>> portal['document1'].getExpirationDate() == past_date_later
+    >>> portal['document1'].expires == past_date_later
     True
 
     >>> portal['document1'].reindexObject()
@@ -287,7 +273,7 @@ Check that our test object are not published::
 
 And that enableAutopublishing is still true::
 
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     True
 
 Test dry run.
@@ -307,17 +293,17 @@ First bring the document into the needed state again::
     'pending'
 
     >>> portal['document1'].setEnableAutopublishing(True)
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     True
 
 Set the dates as for publishing::
 
     >>> portal['document1'].setEffectiveDate(past_date)
-    >>> portal['document1'].getEffectiveDate() == past_date
+    >>> portal['document1'].effective == past_date
     True
 
     >>> portal['document1'].setExpirationDate(future_date)
-    >>> portal['document1'].getExpirationDate() == future_date
+    >>> portal['document1'].expires == future_date
     True
 
     >>> portal['document1'].reindexObject()
@@ -334,7 +320,7 @@ Check that our test object are not published even though effective date are in t
 
 And that enableAutopublishing is still true::
 
-    >>> portal['document1'].getEnableAutopublishing()
+    >>> portal['document1'].enableAutopublishing
     True
 
 Retracting
@@ -357,7 +343,7 @@ Set 'enableAutopublishing' to true and review state to published.
 
     >>> wf.doActionFor(portal['document2'], 'publish')
 
-    >>> portal['document2'].getEnableAutopublishing()
+    >>> portal['document2'].enableAutopublishing
     True
 
     >>> wf.getInfoFor(portal['document2'], 'review_state')
@@ -372,7 +358,7 @@ Case one: no dates.
 
 Expiration date are not set on the object::
 
-    >>> print portal['document2'].getExpirationDate()
+    >>> print portal['document2'].expires
     None
 
 Let's fire the hourly cronjob::
@@ -391,7 +377,7 @@ Case two: expiration date in the past.
 Expiration date are in the past::
 
     >>> portal['document2'].setExpirationDate(past_date)
-    >>> portal['document2'].getExpirationDate() == past_date
+    >>> portal['document2'].expires == past_date
     True
 
     >>> portal['document2'].reindexObject()
@@ -408,7 +394,7 @@ Check that our test objects are retracted::
 
 And that enableAutopublishing is false::
 
-    >>> portal['document2'].getEnableAutopublishing()
+    >>> portal['document2'].enableAutopublishing
     False
 
 Case three: expiration date in the future.
@@ -421,13 +407,13 @@ Expiration date are in the future. First bring the document into the needed stat
     'published'
 
     >>> portal['document2'].setEnableAutopublishing(True)
-    >>> portal['document2'].getEnableAutopublishing()
+    >>> portal['document2'].enableAutopublishing
     True
 
 Set the date::
 
     >>> portal['document2'].setExpirationDate(future_date)
-    >>> portal['document2'].getExpirationDate() == future_date
+    >>> portal['document2'].expires == future_date
     True
 
     >>> portal['document2'].reindexObject()
@@ -444,7 +430,7 @@ Check that our test object are still published::
 
 And that enableAutopublishing is still true::
 
-    >>> portal['document2'].getEnableAutopublishing()
+    >>> portal['document2'].enableAutopublishing
     True
 
 
@@ -462,16 +448,16 @@ And we have a content object, that is published, with a publication date in the 
     >>> wf.getInfoFor(portal['document2'], 'review_state')
     'published'
 
-    >>> portal['document2'].setEnableAutopublishing(True)
-    >>> portal['document2'].getEnableAutopublishing()
+    >>> portal['document2'].enableAutopublishing = True
+    >>> portal['document2'].enableAutopublishing
     True
 
-    >>> portal['document2'].setEffectiveDate(past_date)
-    >>> portal['document2'].getEffectiveDate() == past_date
+    >>> portal['document2'].effective = past_date
+    >>> portal['document2'].effective == past_date
     True
 
-    >>> portal['document2'].setExpirationDate(future_date)
-    >>> portal['document2'].getExpirationDate() == future_date
+    >>> portal['document2'].expires = future_date
+    >>> portal['document2'].expires == future_date
     True
 
     >>> portal['document2'].reindexObject()
@@ -507,7 +493,7 @@ Let's try again::
     'published'
 
     >>> portal['document2'].setEnableAutopublishing(True)
-    >>> portal['document2'].getEnableAutopublishing()
+    >>> portal['document2'].enableAutopublishing
     True
 
     >>> portal['document2'].reindexObject()
@@ -515,7 +501,7 @@ Let's try again::
 The editor retracts the object manually::
 
     >>> now = DateTime()
-    >>> portal['document2'].getExpirationDate() < now
+    >>> portal['document2'].expires < now
     False
 
     >>> wf.doActionFor(portal['document2'], 'retract')
@@ -523,7 +509,7 @@ The editor retracts the object manually::
     'private'
 
     >>> now = DateTime()
-    >>> portal['document2'].getExpirationDate() < now
+    >>> portal['document2'].expires < now
     True
 
 The next run of autopublishing will no longer publish the object again::
@@ -533,4 +519,3 @@ The next run of autopublishing will no longer publish the object again::
 
     >>> wf.getInfoFor(portal['document2'], 'review_state')
     'private'
-

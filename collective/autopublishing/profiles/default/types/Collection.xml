@@ -2,6 +2,6 @@
 <object name="Collection" meta_type="Dexterity FTI" i18n:domain="plone"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
   <property purge="False" name="behaviors">
-    <element value="collective.autopublishing.behaviors.IAutoPublishing"/>
+    <element value="collective.autopublishing.behavior.IAutoPublishing"/>
   </property>
 </object>
