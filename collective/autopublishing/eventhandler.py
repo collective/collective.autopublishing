@@ -4,7 +4,6 @@ from zope.component import ComponentLookupError, getUtility
 
 from plone.registry.interfaces import IRegistry
 from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.AdvancedQuery import Eq, In, Le
 from Products.CMFCore.utils import getToolByName
 
 from collective.complexrecordsproxy import ComplexRecordsProxy
@@ -138,12 +137,12 @@ def handle_publishing(context, settings, dry_run=True, log=True):
         audit_record['transition'] = str(a.transition)
         audit_record['actions'] = []
 
-        query = (Eq('review_state', a.initial_state) &
-                 Le(date_index, now) &
-                 Eq('enableAutopublishing', True) &
-                 In('portal_type', a.portal_types))
+        query = {'review_state': a.initial_state,
+                  date_index: {'query': now, 'range':'max'},
+                 'enableAutopublishing': True,
+                 'portal_type': a.portal_types}
 
-        brains = catalog.evalAdvancedQuery(query)
+        brains = catalog(**query)
         affected = 0
         total = 0
         for brain in brains:
@@ -217,12 +216,11 @@ def handle_retracting(context, settings, dry_run=True, log=True):
         audit_record['transition'] = str(a.transition)
         audit_record['actions'] = []
 
-        query = (In('review_state', a.initial_state) &
-                 Le(date_index, now) &
-                 Eq('enableAutopublishing', True) &
-                 In('portal_type', a.portal_types))
-
-        brains = catalog.evalAdvancedQuery(query)
+        query = {'review_state': a.initial_state,
+                  date_index: {'query': now, 'range':'max'},
+                 'enableAutopublishing': True,
+                 'portal_type': a.portal_types}
+        brains = catalog(**query)
 
         affected = 0
         total = 0

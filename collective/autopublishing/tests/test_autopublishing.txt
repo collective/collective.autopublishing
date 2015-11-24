@@ -353,8 +353,6 @@ Expiration date are in the past::
 
     >>> portal['document2'].expiration_date = past_date
     >>> portal['document2'].reindexObject()
-    >>> from transaction import commit
-    >>> commit()
 
 Let's fire the hourly cronjob::
 
