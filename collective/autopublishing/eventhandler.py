@@ -27,7 +27,7 @@ def getExpirationDate(obj):
         return date
     # Handle dexterity
     except AttributeError:
-        date = obj.expiration_date
+        date = obj.expires()
         return date
 
     return None
@@ -44,7 +44,7 @@ def getEffectiveDate(obj):
         return date
     # Handle dexterity
     except AttributeError:
-        date = obj.effective()
+        date = obj.effective
         return date
 
     return None
@@ -147,15 +147,8 @@ def handle_publishing(context, settings, dry_run=True, log=True):
         affected = 0
         total = 0
         for brain in brains:
-            o = brain.getObject()
-            try:
-                eff_date = getEffectiveDate(o)
-            except AttributeError:
-                logger.warn(
-                    "error getting effective date")
-                continue
-
-            exp_date = getExpirationDate(o)
+            eff_date = brain.effective
+            exp_date = brain.expires
             # The dates in the indexes are always set!
             # So unless we test for actual dates on the
             # objects, objects with no EffectiveDate are also published.
@@ -180,6 +173,7 @@ def handle_publishing(context, settings, dry_run=True, log=True):
                 action_taken = True
                 if not dry_run:
                     try:
+                        o = brain.getObject()
                         wf.doActionFor(o, a.transition)
                         o.reindexObject()
                         affected += 1
@@ -233,14 +227,8 @@ def handle_retracting(context, settings, dry_run=True, log=True):
         affected = 0
         total = 0
         for brain in brains:
-            o = brain.getObject()
-            try:
-                exp_date = getExpirationDate(o)
-            except AttributeError:
-                logger.warn(
-                    "cannot get expiration date"
-                )
-                continue
+
+            exp_date = brain.expires
             # The dates in the indexes are always set.
             # So we need to test on the objects if the dates
             # are actually set.
@@ -259,6 +247,7 @@ def handle_retracting(context, settings, dry_run=True, log=True):
                 action_taken = True
                 if not dry_run:
                     try:
+                        o = brain.getObject()
                         wf.doActionFor(o, a.transition)
                         o.reindexObject()
                         affected += 1
@@ -266,9 +255,7 @@ def handle_retracting(context, settings, dry_run=True, log=True):
                         logger.info(
                             """The state '%s' of the workflow associated with the
                                object at '%s' does not provide the '%s' action
-                            """ % (brain.review_state,
-                                   o.getURL()),
-                            str(a.transition))
+                            """, brain.review_state, brain.getPath(), str(a.transition))
                 audit_record['actions'].append(audit_action)
 
         if log:

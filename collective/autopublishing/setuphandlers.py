@@ -18,8 +18,6 @@ def setupVarious(context):
 
 def setup_indexes(portal):
     ct = getToolByName(portal, 'portal_catalog')
-
-    catalog_indexes = ()
     catalog_indexes = (
       { 'name'  : 'enableAutopublishing',
         'type'  : 'FieldIndex',
