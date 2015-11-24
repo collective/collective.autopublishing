@@ -3,6 +3,7 @@ import logging
 from zope.component import ComponentLookupError, getUtility
 
 from plone.registry.interfaces import IRegistry
+from plone import api
 from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.CMFCore.utils import getToolByName
 
@@ -48,9 +49,21 @@ def getEffectiveDate(obj):
 
     return None
 
+def assemble_mail_text(record):
+    messageText = record['header'] + '\n'
+    messageText += "Content types:" + str(record['content_types'])
+    messageText += "\nInitial state:" + str(record['initial_state'])
+    messageText += "\nTransition:" + str(record['transition'])
+    messageText += "\nActions:" + '\n'
+    for action in record['actions']:
+	messageText += "Transition:" + str(action['transition'])
+	messageText += "\nPortal type:" + str(action['portal_type'])
+	messageText += "\nTitle:" + str(action['title'])
+	messageText += "\nUrl:" + str(action['url']) + '\n\n'
+    messageText += '\n\n'
 
 def autopublish_handler(event):
-    catalog = event.context.portal_catalog
+    catalog = api.portal.get_tool(name='portal_catalog')
 
     try:
         settings = getUtility(IRegistry).forInterface(
@@ -77,50 +90,22 @@ def autopublish_handler(event):
 
         messageText += 'Publish actions:\n'
         for record in p_result:
-            messageText += record['header'] + '\n'
-            messageText += "Content types:" + str(record['content_types'])
-            messageText += "\nInitial state:" + str(record['initial_state'])
-            messageText += "\nTransition:" + str(record['transition'])
-            messageText += "\nActions:" + '\n'
-            for action in record['actions']:
-                messageText += "Transition:" + str(action['transition'])
-                messageText += "\nPortal type:" + str(action['portal_type'])
-                messageText += "\nTitle:" + str(action['title'])
-                messageText += "\nUrl:" + str(action['url']) + '\n\n'
-            messageText += '\n\n'
+            messageText += assemble_mail_text(record)
 
         messageText += '\n\nRetract actions:\n'
         for record in r_result:
-            messageText += record['header'] + '\n'
-            messageText += "Content types:" + str(record['content_types'])
-            messageText += "\nInitial state:" + str(record['initial_state'])
-            messageText += "\nTransition:" + str(record['transition'])
-            messageText += "\nActions:" + '\n'
-            for action in record['actions']:
-                messageText += "Transition:" + str(action['transition']) + '\n'
-                messageText += "\nPortal type:" + str(action['portal_type'])
-                messageText += "\nTitle:" + str(action['title'])
-                messageText += "\nUrl:" + str(action['url']) + '\n\n'
-            messageText += '\n\n'
+            messageText += assemble_mail_text(record)
 
-        email_addresses = settings.email_log
-        mh = getToolByName(event.context, 'MailHost')
-        portal = getToolByName(event.context, 'portal_url').getPortalObject()
-        mh.send(messageText,
-                mto=email_addresses,
-                mfrom=portal.getProperty('email_from_address'),
-                subject='Autopublishing results',
-                encode=None,
-                immediate=False,
-                charset='utf8',
-                msg_type=None)
+        api.portal.send_email(body=messageText,
+                recipient=settings.email_log,
+                subject='Autopublishing results')
 
 
 def handle_publishing(context, settings, dry_run=True, log=True):
     '''
     '''
-    catalog = context.portal_catalog
-    wf = context.portal_workflow
+    catalog = api.portal.get_tool(name='portal_catalog')
+    wf = api.portal.get_tool(name='portal_workflow')
     now = context.ZopeTime()
 
     actions = settings.publish_actions
@@ -198,8 +183,8 @@ def handle_publishing(context, settings, dry_run=True, log=True):
 def handle_retracting(context, settings, dry_run=True, log=True):
     '''
     '''
-    catalog = context.portal_catalog
-    wf = context.portal_workflow
+    catalog = api.portal.get_tool(name='portal_catalog')
+    wf = api.portal.get_tool(name='portal_workflow')
     now = context.ZopeTime()
 
     actions = settings.retract_actions
@@ -282,7 +267,6 @@ def transition_handler(event):
     now = event.object.ZopeTime()
     # todo: make states into a setting
     if event.transition.id in ['retract', 'reject']:
-        overwrite = False
         try:
             settings = getUtility(IRegistry).forInterface(
                 IAutopublishSettingsSchema,
@@ -292,12 +276,10 @@ def transition_handler(event):
             logger.info('The product needs to be installed.'
                         ' No settings in the registry.')
             settings = None
-        if settings and settings.overwrite_expiration_on_retract:
-            overwrite = True
+        overwrite = settings and settings.overwrite_expiration_on_retract
         if getExpirationDate(event.object) is None or overwrite:
             setExpirationDate(event.object, now)
     if event.transition.id in ['publish']:
-        overwrite = False
         try:
             settings = getUtility(IRegistry).forInterface(
                 IAutopublishSettingsSchema,
@@ -308,8 +290,6 @@ def transition_handler(event):
                         ' No settings in the registry.')
             settings = None
         if settings and settings.clear_expiration_on_publish:
-            overwrite = True
-        if overwrite:
             if getExpirationDate(event.object) < now:
                 # to avoid immediate re-retraction
                 setExpirationDate(event.object, None)

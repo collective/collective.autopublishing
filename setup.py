@@ -40,6 +40,7 @@ setup(name='collective.autopublishing',
       ),
       install_requires=[
           'setuptools',
+          'plone.api',
           'plone.app.registry>=1.2',
           'plone.z3cform',
           'collective.timedevents>=0.3',
