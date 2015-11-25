@@ -1,19 +1,20 @@
 from setuptools import setup, find_packages
-import os
 
-version = '0.8a0'
-
-def read(*pathnames):
-    return open(os.path.join(os.path.dirname(__file__), *pathnames)).read().\
-           decode('utf-8')
+long_description = (
+    open('README.md').read() +
+    '\n' +
+    'Contributors\n' +
+    '============\n' +
+    '\n' +
+    open('CONTRIBUTORS.rst').read() +
+    '\n' +
+    open('CHANGES.rst').read() +
+    '\n')
 
 setup(name='collective.autopublishing',
-      version=version,
+      version='1.0a1',
       description="Publishes and retracts on effective or expired dates.",
-      long_description='\n'.join([
-          read('README.md'),
-          read('CHANGES.rst'),
-          ]),
+      long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
