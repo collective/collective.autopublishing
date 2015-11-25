@@ -2,6 +2,8 @@
 
 ## Overview
 
+[![Build Status](https://travis-ci.org/collective/collective.autopublishing.svg?branch=plone5)](https://travis-ci.org/collective/collective.autopublishing)
+
 Publishes or retracts Plone content items depending on the effective and expiration dates.
 
 This package depends on collective.timedevents to supply zope3-style events with specific intervals.
