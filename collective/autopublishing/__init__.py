@@ -1,4 +1,5 @@
-from App.config import getConfiguration
+# -*- coding: utf-8 -*-
+
 from zope.interface import Interface
 from zope.i18nmessageid import MessageFactory
 from plone.indexer.decorator import indexer
@@ -21,3 +22,4 @@ def _enableautopublishing(obj, **kwargs):
 
     return False
 
+# EOF

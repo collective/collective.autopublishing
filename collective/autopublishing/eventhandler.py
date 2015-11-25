@@ -5,7 +5,6 @@ from zope.component import ComponentLookupError, getUtility
 from plone.registry.interfaces import IRegistry
 from plone import api
 from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFCore.utils import getToolByName
 
 from collective.complexrecordsproxy import ComplexRecordsProxy
 from browser.autopublishsettings import IAutopublishSettingsSchema

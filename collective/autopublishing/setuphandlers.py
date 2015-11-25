@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
-from zope.component import getSiteManager
-from Products.GenericSetup.utils import _resolveDottedName
+from plone import api
+
 
 def setupVarious(context):
 
@@ -16,31 +15,33 @@ def setupVarious(context):
     site = context.getSite()
     setup_indexes(site)
 
+
 def setup_indexes(portal):
-    ct = getToolByName(portal, 'portal_catalog')
-    catalog_indexes = (
-      { 'name'  : 'enableAutopublishing',
-        'type'  : 'FieldIndex',
-        },
-       )
+    ct = api.portal.get_tool(name='portal_catalog')
+    catalog_indexes = ({'name': 'enableAutopublishing',
+                        'type': 'FieldIndex', }, )
     catalog_columns = ()
     purge_existing_indexes = ()
     purge_existing_columns = ()
     new_metadata = False
 
     for idx in catalog_indexes:
-        if idx['name'] in purge_existing_indexes and idx['name'] in ct.indexes():
+        if idx['name'] in purge_existing_indexes and \
+                idx['name'] in ct.indexes():
             ct.delIndex(idx['name'])
         if idx['name'] in ct.indexes():
-            print "Found the '%s' index in the catalog, nothing changed.\n" % idx['name']
+            log.info("Found the '%s' index in the catalog, nothing changed.\n",  # noqa
+                     idx['name'])
         else:
             ct.addIndex(**idx)
-            print "Added '%s' (%s) to the catalog.\n" % (idx['name'], idx['type'])
+            print "Added '%s' (%s) to the catalog.\n" % (idx['name'],
+                                                         idx['type'])
     for entry in catalog_columns:
         if entry in purge_existing_columns and entry in ct.schema():
             ct.delColumn(entry)
         if entry in ct.schema():
-            print "Found '%s' in the catalog metadatas, nothing changed.\n" % entry
+            log.info("Found '%s' in the catalog metadatas, nothing changed.\n",  # noqa
+                     entry)
         else:
             ct.addColumn(entry)
             print "Added '%s' to the catalog metadatas.\n" % entry
@@ -51,6 +52,7 @@ def setup_indexes(portal):
         ct.refreshCatalog()
         print "Done.\n"
 
+
 def variousMigrateSteps(context):
     """ For migrating to newer versions of modules / other implementations etc.
     """
@@ -60,13 +62,9 @@ def variousMigrateSteps(context):
     # flag to check that we actually meant for this import step to be run.
     # The file is found in profiles/default.
 
-    if context.readDataFile('collective.autopublishing_migrate_various.txt') is None:
+    if context.readDataFile('collective.autopublishing_migrate_various.txt') is None:  # noqa
         return
 
-    # Add additional setup code here
-    portal = context.getSite()
-
-    # EMPTY SO FAR.
 
 def variousUninstallSteps(context):
     """
@@ -77,12 +75,7 @@ def variousUninstallSteps(context):
     # flag to check that we actually meant for this import step to be run.
     # The file is found in profiles/default.
 
-    if context.readDataFile('collective.autopublishing_uninstall_various.txt') is None:
+    if context.readDataFile('collective.autopublishing_uninstall_various.txt') is None:  # noqa
         return
 
-    # Add additional setup code here
-    portal = context.getSite()
-
-    print 'uninstall'
-
-    # EMPTY SO FAR.
+# EOF

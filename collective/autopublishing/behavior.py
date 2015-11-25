@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 from zope import schema
 from zope.interface import provider
 from plone.autoform.interfaces import IFormFieldProvider
