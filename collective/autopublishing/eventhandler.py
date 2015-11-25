@@ -10,6 +10,7 @@ from collective.complexrecordsproxy import ComplexRecordsProxy
 from browser.autopublishsettings import IAutopublishSettingsSchema
 from interfaces import IBrowserLayer
 
+
 logger = logging.getLogger('collective.autopublishing')
 
 #
@@ -48,6 +49,7 @@ def getEffectiveDate(obj):
 
     return None
 
+
 def assemble_mail_text(record):
     messageText = record['header'] + '\n'
     messageText += "Content types:" + str(record['content_types'])
@@ -55,11 +57,13 @@ def assemble_mail_text(record):
     messageText += "\nTransition:" + str(record['transition'])
     messageText += "\nActions:" + '\n'
     for action in record['actions']:
-	messageText += "Transition:" + str(action['transition'])
-	messageText += "\nPortal type:" + str(action['portal_type'])
-	messageText += "\nTitle:" + str(action['title'])
-	messageText += "\nUrl:" + str(action['url']) + '\n\n'
-    messageText += '\n\n'
+        messageText += "Transition:" + str(action['transition'])
+        messageText += "\nPortal type:" + str(action['portal_type'])
+        messageText += "\nTitle:" + str(action['title'])
+        messageText += "\nUrl:" + str(action['url']) + '\n\n'
+        messageText += '\n\n'
+    return messageText
+
 
 def autopublish_handler(event):
     catalog = api.portal.get_tool(name='portal_catalog')
@@ -95,9 +99,10 @@ def autopublish_handler(event):
         for record in r_result:
             messageText += assemble_mail_text(record)
 
-        api.portal.send_email(body=messageText,
-                recipient=settings.email_log,
-                subject='Autopublishing results')
+        api.portal.send_email(
+            body=messageText,
+            recipient=settings.email_log,
+            subject='Autopublishing results')
 
 
 def handle_publishing(context, settings, dry_run=True, log=True):
@@ -122,7 +127,7 @@ def handle_publishing(context, settings, dry_run=True, log=True):
         audit_record['actions'] = []
 
         query = {'review_state': a.initial_state,
-                  date_index: {'query': now, 'range':'max'},
+                 date_index: {'query': now, 'range': 'max'},
                  'enableAutopublishing': True,
                  'portal_type': a.portal_types}
 
@@ -201,7 +206,7 @@ def handle_retracting(context, settings, dry_run=True, log=True):
         audit_record['actions'] = []
 
         query = {'review_state': a.initial_state,
-                  date_index: {'query': now, 'range':'max'},
+                 date_index: {'query': now, 'range': 'max'},
                  'enableAutopublishing': True,
                  'portal_type': a.portal_types}
         brains = catalog(**query)
@@ -237,12 +242,12 @@ def handle_retracting(context, settings, dry_run=True, log=True):
                         logger.info(
                             """The state '%s' of the workflow associated with the
                                object at '%s' does not provide the '%s' action
-                            """, brain.review_state, brain.getPath(), str(a.transition))
+                            """, brain.review_state, brain.getPath(), str(a.transition))  # noqa
                 audit_record['actions'].append(audit_action)
 
         if log:
-            logger.info("""Ran collective.autopublishing (retract): %d objects found, %d affected
-                    """ % (total, affected))
+            logger.info("Ran collective.autopublishing (retract): %d objects found, %d affected",  # noqa
+                        total, affected)
         audit.append(audit_record)
     if action_taken:
         return audit
