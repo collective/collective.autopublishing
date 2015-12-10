@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+import logging
 from plone import api
+
+
+log = logging.getLogger('collective.autopublishing')
 
 
 def setupVarious(context):

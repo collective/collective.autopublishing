@@ -17,4 +17,4 @@ class IAutoPublishing(model.Schema):
     enableAutopublishing = schema.Bool(
         title=_(u'enableAutopublishing', default=u"Enable autopublishing?"),
         required=False,
-        default=True)
+        default=False)
