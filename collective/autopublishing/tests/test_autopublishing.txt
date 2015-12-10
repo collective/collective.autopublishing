@@ -64,15 +64,20 @@ Let's create some objects for our tests::
     >>> portal.invokeFactory(id='news1', type_name='News Item', title='News 1')
     'news1'
 
-First here is what we have. Our objects have their enableAutopublishing set to true and their review state set to private::
+First here is what we have. Our objects have their enableAutopublishing set to false and their review state set to private::
 
     >>> wf = portal.portal_workflow
 
     >>> portal['document1'].enableAutopublishing, wf.getInfoFor(portal['document1'], 'review_state')
-    (True, 'private')
+    (False, 'private')
 
     >>> portal['news1'].enableAutopublishing, wf.getInfoFor(portal['news1'], 'review_state')
-    (True, 'private')
+    (False, 'private')
+
+Set enableAutopublishing of our objects to true::
+    
+    >>> portal['document1'].enableAutopublishing = True
+    >>> portal['news1'].enableAutopublishing = True
 
 Set their review state to pending.
 
