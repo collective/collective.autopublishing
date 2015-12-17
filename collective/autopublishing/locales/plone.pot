@@ -17,8 +17,9 @@ msgstr ""
 "Preferred-Encodings: utf-8\n"
 "Domain: plone\n"
 
+
 # Workflow states and transitions
+
 #. Default: "Autopublishing"
 msgid "Autopublishing"
-msgstr "Autopublicering"
-
+msgstr ""
