@@ -10,7 +10,7 @@ from collective.autopublishing import MyMessageFactory as _
 class IAutoPublishing(model.Schema):
 
     model.fieldset(
-        'settings',
+        'dates',
         fields=('enableAutopublishing', )
     )
 

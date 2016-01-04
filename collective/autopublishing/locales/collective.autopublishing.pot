@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2016-01-04 07:29+0000\n"
+"POT-Creation-Date: 2016-01-04 08:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgid "enableAutopublishing"
 msgstr ""
 
 #. Default: "Controls the workflow actions autopublishing will make."
-#: ../browser/autopublishsettings.py:140
+#: ../browser/autopublishsettings.py:146
 msgid "help_ap_controlpanel"
 msgstr ""
 
@@ -45,7 +45,7 @@ msgid "help_ap_portaltypes"
 msgstr ""
 
 #. Default: "If this is set, an expiration date in the past will be cleared when manually publishing an item, to avoid immediate retraction."
-#: ../browser/autopublishsettings.py:111
+#: ../browser/autopublishsettings.py:114
 msgid "help_clear_expiration"
 msgstr ""
 
@@ -55,17 +55,17 @@ msgid "help_date_index"
 msgstr ""
 
 #. Default: "Simulates the process of changing workflow state. Nothing actually changes state, but it is possible to review what actions will be taken. To activate the module, remove the checkmark."
-#: ../browser/autopublishsettings.py:127
+#: ../browser/autopublishsettings.py:132
 msgid "help_dry_run"
 msgstr ""
 
 #. Default: "If one or more email addresses is supplied, an audit log of the actions taken is sent."
-#: ../browser/autopublishsettings.py:121
+#: ../browser/autopublishsettings.py:125
 msgid "help_email_log"
 msgstr ""
 
 #. Default: "If this is set, the expiration date will be overwritten with the current time when manually retracting an item, to avoid  republication if there is a publication date in the past."
-#: ../browser/autopublishsettings.py:101
+#: ../browser/autopublishsettings.py:103
 msgid "help_overwrite_expiration"
 msgstr ""
 
@@ -75,17 +75,17 @@ msgid "help_publish_actions"
 msgstr ""
 
 #. Default: "Workflow actions initiated by the autopublishing module when the expiration date is met."
-#: ../browser/autopublishsettings.py:92
+#: ../browser/autopublishsettings.py:93
 msgid "help_retract_actions"
 msgstr ""
 
 #. Default: "Autopublishing settings"
-#: ../browser/autopublishsettings.py:139
+#: ../browser/autopublishsettings.py:145
 msgid "label_ap_contolpanel"
 msgstr ""
 
 #. Default: "Clear expiration date on publication"
-#: ../browser/autopublishsettings.py:109
+#: ../browser/autopublishsettings.py:112
 msgid "label_clear_expiration"
 msgstr ""
 
@@ -95,12 +95,12 @@ msgid "label_date_index"
 msgstr ""
 
 #. Default: "Simulate"
-#: ../browser/autopublishsettings.py:126
+#: ../browser/autopublishsettings.py:131
 msgid "label_dry_run"
 msgstr ""
 
 #. Default: "Email addresses for audit log"
-#: ../browser/autopublishsettings.py:119
+#: ../browser/autopublishsettings.py:123
 msgid "label_email_log"
 msgstr ""
 
@@ -110,7 +110,7 @@ msgid "label_initial_state"
 msgstr ""
 
 #. Default: "Set expiration date on retraction"
-#: ../browser/autopublishsettings.py:99
+#: ../browser/autopublishsettings.py:101
 msgid "label_overwrite_expiration"
 msgstr ""
 
@@ -120,7 +120,7 @@ msgid "label_publish_actions"
 msgstr ""
 
 #. Default: "Retract actions"
-#: ../browser/autopublishsettings.py:91
+#: ../browser/autopublishsettings.py:92
 msgid "label_retract_actions"
 msgstr ""
 

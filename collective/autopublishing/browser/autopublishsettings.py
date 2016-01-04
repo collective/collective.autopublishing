@@ -78,7 +78,8 @@ class IAutopublishSettingsSchema(Interface):
             title=_(u'Action'),
             schema=IAutopublishSpecification),
         title=_('label_publish_actions', default=u'Publish actions'),
-        description=_('help_publish_actions',
+        description=_(
+            'help_publish_actions',
             default=u"Workflow actions initiated by the autopublishing "
                     u"module when the publishing date is met."),
         required=False,
@@ -89,7 +90,8 @@ class IAutopublishSettingsSchema(Interface):
             title=_(u'Action'),
             schema=IAutopublishSpecification),
         title=_('label_retract_actions', default=u'Retract actions'),
-        description=_('help_retract_actions',
+        description=_(
+            'help_retract_actions',
             default=u"Workflow actions initiated by the autopublishing "
                     u"module when the expiration date is met."),
         required=False,
@@ -98,7 +100,8 @@ class IAutopublishSettingsSchema(Interface):
     overwrite_expiration_on_retract = schema.Bool(
         title=_('label_overwrite_expiration',
                 default=u'Set expiration date on retraction'),
-        description=_('help_overwrite_expiration',
+        description=_(
+            'help_overwrite_expiration',
             default=u"If this is set, the expiration date "
                     u"will be overwritten with the current time "
                     u"when manually retracting an item, to avoid "
@@ -108,23 +111,26 @@ class IAutopublishSettingsSchema(Interface):
     clear_expiration_on_publish = schema.Bool(
         title=_('label_clear_expiration',
                 default=u'Clear expiration date on publication'),
-        description=_('help_clear_expiration',
-                default=u"If this is set, an expiration date "
-                        u"in the past will be cleared "
-                        u"when manually publishing an item, to avoid "
-                        u"immediate retraction."),
+        description=_(
+            'help_clear_expiration',
+            default=u"If this is set, an expiration date "
+                    u"in the past will be cleared "
+                    u"when manually publishing an item, to avoid "
+                    u"immediate retraction."),
         default=False)
     email_log = schema.List(
         value_type=schema.TextLine(title=u'Email'),
         title=_('label_email_log',
                 default=u'Email addresses for audit log'),
-        description=_('help_email_log',
+        description=_(
+            'help_email_log',
             default=u"If one or more email addresses is supplied, "
                     u"an audit log of the actions taken is sent."),
         required=False)
     dry_run = schema.Bool(
         title=_('label_dry_run', default=u'Simulate'),
-        description=_('help_dry_run',
+        description=_(
+            'help_dry_run',
             default=u"Simulates the process of changing workflow state. "
                     u"Nothing actually changes state, but it is possible to "
                     u"review what actions will be taken. To activate "
@@ -137,8 +143,9 @@ class AutopublishControlPanelEditForm(controlpanel.RegistryEditForm):
     fields = field.Fields(IAutopublishSettingsSchema)
 
     label = _('label_ap_contolpanel', default=u"Autopublishing settings")
-    description = _('help_ap_controlpanel',
-        u"Controls the workflow actions autopublishing will make."
+    description = _(
+        'help_ap_controlpanel',
+        default=u"Controls the workflow actions autopublishing will make."
         )
 
     def getContent(self):
