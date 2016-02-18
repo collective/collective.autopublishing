@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 long_description = (
-    open('README.md').read() +
+    open('README.rst').read() +
     '\n' +
     'Contributors\n' +
     '============\n' +

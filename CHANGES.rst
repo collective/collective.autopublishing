@@ -4,7 +4,7 @@ Changes
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Move README to rst
 
 
 1.0 (2016-02-18)
