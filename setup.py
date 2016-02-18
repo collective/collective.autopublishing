@@ -12,7 +12,7 @@ long_description = (
     '\n')
 
 setup(name='collective.autopublishing',
-      version='1.1.dev0',
+      version='1.0.1',
       description="Publishes and retracts on effective or expired dates.",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
