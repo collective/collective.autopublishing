@@ -299,6 +299,10 @@ def transition_handler(event):
         return
     if not event.object:
         return
+    # Ignore items which don't have getExpirationDate
+    # TODO: Fix this properly!
+    if not hasattr(event.object, 'getExpirationDate'):
+        return
     now = event.object.ZopeTime()
     # todo: make states into a setting
     if event.transition.id in ['retract', 'reject']:
@@ -309,11 +313,12 @@ def transition_handler(event):
                 omit=('publish_actions', 'retract_actions'),
                 factory=ComplexRecordsProxy)
         except (ComponentLookupError, KeyError):
-            logger.info('The product needs to be installed. No settings in the registry.')
+            logger.info('The product needs to be installed.'
+                        ' No settings in the registry.')
             settings = None
         if settings and settings.overwrite_expiration_on_retract:
             overwrite = True
-        if hasattr(event.object, 'getExpirationDate') and (event.object.getExpirationDate() is None or overwrite):
+        if event.object.getExpirationDate() is None or overwrite:
             event.object.setExpirationDate(now)
     if event.transition.id in ['publish']:
         overwrite = False
@@ -323,7 +328,8 @@ def transition_handler(event):
                 omit=('publish_actions', 'retract_actions'),
                 factory=ComplexRecordsProxy)
         except (ComponentLookupError, KeyError):
-            logger.info('collective.autopublishing needs to be installed. No settings in the registry.')
+            logger.info('collective.autopublishing needs to be installed.'
+                        ' No settings in the registry.')
             settings = None
         if settings and settings.clear_expiration_on_publish:
             overwrite = True
