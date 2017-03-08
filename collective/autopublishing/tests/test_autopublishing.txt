@@ -58,6 +58,9 @@ Add objects for testing
 
 Let's create some objects for our tests::
 
+    >>> from plone.app.testing import setRoles
+    >>> from plone.app.testing import TEST_USER_ID
+    >>> setRoles(portal, TEST_USER_ID, ['Manager', ])
     >>> portal.invokeFactory(id='document1', type_name='Document', title='Document 1')
     'document1'
 
@@ -451,7 +454,7 @@ expiration date it set if it is None. There is also a setting to
 allow overwriting expiration date if it is already set::
 
     >>> settings.overwrite_expiration_on_retract = True
-    >>> print settings.overwrite_expiration_on_retract
+    >>> settings.overwrite_expiration_on_retract
     True
 
 Let's try again::

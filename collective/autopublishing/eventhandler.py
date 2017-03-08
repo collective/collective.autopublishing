@@ -268,10 +268,6 @@ def transition_handler(event):
         return
     if not event.object:
         return
-    # Ignore items which don't have getExpirationDate
-    # TODO: Fix this properly!
-    if not hasattr(event.object, 'getExpirationDate'):
-        return
     now = event.object.ZopeTime()
     # todo: make states into a setting
     if event.transition.id in ['retract', 'reject']:
