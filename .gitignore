@@ -75,3 +75,6 @@ parts
 develop-eggs
 var
 src
+/lib*
+/include
+/pip*
