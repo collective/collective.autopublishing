@@ -14,7 +14,8 @@ env:
     - PLONE_VERSION=5.0
     - PLONE_VERSION=5.1
 install:
-  - python bootstrap-buildout.py --buildout-version=2.5.2
+  - virtualenv .
+  - bin/pip install zc.buildout setuptools --upgrade
   - sed -ie "s#test-5.0#test-$PLONE_VERSION#" buildout.cfg
   - bin/buildout -N buildout:download-cache=downloads code-analysis:return-status-codes=True annotate
   - bin/buildout -N buildout:download-cache=downloads code-analysis:return-status-codes=True
