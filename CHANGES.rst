@@ -4,7 +4,8 @@ Changes
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Travis & egg cleanup
+  [tomgross]
 
 
 1.0.1 (2016-02-18)
