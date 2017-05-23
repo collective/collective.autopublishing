@@ -1,8 +1,8 @@
 Changes
 =======
 
-1.1 (unreleased)
-----------------
+1.0.2 (2017-05-23)
+------------------
 
 - Fix travis and buildout for Plone 5.0 and 5.1
   [tomgross]
