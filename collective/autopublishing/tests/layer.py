@@ -27,8 +27,4 @@ C_AUTOPUBLISHING_LAYER = FunctionalTesting(
     bases=(C_AUTOPUBLISHING_FIXTURE,),
     name='CollectiveAutopublishingLayer:FunctionalTesting')
 
-
-class MyFunctionalTestCase(PloneTestCase):
-    layer = C_AUTOPUBLISHING_LAYER
-
 # EOF
