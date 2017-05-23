@@ -4,19 +4,22 @@ Changes
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fix travis and buildout for Plone 5.0 and 5.1
+  [tomgross]
 
 
 1.0.1 (2016-02-18)
 ------------------
 
 - Move README to rst
+  [tomgross]
 
 
 1.0 (2016-02-18)
 ----------------
 
 - Plone 5 compatibility
+  [tomgross]
 
 0.6 (2013-11-05) Unreleased
 ---------------------------
