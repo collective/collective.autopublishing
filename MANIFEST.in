@@ -4,5 +4,4 @@ recursive-include docs *.txt
 global-exclude *pyc
 global-exclude .project
 global-exclude .pydevproject
-include *.rst
-
+include *.rst *.txt
