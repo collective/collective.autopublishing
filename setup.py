@@ -1,24 +1,28 @@
 from setuptools import setup, find_packages
-import os
 
-version = '0.7a'
-
-def read(*pathnames):
-    return open(os.path.join(os.path.dirname(__file__), *pathnames)).read().\
-           decode('utf-8')
+long_description = (
+    open('README.rst').read() +
+    '\n' +
+    'Contributors\n' +
+    '============\n' +
+    '\n' +
+    open('CONTRIBUTORS.rst').read() +
+    '\n' +
+    open('CHANGES.rst').read() +
+    '\n')
 
 setup(name='collective.autopublishing',
-      version=version,
+      version='1.1.dev0',
       description="Publishes and retracts on effective or expired dates.",
-      long_description='\n'.join([
-          read('README.md'),
-          read('CHANGES.rst'),
-          ]),
+      long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
+        "Framework :: Plone :: 5.0",
+        "Framework :: Plone :: 5.1",
         "Framework :: Zope2",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
         ],
       keywords='plone workflow publishing',
       author='Mustapha Benali',
@@ -31,14 +35,16 @@ setup(name='collective.autopublishing',
       zip_safe=False,
       extras_require=dict(
         test=[
-            'collective.testcaselayer',
+            'plone.app.testing',
+            'plone.app.robotframework[debug]',
+            'interlude',
         ]
       ),
       install_requires=[
           'setuptools',
+          'plone.api',
           'plone.app.registry>=1.2',
           'plone.z3cform',
-          'Products.AdvancedQuery',
           'collective.timedevents>=0.3',
           'collective.complexrecordsproxy',
       ],

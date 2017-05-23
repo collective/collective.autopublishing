@@ -1,7 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="collective.autopublishing">
 
     <browser:page
@@ -16,7 +15,7 @@
       name="autopublish-report"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       class=".autopublishreport.AutopublishReport"
-      permission="cmf.ManagePortal"
+      permission="autopublishing.viewreport"
       layer="collective.autopublishing.interfaces.IBrowserLayer"
       />
 

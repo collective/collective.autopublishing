@@ -1,0 +1,30 @@
+language: python
+sudo: false
+cache:
+  pip: true
+  directories:
+    - eggs
+    - downloads
+python:
+  - 2.7
+matrix:
+  fast_finish: true
+env:
+  matrix:
+    - PLONE_VERSION=5.0
+    - PLONE_VERSION=5.1
+install:
+  - virtualenv .
+  - bin/pip install -r requirements.txt
+  - sed -ie "s#test-5.0#test-$PLONE_VERSION#" buildout.cfg
+  - bin/buildout -N buildout:download-cache=downloads code-analysis:return-status-codes=True annotate
+  - bin/buildout -N buildout:download-cache=downloads code-analysis:return-status-codes=True
+script:
+  - bin/code-analysis
+  - bin/coverage run bin/test
+after_success:
+  - bin/coveralls
+
+notifications:
+  email:
+    - itconsense@gmail.com

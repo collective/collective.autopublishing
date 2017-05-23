@@ -1,4 +1,8 @@
 recursive-include collective *
+recursive-include docs *.GPL
+recursive-include docs *.txt
 global-exclude *pyc
 global-exclude .project
 global-exclude .pydevproject
+include *.rst
+
