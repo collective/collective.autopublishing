@@ -3,6 +3,7 @@ import logging
 from zope.component import ComponentLookupError, getUtility
 
 from plone.registry.interfaces import IRegistry
+from plone.app.event.base import default_timezone
 from plone import api
 from Products.CMFCore.WorkflowCore import WorkflowException
 
@@ -21,16 +22,8 @@ logger = logging.getLogger('collective.autopublishing')
 
 
 def getExpirationDate(obj):
-    # Archetypes
-    try:
-        date = obj.getExpirationDate()
-        return date
-    # Handle dexterity
-    except AttributeError:
-        date = obj.expires()
-        return date
-
-    return None
+    tz = default_timezone(context=obj)
+    return obj.ExpirationDate(zone=tz)
 
 
 def setExpirationDate(obj, date):
@@ -38,16 +31,8 @@ def setExpirationDate(obj, date):
 
 
 def getEffectiveDate(obj):
-    # Archetypes
-    try:
-        date = obj.getEffectiveDate()
-        return date
-    # Handle dexterity
-    except AttributeError:
-        date = obj.effective
-        return date
-
-    return None
+    tz = default_timezone(context=obj)
+    return obj.EffectiveDate(zone=tz)
 
 
 def assemble_mail_text(record):
@@ -106,8 +91,8 @@ def autopublish_handler(event):
 
 
 def handle_publishing(context, settings, dry_run=True, log=True):
-    '''
-    '''
+    """ Handle the publishing action for context
+    """
     catalog = api.portal.get_tool(name='portal_catalog')
     wf = api.portal.get_tool(name='portal_workflow')
     now = context.ZopeTime()
