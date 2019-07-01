@@ -33,7 +33,7 @@
     />
 
     <plone:behavior
-        title="Autpublishing"
+        title="Autopublishing"
         description="If enabled autopublishing can be enabled for individual objects"
         provides=".behavior.IAutoPublishing"
         for="plone.dexterity.interfaces.IDexterityContent"
