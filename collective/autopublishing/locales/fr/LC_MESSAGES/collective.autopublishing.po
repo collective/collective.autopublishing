@@ -1,0 +1,158 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: collective.autopublishing\n"
+"POT-Creation-Date: 2019-07-01 12:34+0000\n"
+"PO-Revision-Date: 2016-01-04 08:14+0000\n"
+"Last-Translator: Laurent Lasudry <laurent.lasudry@affinitic.be>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Code: fr\n"
+"Language-Name: French\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.autopublishing\n"
+"X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
+"Language: fr\n"
+
+#: ../browser/autopublishsettings.py:78
+msgid "Action"
+msgstr "Action"
+
+#: ../configure.zcml:40
+#: ../profiles/default/controlpanel.xml
+msgid "Autopublishing"
+msgstr "Publication automatique"
+
+#: ../browser/autopublishsettings.py:25
+msgid "Content types"
+msgstr "Types de contenus"
+
+#: ../configure.zcml:40
+msgid "If enabled autopublishing can be enabled for individual objects"
+msgstr "Permet d'activer la publication automatique individuellement sur les contenus"
+
+#: ../profiles.zcml:12
+msgid "Installs the collective.autopublishing package"
+msgstr "Installe le module de publication automatique"
+
+#: ../profiles.zcml:27
+msgid "Performs various migrations of the collective.autopublishing module"
+msgstr ""
+
+#: ../profiles.zcml:42
+msgid "Uninstalls the collective.autopublishing module"
+msgstr "Désinstalle le module de publication automatique"
+
+#: ../profiles.zcml:12
+msgid "collective.autopublishing"
+msgstr ""
+
+#: ../profiles.zcml:27
+msgid "collective.autopublishing migrate"
+msgstr ""
+
+#: ../profiles.zcml:42
+msgid "collective.autopublishing uninstall"
+msgstr ""
+
+#. Default: "Enable autopublishing?"
+#: ../behavior.py:18
+msgid "enableAutopublishing"
+msgstr "Activer la publication automatique"
+
+#. Default: "Controls the workflow actions autopublishing will make."
+#: ../browser/autopublishsettings.py:146
+msgid "help_ap_controlpanel"
+msgstr "Configure les actions de processus documentaire que la publication automatique va faire."
+
+#. Default: "Content types this rule applies to."
+#: ../browser/autopublishsettings.py:26
+msgid "help_ap_portaltypes"
+msgstr "Types de contenus auxquels la règle s'applique."
+
+#. Default: "If this is set, an expiration date in the past will be cleared when manually publishing an item, to avoid immediate retraction."
+#: ../browser/autopublishsettings.py:114
+msgid "help_clear_expiration"
+msgstr "Si cette option est cochée, la date d'expiration sera effacée quand le contenu sera publié manuellement, afin d'éviter le retrait automatique immédiat."
+
+#. Default: "By default publishing date (the 'effective' index) is used for 'publish actions', and expiration date (the 'expires' index) is used for 'retract actions'. If a custom method is to be used for the date, enter index_id|object_method_id. If index_id = method_id  just enter index_id."
+#: ../browser/autopublishsettings.py:43
+msgid "help_date_index"
+msgstr "Par défaut, la date de publication (index 'effective') est utilisé pour les actions de publication et la date d'expiration (index 'expires') est utilisé pour les actions de retrait. Si une méthode personnalisée doit être utilisée pour la date, entrez index_id|object_method_id. Si index_id = method_id, entrez juste index_id."
+
+#. Default: "Simulates the process of changing workflow state. Nothing actually changes state, but it is possible to review what actions will be taken. To activate the module, remove the checkmark."
+#: ../browser/autopublishsettings.py:132
+msgid "help_dry_run"
+msgstr "Simule le changement d'état de processus documentaire. Les états ne seront pas changés, mais il sera possible de superviser quelles actions seront prises. Pour activer la publication automatique, décochez cette case."
+
+#. Default: "If one or more email addresses is supplied, an audit log of the actions taken is sent."
+#: ../browser/autopublishsettings.py:125
+msgid "help_email_log"
+msgstr "Si une ou plusieurs adresse courriel est fournie, le journal d'audit des actions effectuées est envoyé par courriel."
+
+#. Default: "If this is set, the expiration date will be overwritten with the current time when manually retracting an item, to avoid  republication if there is a publication date in the past."
+#: ../browser/autopublishsettings.py:103
+msgid "help_overwrite_expiration"
+msgstr "Si cette option est cochée, la date d'expiration sera écrasée avec la date et l'heure actuelle quand le contenu sera retiré manuellement, afin d'éviter la republication du contenu si une date de publication dans le passé est renseignée."
+
+#. Default: "Workflow actions initiated by the autopublishing module when the publishing date is met."
+#: ../browser/autopublishsettings.py:81
+msgid "help_publish_actions"
+msgstr "Actions de processus documentaire initiées par la publication automatique quand la date de publication est atteinte."
+
+#. Default: "Workflow actions initiated by the autopublishing module when the expiration date is met."
+#: ../browser/autopublishsettings.py:93
+msgid "help_retract_actions"
+msgstr "Actions de processus documentaire initiées par la publication automatique quand la date d'expiration est atteinte."
+
+#. Default: "Autopublishing settings"
+#: ../browser/autopublishsettings.py:145
+msgid "label_ap_contolpanel"
+msgstr "Paramètres de Publication automatique"
+
+#. Default: "Clear expiration date on publication"
+#: ../browser/autopublishsettings.py:112
+msgid "label_clear_expiration"
+msgstr "Effacer la date d'expiration lors de la publication"
+
+#. Default: "Transaction trigger date catalog index / method"
+#: ../browser/autopublishsettings.py:41
+msgid "label_date_index"
+msgstr "Méthode / index pour la date de déclenchement de transaction"
+
+#. Default: "Simulate"
+#: ../browser/autopublishsettings.py:131
+msgid "label_dry_run"
+msgstr "Simuler"
+
+#. Default: "Email addresses for audit log"
+#: ../browser/autopublishsettings.py:123
+msgid "label_email_log"
+msgstr "Adresse courriel pour le journal d'audit"
+
+#. Default: "Initial workflow state"
+#: ../browser/autopublishsettings.py:33
+msgid "label_initial_state"
+msgstr "Etat de processus de départ"
+
+#. Default: "Set expiration date on retraction"
+#: ../browser/autopublishsettings.py:101
+msgid "label_overwrite_expiration"
+msgstr "Définir la date d'expiration lors du retrait"
+
+#. Default: "Publish actions"
+#: ../browser/autopublishsettings.py:80
+msgid "label_publish_actions"
+msgstr "Actions de publication"
+
+#. Default: "Retract actions"
+#: ../browser/autopublishsettings.py:92
+msgid "label_retract_actions"
+msgstr "Actions de retrait"
+
+#. Default: "Transition from initial state"
+#: ../browser/autopublishsettings.py:37
+msgid "label_transition"
+msgstr "Transition depuis l'état de départ"

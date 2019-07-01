@@ -4,7 +4,8 @@ Changes
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added French translation
+  [laulaz]
 
 
 1.0.2 (2017-05-23)
