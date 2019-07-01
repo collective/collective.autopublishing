@@ -28,6 +28,14 @@ msgstr "Autopublikation"
 msgid "Content types"
 msgstr "Artikeltypen"
 
+#: ../browser/controlpanel_layout.pt:35
+msgid "Show report:"
+msgstr ""
+
+#: ../browser/controlpanel_layout.pt:35
+msgid "What actions wil be taken by the next run?"
+msgstr ""
+
 #. Default: "Enable autopublishing?"
 #: ../behavior.py:18
 msgid "enableAutopublishing"

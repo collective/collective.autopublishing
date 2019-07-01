@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: collective.autopublishing\n"
-"POT-Creation-Date: 2019-07-01 12:34+0000\n"
+"POT-Creation-Date: 2019-07-01 13:12+0000\n"
 "PO-Revision-Date: 2016-01-04 08:14+0000\n"
 "Last-Translator: Laurent Lasudry <laurent.lasudry@affinitic.be>\n"
 "Language-Team: \n"
@@ -41,9 +41,17 @@ msgstr "Installe le module de publication automatique"
 msgid "Performs various migrations of the collective.autopublishing module"
 msgstr ""
 
+#: ../browser/controlpanel_layout.pt:35
+msgid "Show report:"
+msgstr "Consulter le rapport d'audit:"
+
 #: ../profiles.zcml:42
 msgid "Uninstalls the collective.autopublishing module"
 msgstr "Désinstalle le module de publication automatique"
+
+#: ../browser/controlpanel_layout.pt:35
+msgid "What actions wil be taken by the next run?"
+msgstr "Voir quelles actions seront initiées lors de la prochaine exécution"
 
 #: ../profiles.zcml:12
 msgid "collective.autopublishing"
