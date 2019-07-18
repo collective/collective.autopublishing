@@ -1,8 +1,8 @@
 Changes
 =======
 
-1.1 (unreleased)
-----------------
+1.0.3 (2019-07-18)
+------------------
 
 - Added French translation
   [laulaz]
