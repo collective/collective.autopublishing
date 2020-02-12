@@ -7,8 +7,8 @@ from plone import api
 from Products.CMFCore.WorkflowCore import WorkflowException
 
 from collective.complexrecordsproxy import ComplexRecordsProxy
-from browser.autopublishsettings import IAutopublishSettingsSchema
-from interfaces import IBrowserLayer
+from .browser.autopublishsettings import IAutopublishSettingsSchema
+from .interfaces import IBrowserLayer
 
 
 logger = logging.getLogger('collective.autopublishing')
