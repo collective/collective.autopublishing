@@ -4,7 +4,8 @@ Changes
 1.0.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix traceback when displaying log info
+  [laulaz]
 
 
 1.0.3 (2019-07-18)

@@ -170,7 +170,7 @@ def handle_publishing(context, settings, dry_run=True, log=True):
                             """The state '%s' of the workflow associated with the
                                object at '%s' does not provide the '%s' action
                             """ % (brain.review_state,
-                                   o.getURL()),
+                                   brain.getURL()),
                             str(a.transition))
                 audit_record['actions'].append(audit_action)
 
