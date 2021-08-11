@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 from zope.component import getUtility
 from zope import schema
 from zope.event import notify
@@ -54,8 +54,8 @@ class IAutopublishSpecification(Interface):
         )
 
 
+@implementer(IAutopublishSpecification)
 class AutopublishSpecification(object):
-    implements(IAutopublishSpecification)
 
     def __init__(self, value):
         self.portal_types = value["portal_types"]
