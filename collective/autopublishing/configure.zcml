@@ -9,7 +9,6 @@
 
     <include package="plone.app.registry" />
     <include package="plone.z3cform" />
-    <include package="collective.complexrecordsproxy" />
     <include package="collective.timedevents" />
 
     <include file="profiles.zcml" />
