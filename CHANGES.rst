@@ -4,6 +4,9 @@ Changes
 1.0.4 (unreleased)
 ------------------
 
+- Python 3 / Plone 6 compatibility
+  [boulch, laulaz]
+
 - Fix traceback when displaying log info
   [laulaz]
 
