@@ -8,7 +8,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from plone.registry.interfaces import IRegistry
 
 from collective.complexrecordsproxy import ComplexRecordsProxy
-from autopublishsettings import IAutopublishSettingsSchema
+from collective.autopublishing.browser.autopublishsettings import IAutopublishSettingsSchema
 from collective.autopublishing.eventhandler import (
     handle_publishing,
     handle_retracting

@@ -38,8 +38,8 @@ def setup_indexes(portal):
                      idx['name'])
         else:
             ct.addIndex(**idx)
-            print "Added '%s' (%s) to the catalog.\n" % (idx['name'],
-                                                         idx['type'])
+            print("Added '%s' (%s) to the catalog.\n" % (idx['name'],
+                                                         idx['type']))
     for entry in catalog_columns:
         if entry in purge_existing_columns and entry in ct.schema():
             ct.delColumn(entry)
@@ -48,13 +48,13 @@ def setup_indexes(portal):
                      entry)
         else:
             ct.addColumn(entry)
-            print "Added '%s' to the catalog metadatas.\n" % entry
+            print("Added '%s' to the catalog metadatas.\n" % entry)
             new_metadata = True
 
     if new_metadata:
-        print "Reindexing catalog... "
+        print("Reindexing catalog... ")
         ct.refreshCatalog()
-        print "Done.\n"
+        print("Done.\n")
 
 
 def variousMigrateSteps(context):
