@@ -6,7 +6,11 @@
     i18n_domain="collective.autopublishing">
 
     <five:registerPackage package="."  />
-    <includeDependencies package="." />
+
+    <include package="plone.app.registry" />
+    <include package="plone.z3cform" />
+    <include package="collective.complexrecordsproxy" />
+    <include package="collective.timedevents" />
 
     <include file="profiles.zcml" />
     <include file="upgradesteps.zcml" />
