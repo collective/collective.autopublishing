@@ -4,6 +4,9 @@ Changes
 1.0.4 (unreleased)
 ------------------
 
+- Drop Python 2 / Archetypes compatibility
+  [laulaz]
+
 - Python 3 / Plone 6 compatibility
   [boulch, laulaz]
 

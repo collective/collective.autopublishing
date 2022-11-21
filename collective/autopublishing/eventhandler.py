@@ -21,16 +21,8 @@ logger = logging.getLogger('collective.autopublishing')
 
 
 def getExpirationDate(obj):
-    # Archetypes
-    try:
-        date = obj.getExpirationDate()
-        return date
-    # Handle dexterity
-    except AttributeError:
-        date = obj.expires()
-        return date
-
-    return None
+    date = obj.expires()
+    return date
 
 
 def setExpirationDate(obj, date):
@@ -38,16 +30,8 @@ def setExpirationDate(obj, date):
 
 
 def getEffectiveDate(obj):
-    # Archetypes
-    try:
-        date = obj.getEffectiveDate()
-        return date
-    # Handle dexterity
-    except AttributeError:
-        date = obj.effective
-        return date
-
-    return None
+    date = obj.effective
+    return date
 
 
 def assemble_mail_text(record):

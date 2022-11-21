@@ -36,12 +36,10 @@ All items that are in the workflow states set in the control panel, having an ef
 
 All items that are in the workflow states set in the control panel, having an expiration date in the past are retracted. (The workflow transition 'retract' are tried).
 
-Archetypes field
-================
+Dexterity field
+===============
 
-The module adds a field `enableAutopublishing` to Archetypes content types, with default set to True.
-
-When am autopublishing event happens to an item, this is set to False, to mark that autopublishing has run.
+The module adds a field `enableAutopublishing` to Dexterity content types (through a behavior) in the Dates fieldset. This allows to control autopublishing process on content-basis (default: False).
 
 Setting the expiration date on retraction
 =========================================
