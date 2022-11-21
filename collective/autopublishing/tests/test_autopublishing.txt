@@ -3,8 +3,10 @@ collective.autopublishing
 
 First we check that our package is installed::
 
+    >>> from Products.CMFPlone.utils import get_installer
     >>> portal = layer['portal']
-    >>> portal.portal_quickinstaller.isProductInstalled('collective.autopublishing')
+    >>> installer = get_installer(portal, layer['request'])
+    >>> installer.is_product_installed('collective.autopublishing')
     True
 
 and that our behavior is applied to Collection, Document, Event and News Item::
@@ -38,15 +40,15 @@ we will publish all Documents in state private::
     >>> settings.publish_actions
     ()
 
-    >>> publish_action = AutopublishSpecification({'portal_types':(u'Document',),
-    ...     'initial_state':u'private', 'transition':u'publish'})
+    >>> publish_action = AutopublishSpecification({'portal_types':('Document',),
+    ...     'initial_state':'private', 'transition':'publish'})
     >>> settings.publish_actions = (publish_action,)
 
     >>> settings.retract_actions
     ()
 
-    >>> retract_action = AutopublishSpecification({'portal_types':(u'Document',),
-    ...     'initial_state':u'published', 'transition':u'retract'})
+    >>> retract_action = AutopublishSpecification({'portal_types':('Document',),
+    ...     'initial_state':'published', 'transition':'retract'})
     >>> settings.retract_actions = (retract_action,)
 
 And make sure dry_run is false::
@@ -272,7 +274,7 @@ Test dry run.
 Set dry_run::
 
     >>> settings.dry_run = True
-    >>> print settings.dry_run
+    >>> print(settings.dry_run)
     True
 
 First bring the document into the needed state again::
@@ -341,7 +343,7 @@ Case one: no dates.
 
 Expiration date are not set on the object::
 
-    >>> print portal['document2'].expiration_date
+    >>> print(portal['document2'].expiration_date)
     None
 
 Let's fire the hourly cronjob::
@@ -412,9 +414,9 @@ Special cases
 
 If we add private to initial publication states::
 
-    >>> settings.initial_states_publishing = [u'private', u'pending']
-    >>> print settings.initial_states_publishing
-    [u'private', u'pending']
+    >>> settings.initial_states_publishing = ['private', 'pending']
+    >>> print(settings.initial_states_publishing)
+    ['private', 'pending']
 
 And we have a content object, that is published, with a publication date in the past::
 

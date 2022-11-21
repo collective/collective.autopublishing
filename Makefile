@@ -24,6 +24,3 @@ test-coverage: bin/instance
 
 cleanall:
 	rm -fr develop-eggs downloads eggs parts .installed.cfg lib lib64 include bin .mr.developer.cfg local/
-
-upgrade-steps:
-	bin/instance -O plone run scripts/run_portal_upgrades.py
