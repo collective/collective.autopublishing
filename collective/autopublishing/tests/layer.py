@@ -11,12 +11,14 @@ class AutoPublishingLayer(PloneSandboxLayer):
 
     def setUpZope(self, app, configurationContext):
         import collective.timedevents
-        self.loadZCML('configure.zcml', package=collective.timedevents)
+
+        self.loadZCML("configure.zcml", package=collective.timedevents)
         import collective.autopublishing
-        self.loadZCML('configure.zcml', package=collective.autopublishing)
+
+        self.loadZCML("configure.zcml", package=collective.autopublishing)
 
     def setUpPloneSite(self, portal):
-        applyProfile(portal, 'collective.autopublishing:default')
+        applyProfile(portal, "collective.autopublishing:default")
 
 
 C_AUTOPUBLISHING_FIXTURE = AutoPublishingLayer()
@@ -24,6 +26,5 @@ C_AUTOPUBLISHING_FIXTURE = AutoPublishingLayer()
 
 C_AUTOPUBLISHING_LAYER = FunctionalTesting(
     bases=(C_AUTOPUBLISHING_FIXTURE,),
-    name='CollectiveAutopublishingLayer:FunctionalTesting')
-
-# EOF
+    name="CollectiveAutopublishingLayer:FunctionalTesting",
+)

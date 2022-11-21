@@ -7,11 +7,13 @@ from plone import api
 from Products.CMFCore.WorkflowCore import WorkflowException
 
 from collective.complexrecordsproxy import ComplexRecordsProxy
-from collective.autopublishing.browser.autopublishsettings import IAutopublishSettingsSchema
+from collective.autopublishing.browser.autopublishsettings import (
+    IAutopublishSettingsSchema,
+)
 from collective.autopublishing.interfaces import IBrowserLayer
 
 
-logger = logging.getLogger('collective.autopublishing')
+logger = logging.getLogger("collective.autopublishing")
 
 #
 # Event handler.
@@ -35,65 +37,65 @@ def getEffectiveDate(obj):
 
 
 def assemble_mail_text(record):
-    messageText = record['header'] + '\n'
-    messageText += "Content types:" + str(record['content_types'])
-    messageText += "\nInitial state:" + str(record['initial_state'])
-    messageText += "\nTransition:" + str(record['transition'])
-    messageText += "\nActions:" + '\n'
-    for action in record['actions']:
-        messageText += "Transition:" + str(action['transition'])
-        messageText += "\nPortal type:" + str(action['portal_type'])
-        messageText += "\nTitle:" + str(action['title'])
-        messageText += "\nUrl:" + str(action['url']) + '\n\n'
-        messageText += '\n\n'
+    messageText = record["header"] + "\n"
+    messageText += "Content types:" + str(record["content_types"])
+    messageText += "\nInitial state:" + str(record["initial_state"])
+    messageText += "\nTransition:" + str(record["transition"])
+    messageText += "\nActions:" + "\n"
+    for action in record["actions"]:
+        messageText += "Transition:" + str(action["transition"])
+        messageText += "\nPortal type:" + str(action["portal_type"])
+        messageText += "\nTitle:" + str(action["title"])
+        messageText += "\nUrl:" + str(action["url"]) + "\n\n"
+        messageText += "\n\n"
     return messageText
 
 
 def autopublish_handler(event):
-    catalog = api.portal.get_tool(name='portal_catalog')
+    catalog = api.portal.get_tool(name="portal_catalog")
 
     try:
         settings = getUtility(IRegistry).forInterface(
             IAutopublishSettingsSchema,
-            omit=('publish_actions', 'retract_actions'),
-            factory=ComplexRecordsProxy)
+            omit=("publish_actions", "retract_actions"),
+            factory=ComplexRecordsProxy,
+        )
     except (ComponentLookupError, KeyError):
-        logger.info('The product needs to be installed. '
-                    'No settings in the registry.')
+        logger.info(
+            "The product needs to be installed. " "No settings in the registry."
+        )
         return
 
-    if 'enableAutopublishing' not in catalog.indexes():
-        logger.info('Catalog does not have a enableAutopublishing index')
+    if "enableAutopublishing" not in catalog.indexes():
+        logger.info("Catalog does not have a enableAutopublishing index")
         return
 
-    p_result = handle_publishing(event.context, settings,
-                                 dry_run=settings.dry_run)
-    r_result = handle_retracting(event.context, settings,
-                                 dry_run=settings.dry_run)
+    p_result = handle_publishing(event.context, settings, dry_run=settings.dry_run)
+    r_result = handle_retracting(event.context, settings, dry_run=settings.dry_run)
 
     if settings.email_log and (p_result or r_result):
         # Send audit mail
-        messageText = 'Autopublishing results.\n\n'
+        messageText = "Autopublishing results.\n\n"
 
-        messageText += 'Publish actions:\n'
+        messageText += "Publish actions:\n"
         for record in p_result:
             messageText += assemble_mail_text(record)
 
-        messageText += '\n\nRetract actions:\n'
+        messageText += "\n\nRetract actions:\n"
         for record in r_result:
             messageText += assemble_mail_text(record)
 
         api.portal.send_email(
             body=messageText,
             recipient=settings.email_log,
-            subject='Autopublishing results')
+            subject="Autopublishing results",
+        )
 
 
 def handle_publishing(context, settings, dry_run=True, log=True):
-    '''
-    '''
-    catalog = api.portal.get_tool(name='portal_catalog')
-    wf = api.portal.get_tool(name='portal_workflow')
+    """ """
+    catalog = api.portal.get_tool(name="portal_catalog")
+    wf = api.portal.get_tool(name="portal_workflow")
     now = context.ZopeTime()
 
     actions = settings.publish_actions
@@ -102,18 +104,20 @@ def handle_publishing(context, settings, dry_run=True, log=True):
     for a in actions:
         audit_record = {}
 
-        date_index = getattr(a, 'date_index', 'effective')
+        date_index = getattr(a, "date_index", "effective")
 
-        audit_record['header'] = 'Actions triggered by "%s"' % str(date_index)
-        audit_record['content_types'] = str(a.portal_types)
-        audit_record['initial_state'] = str(a.initial_state)
-        audit_record['transition'] = str(a.transition)
-        audit_record['actions'] = []
+        audit_record["header"] = 'Actions triggered by "%s"' % str(date_index)
+        audit_record["content_types"] = str(a.portal_types)
+        audit_record["initial_state"] = str(a.initial_state)
+        audit_record["transition"] = str(a.transition)
+        audit_record["actions"] = []
 
-        query = {'review_state': a.initial_state,
-                 date_index: {'query': now, 'range': 'max'},
-                 'enableAutopublishing': True,
-                 'portal_type': a.portal_types}
+        query = {
+            "review_state": a.initial_state,
+            date_index: {"query": now, "range": "max"},
+            "enableAutopublishing": True,
+            "portal_type": a.portal_types,
+        }
 
         brains = catalog(**query)
         affected = 0
@@ -132,13 +136,16 @@ def handle_publishing(context, settings, dry_run=True, log=True):
             # we only publish if:
             # a) the effective date is set and is in the past, and if
             # b) the expiration date has not been set or is in the future:
-            if (eff_date is not None and eff_date < now and
-               (exp_date is None or exp_date > now)):
+            if (
+                eff_date is not None
+                and eff_date < now
+                and (exp_date is None or exp_date > now)
+            ):
                 audit_action = {}
-                audit_action['portal_type'] = brain.portal_type
-                audit_action['url'] = brain.getURL()
-                audit_action['title'] = brain.Title
-                audit_action['transition'] = a.transition
+                audit_action["portal_type"] = brain.portal_type
+                audit_action["url"] = brain.getURL()
+                audit_action["title"] = brain.Title
+                audit_action["transition"] = a.transition
                 if log:
                     logger.info(str(audit_action))
                 total += 1
@@ -153,14 +160,18 @@ def handle_publishing(context, settings, dry_run=True, log=True):
                         logger.info(
                             """The state '%s' of the workflow associated with the
                                object at '%s' does not provide the '%s' action
-                            """ % (brain.review_state,
-                                   brain.getURL()),
-                            str(a.transition))
-                audit_record['actions'].append(audit_action)
+                            """
+                            % (brain.review_state, brain.getURL()),
+                            str(a.transition),
+                        )
+                audit_record["actions"].append(audit_action)
 
         if log:
-            logger.info("""Ran collective.autopublishing (publish): %d objects found, %d affected
-                    """ % (total, affected))
+            logger.info(
+                """Ran collective.autopublishing (publish): %d objects found, %d affected
+                    """
+                % (total, affected)
+            )
         audit.append(audit_record)
     if action_taken:
         return audit
@@ -169,10 +180,9 @@ def handle_publishing(context, settings, dry_run=True, log=True):
 
 
 def handle_retracting(context, settings, dry_run=True, log=True):
-    '''
-    '''
-    catalog = api.portal.get_tool(name='portal_catalog')
-    wf = api.portal.get_tool(name='portal_workflow')
+    """ """
+    catalog = api.portal.get_tool(name="portal_catalog")
+    wf = api.portal.get_tool(name="portal_workflow")
     now = context.ZopeTime()
 
     actions = settings.retract_actions
@@ -181,18 +191,20 @@ def handle_retracting(context, settings, dry_run=True, log=True):
     for a in actions:
         audit_record = {}
 
-        date_index = getattr(a, 'date_index', 'effective')
+        date_index = getattr(a, "date_index", "effective")
 
-        audit_record['header'] = 'Actions triggered by "%s"' % str(date_index)
-        audit_record['content_types'] = str(a.portal_types)
-        audit_record['initial_state'] = str(a.initial_state)
-        audit_record['transition'] = str(a.transition)
-        audit_record['actions'] = []
+        audit_record["header"] = 'Actions triggered by "%s"' % str(date_index)
+        audit_record["content_types"] = str(a.portal_types)
+        audit_record["initial_state"] = str(a.initial_state)
+        audit_record["transition"] = str(a.transition)
+        audit_record["actions"] = []
 
-        query = {'review_state': a.initial_state,
-                 date_index: {'query': now, 'range': 'max'},
-                 'enableAutopublishing': True,
-                 'portal_type': a.portal_types}
+        query = {
+            "review_state": a.initial_state,
+            date_index: {"query": now, "range": "max"},
+            "enableAutopublishing": True,
+            "portal_type": a.portal_types,
+        }
         brains = catalog(**query)
 
         affected = 0
@@ -208,10 +220,10 @@ def handle_retracting(context, settings, dry_run=True, log=True):
             # the expiration date is set and is in the past:
             if exp_date is not None and exp_date < now:
                 audit_action = {}
-                audit_action['portal_type'] = brain.portal_type
-                audit_action['url'] = brain.getURL()
-                audit_action['title'] = brain.Title
-                audit_action['transition'] = a.transition
+                audit_action["portal_type"] = brain.portal_type
+                audit_action["url"] = brain.getURL()
+                audit_action["title"] = brain.Title
+                audit_action["transition"] = a.transition
                 if log:
                     logger.info(str(audit_action))
                 total += 1
@@ -226,12 +238,19 @@ def handle_retracting(context, settings, dry_run=True, log=True):
                         logger.info(
                             """The state '%s' of the workflow associated with the
                                object at '%s' does not provide the '%s' action
-                            """, brain.review_state, brain.getPath(), str(a.transition))  # noqa
-                audit_record['actions'].append(audit_action)
+                            """,
+                            brain.review_state,
+                            brain.getPath(),
+                            str(a.transition),
+                        )  # noqa
+                audit_record["actions"].append(audit_action)
 
         if log:
-            logger.info("Ran collective.autopublishing (retract): %d objects found, %d affected",  # noqa
-                        total, affected)
+            logger.info(
+                "Ran collective.autopublishing (retract): %d objects found, %d affected",  # noqa
+                total,
+                affected,
+            )
         audit.append(audit_record)
     if action_taken:
         return audit
@@ -254,28 +273,33 @@ def transition_handler(event):
         return
     now = event.object.ZopeTime()
     # todo: make states into a setting
-    if event.transition.id in ['retract', 'reject']:
+    if event.transition.id in ["retract", "reject"]:
         try:
             settings = getUtility(IRegistry).forInterface(
                 IAutopublishSettingsSchema,
-                omit=('publish_actions', 'retract_actions'),
-                factory=ComplexRecordsProxy)
+                omit=("publish_actions", "retract_actions"),
+                factory=ComplexRecordsProxy,
+            )
         except (ComponentLookupError, KeyError):
-            logger.info('The product needs to be installed.'
-                        ' No settings in the registry.')
+            logger.info(
+                "The product needs to be installed." " No settings in the registry."
+            )
             settings = None
         overwrite = settings and settings.overwrite_expiration_on_retract
         if getExpirationDate(event.object) is None or overwrite:
             setExpirationDate(event.object, now)
-    if event.transition.id in ['publish']:
+    if event.transition.id in ["publish"]:
         try:
             settings = getUtility(IRegistry).forInterface(
                 IAutopublishSettingsSchema,
-                omit=('publish_actions', 'retract_actions'),
-                factory=ComplexRecordsProxy)
+                omit=("publish_actions", "retract_actions"),
+                factory=ComplexRecordsProxy,
+            )
         except (ComponentLookupError, KeyError):
-            logger.info('collective.autopublishing needs to be installed.'
-                        ' No settings in the registry.')
+            logger.info(
+                "collective.autopublishing needs to be installed."
+                " No settings in the registry."
+            )
             settings = None
         if settings and settings.clear_expiration_on_publish:
             if getExpirationDate(event.object) < now:

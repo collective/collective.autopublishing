@@ -9,12 +9,10 @@ from collective.autopublishing import MyMessageFactory as _
 @provider(IFormFieldProvider)
 class IAutoPublishing(model.Schema):
 
-    model.fieldset(
-        'dates',
-        fields=('enableAutopublishing', )
-    )
+    model.fieldset("dates", fields=("enableAutopublishing",))
 
     enableAutopublishing = schema.Bool(
-        title=_(u'enableAutopublishing', default=u"Enable autopublishing?"),
+        title=_("enableAutopublishing", default="Enable autopublishing?"),
         required=False,
-        default=False)
+        default=False,
+    )
