@@ -5,8 +5,9 @@ collective.autopublishing
 Overview
 ========
 
-.. image:: https://travis-ci.org/collective/collective.autopublishing.svg?branch=master
-       :target: https://travis-ci.org/collective/collective.autopublishing
+.. image:: https://github.com/collective/collective.autopublishing/actions/workflows/plone-package-test.yml/badge.svg
+    :target: https://github.com/collective/collective.autopublishing/actions/workflows/plone-package-test.yml
+    :alt: CI Status
 
 Publishes or retracts Plone content items depending on the effective and expiration dates.
 
