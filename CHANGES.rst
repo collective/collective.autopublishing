@@ -10,7 +10,7 @@ Changes
 - Python 3 / Plone 6 compatibility
   [boulch, laulaz]
 
-- Fix traceback when displaying log info
+- Fix traceback / improve & harmonize log messages
   [laulaz]
 
 

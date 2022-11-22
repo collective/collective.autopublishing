@@ -62,7 +62,7 @@ def autopublish_handler(event):
         )
     except (ComponentLookupError, KeyError):
         logger.info(
-            "The product needs to be installed. " "No settings in the registry."
+            "collective.autopublishing needs to be installed. No settings in the registry."
         )
         return
 
@@ -158,18 +158,15 @@ def handle_publishing(context, settings, dry_run=True, log=True):
                         affected += 1
                     except WorkflowException:
                         logger.info(
-                            """The state '%s' of the workflow associated with the
-                               object at '%s' does not provide the '%s' action
-                            """
-                            % (brain.review_state, brain.getURL()),
-                            str(a.transition),
+                            """The state '%s' of the workflow associated with the """
+                            """object at '%s' does not provide the '%s' action"""
+                            % (brain.review_state, brain.getURL(), str(a.transition)),
                         )
                 audit_record["actions"].append(audit_action)
 
         if log:
             logger.info(
-                """Ran collective.autopublishing (publish): %d objects found, %d affected
-                    """
+                """Ran collective.autopublishing (publish): %d objects found, %d affected"""
                 % (total, affected)
             )
         audit.append(audit_record)
@@ -236,20 +233,16 @@ def handle_retracting(context, settings, dry_run=True, log=True):
                         affected += 1
                     except WorkflowException:
                         logger.info(
-                            """The state '%s' of the workflow associated with the
-                               object at '%s' does not provide the '%s' action
-                            """,
-                            brain.review_state,
-                            brain.getPath(),
-                            str(a.transition),
-                        )  # noqa
+                            """The state '%s' of the workflow associated with the """
+                            """object at '%s' does not provide the '%s' action"""
+                            % (brain.review_state, brain.getURL(), str(a.transition)),
+                        )
                 audit_record["actions"].append(audit_action)
 
         if log:
             logger.info(
-                "Ran collective.autopublishing (retract): %d objects found, %d affected",  # noqa
-                total,
-                affected,
+                """Ran collective.autopublishing (retract): %d objects found, %d affected"""
+                % (total, affected)
             )
         audit.append(audit_record)
     if action_taken:
@@ -282,7 +275,7 @@ def transition_handler(event):
             )
         except (ComponentLookupError, KeyError):
             logger.info(
-                "The product needs to be installed." " No settings in the registry."
+                "collective.autopublishing needs to be installed. No settings in the registry."
             )
             settings = None
         overwrite = settings and settings.overwrite_expiration_on_retract
@@ -297,8 +290,7 @@ def transition_handler(event):
             )
         except (ComponentLookupError, KeyError):
             logger.info(
-                "collective.autopublishing needs to be installed."
-                " No settings in the registry."
+                "collective.autopublishing needs to be installed. No settings in the registry."
             )
             settings = None
         if settings and settings.clear_expiration_on_publish:
