@@ -113,6 +113,7 @@ class IAutopublishSettingsSchema(Interface):
             " republication if there is a publication date "
             "in the past.",
         ),
+        required=False,
         default=False,
     )
     clear_expiration_on_publish = schema.Bool(
@@ -126,6 +127,7 @@ class IAutopublishSettingsSchema(Interface):
             "when manually publishing an item, to avoid "
             "immediate retraction.",
         ),
+        required=False,
         default=False,
     )
     email_log = schema.List(
@@ -147,6 +149,7 @@ class IAutopublishSettingsSchema(Interface):
             "review what actions will be taken. To activate "
             "the module, remove the checkmark.",
         ),
+        required=False,
         default=True,
     )
 
