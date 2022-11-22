@@ -59,6 +59,13 @@ Audit
 =====
 A very simple form of audit logging can be done: If email addresses are supplied in the control panel a mail will be sent with info about published and retracted items.
 
+Compatibility
+=============
+
+Current branch is tested on Python 3 / Plone 5.2.x & Plone 6.0.x. It works only with Dexterity content types.
+
+Branch 1.0.x works with Python 2.7 and Archetypes / Dexterity.
+
 Todo
 ====
 
