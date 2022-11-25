@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.0.4 (unreleased)
+1.1b1 (2022-11-25)
 ------------------
 
 - Drop Python 2 / Archetypes compatibility
