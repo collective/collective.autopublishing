@@ -4,7 +4,75 @@
 [build-system]
 requires = ["setuptools>=68.2,<83", "wheel"]
 
+# START-MARKER-MANUAL-CONFIG
+# Anything from here until END-MARKER-MANUAL-CONFIG
+# will be kept by plone.meta
 
+[project]
+name = "collective.autopublishing"
+version = "2.0.0.dev0"
+description = "Publishes and retracts on effective or expired dates."
+classifiers = [
+    "Framework :: Plone",
+    "Framework :: Plone :: 6.1",
+    "Framework :: Plone :: 6.2",
+    "Framework :: Plone :: Addon",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+license = "GPL-2.0-or-later"
+dynamic = ["readme"]
+requires-python = ">=3.10"
+authors = [
+    {name = "Mustapha Benali",email = "mustapha@headnet.dk"},
+]
+dependencies = [
+    "Products.CMFCore",
+    "Products.CMFPlone",
+    "Products.DCWorkflow",
+    "Products.GenericSetup",
+    "Zope",
+    "collective.complexrecordsproxy",
+    "collective.timedevents",
+    "plone.api",
+    "plone.app.registry",
+    "plone.autoform",
+    "plone.behavior",
+    "plone.dexterity",
+    "plone.indexer",
+    "plone.registry",
+    "plone.supermodel",
+    "plone.z3cform",
+    "z3c.form",
+]
+keywords = ["plone", "workflow", "publishing"]
+
+[project.entry-points."plone.autoinclude.plugin"]
+target = "plone"
+
+[project.optional-dependencies]
+test = [
+    "plone.app.contenttypes",
+    "plone.app.testing",
+    "plone.testing",
+    "zest.releaser[recommended]",
+    "zestreleaser.towncrier",
+    "zope.testrunner",
+]
+
+[project.urls]
+PyPI = "https://pypi.org/project/collective.autopublishing"
+Source = "https://github.com/collective/collective.autopublishing"
+Issues = "https://github.com/collective/collective.autopublishing/issues"
+Changelog = "https://github.com/collective/collective.autopublishing/blob/master/CHANGES.md"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md", "CONTRIBUTORS.md", "CHANGES.md"], content-type = "text/markdown"}
+# END-MARKER-MANUAL-CONFIG
 
 [tool.towncrier]
 directory = "news/"
