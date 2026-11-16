@@ -2,9 +2,35 @@
 
 <!-- towncrier release notes start -->
 
-## 1.1b2 (unreleased)
+## 2.0.0 (unreleased)
 
-- Nothing changed yet.
+
+- Breaking: replace the `pkg_resources` namespace of `collective` with a
+  PEP 420 native namespace, and move the package to a `src/` layout.
+  Support Plone 6.1 and 6.2 only, on Python 3.10 to 3.13. Use 1.1b1 for
+  Plone 5.2 and 6.0.
+  [remdub]
+
+- Register the views for `IPloneSiteRoot` from `plone.base` instead of the
+  alias Plone 6.2 deprecates. The test layer no longer imports
+  `plone.app.contenttypes.testing`, which needs `plone.app.robotframework`.
+  New tests for the control panel and the report view. Drop the
+  superfluous `for` of the behavior registration.
+  [remdub]
+
+- Make the report view translatable (it used the `eva.content` domain and
+  had no i18n markup) and translate it in French. Fix the "What actions
+  will be taken" link text.
+  [remdub]
+
+- Configure the package with plone.meta 2.12.0 (test matrix on Plone 6.2.3
+  and 6.1), move its metadata to `pyproject.toml`, convert the documentation
+  to Markdown and run the development environment on Plone 6.2.3 with uv
+  instead of buildout. Drop the buildout configuration and the hand-written
+  GitHub workflow. Until collective.timedevents is released without
+  `pkg_resources`, the tests and the development environment use its
+  `plone62` branch.
+  [remdub]
 
 
 ## 1.1b1 (2022-11-25)
