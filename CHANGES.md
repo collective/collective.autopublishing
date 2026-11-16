@@ -1,14 +1,11 @@
-Changes
-=======
+# Changelog
 
-1.1b2 (unreleased)
-------------------
+## 1.1b2 (unreleased)
 
 - Nothing changed yet.
 
 
-1.1b1 (2022-11-25)
-------------------
+## 1.1b1 (2022-11-25)
 
 - Drop Python 2 / Archetypes compatibility
   [laulaz]
@@ -20,35 +17,31 @@ Changes
   [laulaz]
 
 
-1.0.3 (2019-07-18)
-------------------
+## 1.0.3 (2019-07-18)
 
 - Added French translation
   [laulaz]
 
 
-1.0.2 (2017-05-23)
-------------------
+## 1.0.2 (2017-05-23)
 
 - Fix travis and buildout for Plone 5.0 and 5.1
   [tomgross]
 
 
-1.0.1 (2016-02-18)
-------------------
+## 1.0.1 (2016-02-18)
 
 - Move README to rst
   [tomgross]
 
 
-1.0 (2016-02-18)
-----------------
+## 1.0 (2016-02-18)
 
 - Plone 5 compatibility
   [tomgross]
 
-0.6 (2013-11-05) Unreleased
----------------------------
+
+## 0.6 (2013-11-05) Unreleased
 
 Features:
 
@@ -69,8 +62,8 @@ Features:
   both dexterity and archetypes.
   [bosim]
 
-0.5 (2013-10-21) Unreleased
----------------------------
+
+## 0.5 (2013-10-21) Unreleased
 
 Features:
 
@@ -82,17 +75,18 @@ Features:
   [sunew]
 
 Bugfixes:
- - don't make testing other modules fail
-   [sunew]
 
-0.4
-----------------
+- don't make testing other modules fail
+  [sunew]
 
- - Plone 4 compatibility
-   [kroman0]
 
-0.1
-----------------
- - Initial package
-   [mustap]
+## 0.4
 
+- Plone 4 compatibility
+  [kroman0]
+
+
+## 0.1
+
+- Initial package
+  [mustap]
