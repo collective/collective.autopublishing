@@ -6,7 +6,7 @@
 
   <browser:page
       name="autopublish-controlpanel"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       class=".autopublishsettings.AutopublishControlPanel"
       permission="cmf.ManagePortal"
       layer="collective.autopublishing.interfaces.IBrowserLayer"
@@ -14,7 +14,7 @@
 
   <browser:page
       name="autopublish-report"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       class=".autopublishreport.AutopublishReport"
       permission="autopublishing.viewreport"
       layer="collective.autopublishing.interfaces.IBrowserLayer"

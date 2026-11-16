@@ -44,6 +44,7 @@ dependencies = [
     "plone.api",
     "plone.app.registry",
     "plone.autoform",
+    "plone.base",
     "plone.behavior",
     "plone.dexterity",
     "plone.indexer",

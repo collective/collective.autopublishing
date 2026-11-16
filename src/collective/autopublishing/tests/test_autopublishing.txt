@@ -3,7 +3,7 @@ collective.autopublishing
 
 First we check that our package is installed::
 
-    >>> from Products.CMFPlone.utils import get_installer
+    >>> from plone.base.utils import get_installer
     >>> portal = layer['portal']
     >>> installer = get_installer(portal, layer['request'])
     >>> installer.is_product_installed('collective.autopublishing')

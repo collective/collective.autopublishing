@@ -2,7 +2,6 @@ from collective.autopublishing.tests.layer import C_AUTOPUBLISHING_LAYER
 from plone.testing import layered
 
 import doctest
-import interlude
 
 optionflags = (
     doctest.NORMALIZE_WHITESPACE
@@ -17,7 +16,6 @@ def test_suite():
         doctest.DocFileSuite(
             "test_autopublishing.txt",
             optionflags=optionflags,
-            globs=dict(interact=interlude.interact),
         ),
         layer=C_AUTOPUBLISHING_LAYER,
     )
