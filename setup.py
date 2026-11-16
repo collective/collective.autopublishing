@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 long_description = (
     open('README.md').read() +
@@ -9,22 +9,22 @@ long_description = (
     '\n')
 
 setup(name='collective.autopublishing',
-      version='1.1b2.dev0',
+      version='2.0.0.dev0',
       description="Publishes and retracts on effective or expired dates.",
       long_description=long_description,
       long_description_content_type='text/markdown',
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
-        "Framework :: Plone :: 5.2",
-        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.1",
+        "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Addon",
         "Framework :: Zope2",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3 :: Only",
         ],
       keywords='plone workflow publishing',
@@ -32,11 +32,9 @@ setup(name='collective.autopublishing',
       author_email='mustapha@headnet.dk',
       url='http://pypi.python.org/pypi/collective.autopublishing',
       license='GPLv2+',
-      packages=find_packages('src', exclude=['ez_setup']),
-      package_dir={'': 'src'},
-      namespace_packages = ['collective'],
       include_package_data=True,
       zip_safe=False,
+      python_requires='>=3.10',
       extras_require=dict(
         test=[
             'plone.app.testing',
@@ -45,7 +43,6 @@ setup(name='collective.autopublishing',
         ]
       ),
       install_requires=[
-          'setuptools',
           'plone.api',
           'plone.app.registry>=1.2',
           'plone.z3cform',
