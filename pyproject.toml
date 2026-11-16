@@ -13,10 +13,13 @@ name = "collective.autopublishing"
 version = "2.0.0.dev0"
 description = "Publishes and retracts on effective or expired dates."
 classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
     "Framework :: Plone",
     "Framework :: Plone :: 6.1",
     "Framework :: Plone :: 6.2",
     "Framework :: Plone :: Addon",
+    "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
