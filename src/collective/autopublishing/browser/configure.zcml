@@ -1,9 +1,10 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="collective.autopublishing">
+    i18n_domain="collective.autopublishing"
+    >
 
-    <browser:page
+  <browser:page
       name="autopublish-controlpanel"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       class=".autopublishsettings.AutopublishControlPanel"
@@ -11,7 +12,7 @@
       layer="collective.autopublishing.interfaces.IBrowserLayer"
       />
 
-    <browser:page
+  <browser:page
       name="autopublish-report"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       class=".autopublishreport.AutopublishReport"
@@ -19,7 +20,9 @@
       layer="collective.autopublishing.interfaces.IBrowserLayer"
       />
 
-  <adapter factory=".autopublishsettings.AutopublishSpecificationFactory"
-    name="collective.autopublishing.browser.autopublishsettings.IAutopublishSpecification" />
+  <adapter
+      factory=".autopublishsettings.AutopublishSpecificationFactory"
+      name="collective.autopublishing.browser.autopublishsettings.IAutopublishSpecification"
+      />
 
 </configure>

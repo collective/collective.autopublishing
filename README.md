@@ -24,7 +24,7 @@ Example:
 
 To enable the event ticks from collective.timedevents you can either use zope clockserver or a cronjob as the trigger. (See the documentation for collective.timedevents to set this up).
 
-The module adds a plone control panel, where intitial workflow states for both publishing and retracting has to be set.
+The module adds a plone control panel, where initial workflow states for both publishing and retracting has to be set.
 
 In addition, simulating the publishing process is possible with the dry-run setting in the control panel.
 

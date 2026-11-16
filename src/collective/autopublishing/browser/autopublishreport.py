@@ -1,17 +1,17 @@
-# -*- coding: utf-8 -*-
-import logging
-from zope.component import ComponentLookupError, getUtility
-
-from Products.CMFCore.utils import getToolByName
-from Products.Five import BrowserView
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from plone.registry.interfaces import IRegistry
-
-from collective.complexrecordsproxy import ComplexRecordsProxy
 from collective.autopublishing.browser.autopublishsettings import (
     IAutopublishSettingsSchema,
 )
-from collective.autopublishing.eventhandler import handle_publishing, handle_retracting
+from collective.autopublishing.eventhandler import handle_publishing
+from collective.autopublishing.eventhandler import handle_retracting
+from collective.complexrecordsproxy import ComplexRecordsProxy
+from plone.registry.interfaces import IRegistry
+from Products.CMFCore.utils import getToolByName
+from Products.Five import BrowserView
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope.component import ComponentLookupError
+from zope.component import getUtility
+
+import logging
 
 logger = logging.getLogger("collective.autopublishing")
 

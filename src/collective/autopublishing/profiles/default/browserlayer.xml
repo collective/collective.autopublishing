@@ -1,9 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
-  <layer
-      name="CollectiveAutopulishingLayer"
-      interface="collective.autopublishing.interfaces.IBrowserLayer"
-      />
+  <layer interface="collective.autopublishing.interfaces.IBrowserLayer"
+         name="CollectiveAutopulishingLayer"
+  />
 </layers>
-
-

@@ -1,21 +1,19 @@
-# -*- coding: utf-8 -*-
-import logging
-from zope.interface import Interface, implementer
-from zope.component import getUtility
-from zope import schema
-from zope.event import notify
-from zope.lifecycleevent import ObjectCreatedEvent
-
-from z3c.form import field
-from z3c.form.object import FactoryAdapter
-
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from plone.z3cform import layout
+from collective.autopublishing import MyMessageFactory as _
+from collective.complexrecordsproxy import ComplexRecordsProxy
 from plone.app.registry.browser import controlpanel
 from plone.registry.interfaces import IRegistry
+from plone.z3cform import layout
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from z3c.form import field
+from z3c.form.object import FactoryAdapter
+from zope import schema
+from zope.component import getUtility
+from zope.event import notify
+from zope.interface import implementer
+from zope.interface import Interface
+from zope.lifecycleevent import ObjectCreatedEvent
 
-from collective.complexrecordsproxy import ComplexRecordsProxy
-from collective.autopublishing import MyMessageFactory as _
+import logging
 
 logger = logging.getLogger("collective.autopublishing")
 
@@ -61,7 +59,7 @@ class IAutopublishSpecification(Interface):
 
 
 @implementer(IAutopublishSpecification)
-class AutopublishSpecification(object):
+class AutopublishSpecification:
     def __init__(self, value):
         self.portal_types = value["portal_types"]
         self.initial_state = value["initial_state"]

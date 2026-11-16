@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-
-from zope.interface import Interface
-from zope.i18nmessageid import MessageFactory
 from plone.indexer.decorator import indexer
-
+from zope.i18nmessageid import MessageFactory
+from zope.interface import Interface
 
 MyMessageFactory = MessageFactory("collective.autopublishing")
 

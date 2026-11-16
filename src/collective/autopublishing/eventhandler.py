@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-import logging
-from zope.component import ComponentLookupError, getUtility
-
-from plone.registry.interfaces import IRegistry
-from plone import api
-from Products.CMFCore.WorkflowCore import WorkflowException
-
-from collective.complexrecordsproxy import ComplexRecordsProxy
 from collective.autopublishing.browser.autopublishsettings import (
     IAutopublishSettingsSchema,
 )
 from collective.autopublishing.interfaces import IBrowserLayer
+from collective.complexrecordsproxy import ComplexRecordsProxy
+from plone import api
+from plone.registry.interfaces import IRegistry
+from Products.CMFCore.WorkflowCore import WorkflowException
+from zope.component import ComponentLookupError
+from zope.component import getUtility
 
+import logging
 
 logger = logging.getLogger("collective.autopublishing")
 

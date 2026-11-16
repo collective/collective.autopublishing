@@ -1,9 +1,10 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <rolemap>
   <permissions>
-    <permission name="collective.autopublishing: View Report"
-                acquire="True">
-      <role name="Manager"/>
+    <permission acquire="True"
+                name="collective.autopublishing: View Report"
+    >
+      <role name="Manager" />
     </permission>
   </permissions>
 </rolemap>

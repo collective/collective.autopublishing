@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-import logging
 from plone import api
 
+import logging
 
 log = logging.getLogger("collective.autopublishing")
 
@@ -43,7 +42,7 @@ def setup_indexes(portal):
             )
         else:
             ct.addIndex(**idx)
-            print("Added '%s' (%s) to the catalog.\n" % (idx["name"], idx["type"]))
+            print("Added '{}' ({}) to the catalog.\n".format(idx["name"], idx["type"]))
     for entry in catalog_columns:
         if entry in purge_existing_columns and entry in ct.schema():
             ct.delColumn(entry)

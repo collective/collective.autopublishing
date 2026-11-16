@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
+from collective.autopublishing.tests.layer import C_AUTOPUBLISHING_LAYER
+from plone.testing import layered
 
 import doctest
 import interlude
-from plone.testing import layered
-
-from collective.autopublishing.tests.layer import C_AUTOPUBLISHING_LAYER
-
 
 optionflags = (
     doctest.NORMALIZE_WHITESPACE
