@@ -41,7 +41,7 @@ dependencies = [
     "Products.GenericSetup",
     "Zope",
     "collective.complexrecordsproxy",
-    "collective.timedevents",
+    "collective.timedevents>=2.0.0",
     "plone.api",
     "plone.app.registry",
     "plone.autoform",

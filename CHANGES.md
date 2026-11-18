@@ -27,9 +27,8 @@
   and 6.1), move its metadata to `pyproject.toml`, convert the documentation
   to Markdown and run the development environment on Plone 6.2.3 with uv
   instead of buildout. Drop the buildout configuration and the hand-written
-  GitHub workflow. Until collective.timedevents is released without
-  `pkg_resources`, the tests and the development environment use its
-  `master` branch.
+  GitHub workflow. Require collective.timedevents 2.0.0 or later: 1.1 calls
+  `pkg_resources`, which Plone 6.2 no longer ships.
   [remdub]
 
 

@@ -67,9 +67,6 @@ Version 2.x supports Plone 6.1 on Python 3.10 to 3.13, and Plone 6.2 on Python 3
 For Plone 5.2 and 6.0, use collective.autopublishing 1.1b1.
 Branch 1.0.x works with Python 2.7 and Archetypes / Dexterity.
 
-collective.timedevents 1.1 does not work on Plone 6.2 (it calls `pkg_resources`): until a fixed release is out, use its [`master` branch](https://github.com/collective/collective.timedevents/tree/master).
-
-
 ## Installation
 
 Add `collective.autopublishing` to the dependencies of your project
@@ -83,8 +80,8 @@ The rules are edited in *Site Setup* > *Autopublishing*, and
 ## Development
 
 Requires [uv](https://docs.astral.sh/uv/). This installs Plone 6.2.3 in `.venv`
-(use `PLONE_VERSION=6.1.6 make install` for another version), the `master`
-branch of collective.timedevents in `sources/` and the prek git hook:
+(use `PLONE_VERSION=6.1.6 make install` for another version) and the prek
+git hook:
 
 ```shell
 make install
