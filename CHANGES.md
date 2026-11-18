@@ -29,7 +29,7 @@
   instead of buildout. Drop the buildout configuration and the hand-written
   GitHub workflow. Until collective.timedevents is released without
   `pkg_resources`, the tests and the development environment use its
-  `plone62` branch.
+  `master` branch.
   [remdub]
 
 

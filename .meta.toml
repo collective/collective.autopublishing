@@ -24,10 +24,10 @@ dependencies_ignores = "['zestreleaser.towncrier', 'zest.releaser', 'zope.testru
 test_matrix = {"6.2" = ["3.14", "3.13", "3.12", "3.11", "3.10"], "6.1" = ["3.13", "3.12", "3.11", "3.10"]}
 constraints_files = {"6.2" = "https://dist.plone.org/release/6.2.3/constraints.txt", "6.1" = "https://dist.plone.org/release/6.1-latest/constraints.txt"}
 # collective.timedevents 1.1 calls pkg_resources, which Plone 6.2 no longer
-# ships: test against its plone62 branch (also checked out by mx.ini) until it
-# is released.
+# ships: test against its master branch (also checked out by mx.ini) until
+# 2.0.0 is released.
 test_deps_additional = """
-collective.timedevents @ git+https://github.com/collective/collective.timedevents.git@plone62
+collective.timedevents @ git+https://github.com/collective/collective.timedevents.git@master
 """
 
 [github]
