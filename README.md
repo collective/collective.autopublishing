@@ -62,7 +62,7 @@ A very simple form of audit logging can be done: If email addresses are supplied
 
 ## Compatibility
 
-Version 2.x supports Plone 6.1 and 6.2, on Python 3.10 to 3.13. It works only with Dexterity content types.
+Version 2.x supports Plone 6.1 on Python 3.10 to 3.13, and Plone 6.2 on Python 3.10 to 3.14. It works only with Dexterity content types.
 
 For Plone 5.2 and 6.0, use collective.autopublishing 1.1b1.
 Branch 1.0.x works with Python 2.7 and Archetypes / Dexterity.
