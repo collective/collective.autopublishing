@@ -31,6 +31,11 @@
   `pkg_resources`, which Plone 6.2 no longer ships.
   [remdub]
 
+- Test that the control panel shows the portal types saved in an
+  autopublishing action
+  ([#9](https://github.com/collective/collective.autopublishing/issues/9)).
+  [remdub]
+
 
 ## 1.1b1 (2022-11-25)
 
