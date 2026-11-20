@@ -1,0 +1,55 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.autopublishing"
+    >
+
+  <genericsetup:registerProfile
+      name="default"
+      title="collective.autopublishing"
+      description="Installs the collective.autopublishing package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/default"
+      />
+
+  <genericsetup:importStep
+      name="collective.autopublishing.various"
+      title="collective.autopublishing: miscellaneous import steps"
+      description="Various import steps that are not handled by GS import/export handlers."
+      handler="collective.autopublishing.setuphandlers.setupVarious"
+      >
+  </genericsetup:importStep>
+
+  <genericsetup:registerProfile
+      name="migrate"
+      title="collective.autopublishing migrate"
+      description="Performs various migrations of the collective.autopublishing module"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/migrate"
+      />
+
+  <genericsetup:importStep
+      name="collective.autopublishing.various-migrate"
+      title="collective.autopublishing: miscellaneous import steps of the collective.autopublishing migrate profile"
+      description="Various import steps that are not handled by GS import/export handlers."
+      handler="collective.autopublishing.setuphandlers.variousMigrateSteps"
+      >
+  </genericsetup:importStep>
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="collective.autopublishing uninstall"
+      description="Uninstalls the collective.autopublishing module"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/uninstall"
+      />
+
+  <genericsetup:importStep
+      name="collective.autopublishing.various-uninstall"
+      title="collective.autopublishing: uninstall collective.autopublishing"
+      description="Various import steps that are not handled by GS import/export handlers."
+      handler="collective.autopublishing.setuphandlers.variousUninstallSteps"
+      >
+  </genericsetup:importStep>
+
+</configure>

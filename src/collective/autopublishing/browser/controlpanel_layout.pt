@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      lang="en"
+      metal:use-macro="here/prefs_main_template/macros/master"
+      xml:lang="en"
+      i18n:domain="plone"
+>
+
+  <body>
+
+    <div metal:fill-slot="prefs_configlet_main">
+
+      <a id="setup-link"
+         href=""
+         tal:attributes="
+           href string:$portal_url/plone_control_panel;
+         "
+         i18n:translate=""
+      >
+        Site Setup
+      </a>
+
+      <h1 class="documentFirstHeading"
+          tal:content="view/label"
+      >View Title</h1>
+
+      <div metal:use-macro="context/global_statusmessage/macros/portal_message">
+      Portal status message
+      </div>
+
+
+
+      <div id="content-core">
+        <div id="layout-contents">
+          <span tal:replace="structure view/contents"></span>
+        </div>
+      </div>
+
+      <div i18n:domain="collective.autopublishing">
+        <p><label i18n:translate="">Show report:</label>
+          <a tal:attributes="
+               href string:$portal_url/@@autopublish-report;
+             "
+             i18n:translate=""
+          >What actions will be taken by the next run?</a></p>
+      </div>
+
+
+    </div>
+  </body>
+</html>

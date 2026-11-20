@@ -1,7 +1,9 @@
-recursive-include collective *
-recursive-include docs *.GPL
-recursive-include docs *.txt
-global-exclude *pyc
-global-exclude .project
-global-exclude .pydevproject
-include *.rst *.txt
+graft src/collective
+graft news
+include *.md
+include LICENSE.GPL
+exclude Makefile
+exclude mx.ini
+exclude instance.yaml
+global-exclude *.pyc
+global-exclude .DS_Store

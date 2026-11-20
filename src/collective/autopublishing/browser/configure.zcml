@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.autopublishing"
+    >
+
+  <browser:page
+      name="autopublish-controlpanel"
+      for="plone.base.interfaces.IPloneSiteRoot"
+      class=".autopublishsettings.AutopublishControlPanel"
+      permission="cmf.ManagePortal"
+      layer="collective.autopublishing.interfaces.IBrowserLayer"
+      />
+
+  <browser:page
+      name="autopublish-report"
+      for="plone.base.interfaces.IPloneSiteRoot"
+      class=".autopublishreport.AutopublishReport"
+      permission="autopublishing.viewreport"
+      layer="collective.autopublishing.interfaces.IBrowserLayer"
+      />
+
+  <adapter
+      factory=".autopublishsettings.AutopublishSpecificationFactory"
+      name="collective.autopublishing.browser.autopublishsettings.IAutopublishSpecification"
+      />
+
+</configure>

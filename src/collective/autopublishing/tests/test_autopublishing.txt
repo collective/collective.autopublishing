@@ -1,0 +1,492 @@
+collective.autopublishing
+=========================
+
+First we check that our package is installed::
+
+    >>> from plone.base.utils import get_installer
+    >>> portal = layer['portal']
+    >>> installer = get_installer(portal, layer['request'])
+    >>> installer.is_product_installed('collective.autopublishing')
+    True
+
+and that our behavior is applied to Collection, Document, Event and News Item::
+
+    >>> for type_ in ['Collection', 'Document', 'Event', 'News Item']:
+    ...    assert 'collective.autopublishing.behavior.IAutoPublishing' in portal.portal_types[type_].behaviors
+
+and that a catalog index named ``enableAutopublishing`` is added::
+
+    >>> 'enableAutopublishing' in portal.portal_catalog.indexes()
+    True
+
+We need to subscribe to a tick event from collective.timedevents::
+
+    >>> from zope import component
+    >>> from collective.timedevents.interfaces import IIntervalTicksHourlyEvent
+    >>> from collective.autopublishing.eventhandler import autopublish_handler
+    >>> component.getSiteManager().registerHandler(autopublish_handler, [IIntervalTicksHourlyEvent])
+
+We setup a publish action in the registry. When the publishing date occurs,
+we will publish all Documents in state private::
+
+    >>> from zope.component import getUtility
+    >>> from plone.registry.interfaces import IRegistry
+    >>> from collective.autopublishing.browser.autopublishsettings import IAutopublishSettingsSchema
+    >>> from collective.autopublishing.browser.autopublishsettings import AutopublishSpecification
+    >>> from collective.complexrecordsproxy import ComplexRecordsProxy
+    >>> settings = getUtility(IRegistry).forInterface(IAutopublishSettingsSchema,
+    ...     omit=('publish_actions', 'retract_actions'), factory=ComplexRecordsProxy)
+
+    >>> settings.publish_actions
+    ()
+
+    >>> publish_action = AutopublishSpecification({'portal_types':('Document',),
+    ...     'initial_state':'private', 'transition':'publish'})
+    >>> settings.publish_actions = (publish_action,)
+
+    >>> settings.retract_actions
+    ()
+
+    >>> retract_action = AutopublishSpecification({'portal_types':('Document',),
+    ...     'initial_state':'published', 'transition':'retract'})
+    >>> settings.retract_actions = (retract_action,)
+
+And make sure dry_run is false::
+
+    >>> settings.dry_run = False
+
+Add objects for testing
+=======================
+
+Let's create some objects for our tests::
+
+    >>> from plone.app.testing import setRoles
+    >>> from plone.app.testing import TEST_USER_ID
+    >>> setRoles(portal, TEST_USER_ID, ['Manager', ])
+    >>> portal.invokeFactory(id='document1', type_name='Document', title='Document 1')
+    'document1'
+
+    >>> portal.invokeFactory(id='news1', type_name='News Item', title='News 1')
+    'news1'
+
+First here is what we have. Our objects have their enableAutopublishing set to false and their review state set to private::
+
+    >>> wf = portal.portal_workflow
+
+    >>> portal['document1'].enableAutopublishing, wf.getInfoFor(portal['document1'], 'review_state')
+    (False, 'private')
+
+    >>> portal['news1'].enableAutopublishing, wf.getInfoFor(portal['news1'], 'review_state')
+    (False, 'private')
+
+Set enableAutopublishing of our objects to true::
+    
+    >>> portal['document1'].enableAutopublishing = True
+    >>> portal['news1'].enableAutopublishing = True
+
+Set their review state to pending.
+
+    >>> wf.doActionFor(portal['document1'], 'submit')
+    >>> wf.doActionFor(portal['news1'], 'submit')
+
+    >>> portal['document1'].enableAutopublishing
+    True
+
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+    >>> portal['news1'].enableAutopublishing
+    True
+
+    >>> wf.getInfoFor(portal['news1'], 'review_state')
+    'pending'
+
+we have to reindex the objects::
+
+    >>> portal['document1'].reindexObject()
+    >>> portal['news1'].reindexObject()
+
+Set up some dates::
+
+    >>> from DateTime import DateTime
+    >>> past_date = DateTime()-1000
+    >>> past_date_later = DateTime()-500
+    >>> future_date = DateTime()+1000
+
+
+Publishing
+==========
+
+Case one: no dates.
+===================
+
+Neither effective or expiration dates are set on the objects::
+
+
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our test objects are still pending::
+
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+    >>> wf.getInfoFor(portal['news1'], 'review_state')
+    'pending'
+
+Case two: effective date in the past.
+=====================================
+
+Effective date are in the past. Still no expiration date::
+
+    >>> portal['document1'].effective = past_date
+    >>> portal['document1'].effective == past_date
+    True
+
+    >>> portal['news1'].effective = past_date
+    >>> portal['news1'].effective == past_date
+    True
+
+    >>> portal['document1'].reindexObject()
+    >>> portal['news1'].reindexObject()
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our test objects are published::
+
+    >>> wf.getInfoFor(portal['document1'], 'review_state')  # TODO ?  'published'
+    'pending'
+
+    >>> wf.getInfoFor(portal['news1'], 'review_state')  # TODO ?
+    'pending'
+
+And that enableAutopublishing is still True::
+
+    >>> portal['document1'].enableAutopublishing
+    True
+
+    >>> portal['news1'].enableAutopublishing
+    True
+
+Case three: effective date in the future.
+=========================================
+
+Effective date are in the future. From now on we test just with one document. First bring the document into the needed state again::
+
+    >>> wf.doActionFor(portal['document1'], 'retract')
+    >>> wf.doActionFor(portal['document1'], 'submit')
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+Set the date::
+
+    >>> portal['document1'].effective = future_date
+    >>> portal['document1'].reindexObject()
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our test object are not published::
+
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+And that enableAutopublishing is still true::
+
+    >>> portal['document1'].enableAutopublishing
+    True
+
+Case four: both effective and expiration date: publish.
+=======================================================
+
+Effective date are in the past, and expiration date are in the future. First bring the document into the needed state again::
+
+    >>> wf.doActionFor(portal['document1'], 'retract')
+    >>> wf.doActionFor(portal['document1'], 'submit')
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+Set the dates::
+
+    >>> portal['document1'].effective = past_date
+
+    >>> portal['document1'].setExpirationDate(future_date)
+    >>> portal['document1'].reindexObject()
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our object are published::
+
+    >>> wf.getInfoFor(portal['document1'], 'review_state')  # TODO `pending`
+    'pending'
+
+Case five: both effective and expiration date: do not publish.
+==============================================================
+
+Effective date are in the past, and expiration date are in the past. First bring the document into the needed state again::
+
+    >>> wf.doActionFor(portal['document1'], 'retract')
+    >>> wf.doActionFor(portal['document1'], 'submit')
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+Set the dates::
+
+    >>> portal['document1'].setEffectiveDate(past_date)
+    >>> portal['document1'].effective == past_date
+    True
+
+    >>> portal['document1'].setExpirationDate(past_date_later)
+    >>> portal['document1'].expiration_date == past_date_later
+    True
+
+    >>> portal['document1'].reindexObject()
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our test object are not published::
+
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+And that enableAutopublishing is still true::
+
+    >>> portal['document1'].enableAutopublishing
+    True
+
+Test dry run.
+=============
+
+Set dry_run::
+
+    >>> settings.dry_run = True
+    >>> print(settings.dry_run)
+    True
+
+First bring the document into the needed state again::
+
+    >>> wf.doActionFor(portal['document1'], 'retract')
+    >>> wf.doActionFor(portal['document1'], 'submit')
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+    >>> portal['document1'].enableAutopublishing
+    True
+
+Set the dates as for publishing::
+
+    >>> portal['document1'].setEffectiveDate(past_date)
+    >>> portal['document1'].effective == past_date
+    True
+
+    >>> portal['document1'].setExpirationDate(future_date)
+    >>> portal['document1'].expiration_date == future_date
+    True
+
+    >>> portal['document1'].reindexObject()
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our test object are not published even though effective date are in the past::
+
+    >>> wf.getInfoFor(portal['document1'], 'review_state')
+    'pending'
+
+And that enableAutopublishing is still True::
+
+    >>> portal['document1'].enableAutopublishing
+    True
+
+Retracting
+==========
+
+Set dry_run back to False::
+
+    >>> settings.dry_run = False
+
+Let's create a fresh object for our tests::
+
+    >>> portal.invokeFactory(id='document2', type_name='Document', title='Document 2')
+    'document2'
+
+Set 'enableAutopublishing' to true and review state to published.
+
+    >>> portal['document2'].enableAutopublishing = True
+    >>> wf.doActionFor(portal['document2'], 'publish')
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+we have to reindex the objects::
+
+    >>> portal['document2'].reindexObject()
+
+Case one: no dates.
+===================
+
+Expiration date are not set on the object::
+
+    >>> print(portal['document2'].expiration_date)
+    None
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our test object are still published::
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+Case two: expiration date in the past.
+======================================
+
+Expiration date are in the past::
+
+    >>> portal['document2'].expiration_date = past_date
+    >>> portal['document2'].reindexObject()
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our test objects are retracted::
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'private'
+
+And that enableAutopublishing is still True::
+
+    >>> portal['document2'].enableAutopublishing
+    True
+
+Case three: expiration date in the future.
+=========================================
+
+Expiration date are in the future. First bring the document into the needed state again::
+
+    >>> wf.doActionFor(portal['document2'], 'publish')
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+Set the date::
+
+    >>> portal['document2'].setExpirationDate(future_date)
+    >>> portal['document2'].reindexObject()
+
+Let's fire the hourly cronjob::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+Check that our test object are still published::
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+And that enableAutopublishing is still True::
+
+    >>> portal['document2'].enableAutopublishing
+    True
+
+
+Special cases
+=============
+
+If we add private to initial publication states::
+
+    >>> settings.initial_states_publishing = ['private', 'pending']
+    >>> print(settings.initial_states_publishing)
+    ['private', 'pending']
+
+And we have a content object, that is published, with a publication date in the past::
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+    >>> portal['document2'].enableAutopublishing
+    True
+
+    >>> portal['document2'].effective = past_date
+    >>> portal['document2'].expiration_date = future_date
+    >>> portal['document2'].reindexObject()
+
+Dates are now set, so that the object will be published on next run of autopublishing - if it was not already published.
+
+The editor retracts the object manually::
+
+    >>> wf.doActionFor(portal['document2'], 'retract')
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'private'
+
+The next run of autopublishing will publish the object again::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+This is not good. The editor could clear the publication date or set an
+expiration date  to the day of the retraction, but it is easy to forget.
+We add
+TODO?
+
+There is an event handler for changing workflow state, where an
+expiration date it set if it is None. There is also a setting to
+allow overwriting expiration date if it is already set::
+
+    >>> settings.overwrite_expiration_on_retract = True
+    >>> settings.overwrite_expiration_on_retract
+    True
+
+Let's try again::
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'published'
+
+    >>> portal['document2'].enableAutopublishing
+    True
+
+    >>> portal['document2'].reindexObject()
+
+The editor retracts the object manually::
+
+    >>> now = DateTime()
+    >>> portal['document2'].expiration_date < now
+    False
+
+    >>> wf.doActionFor(portal['document2'], 'retract')
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'private'
+
+    >>> now = DateTime()
+    >>> portal['document2'].expiration_date < now
+    True
+
+The next run of autopublishing will no longer publish the object again::
+
+    >>> portal.restrictedTraverse('@@tick_hourly')()
+    'done...'
+
+    >>> wf.getInfoFor(portal['document2'], 'review_state')
+    'private'

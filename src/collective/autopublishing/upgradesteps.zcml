@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    >
+
+  <genericsetup:upgradeSteps
+      profile="collective.autopublishing:default"
+      source="*"
+      destination="1001"
+      >
+    <genericsetup:upgradeStep
+        title="Run collective.autopublishing profile"
+        description=""
+        handler=".upgradesteps.runDefaultProfile"
+        />
+  </genericsetup:upgradeSteps>
+  <genericsetup:upgradeSteps
+      profile="collective.autopublishing:default"
+      source="*"
+      destination="1003"
+      >
+    <genericsetup:upgradeStep
+        title="collective.autopublishing migrate: remove old fields"
+        description=""
+        handler=".upgradesteps.runMigrateProfile"
+        />
+  </genericsetup:upgradeSteps>
+  <genericsetup:upgradeSteps
+      profile="collective.autopublishing:default"
+      source="*"
+      destination="1004"
+      >
+    <genericsetup:upgradeStep
+        title="Run collective.autopublishing registry step"
+        description=""
+        handler=".upgradesteps.importDefaultProfileRegistry"
+        />
+  </genericsetup:upgradeSteps>
+
+</configure>

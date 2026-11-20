@@ -1,2 +1,0 @@
-- Mustapha Benali, mustapha@headnet.dk
-- Tom Gross, itconsense@gmail.com

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        name="portal_controlpanel"
+        purge="False"
+        i18n:domain="collective.autopublishing"
+>
+
+  <configlet action_id="Autopublishing"
+             appId="collective.autopublishing"
+             category="Products"
+             condition_expr=""
+             icon_expr="string:$portal_url/product_icon.png"
+             title="Autopublishing"
+             url_expr="string:${portal_url}/@@autopublish-controlpanel"
+             visible="True"
+             i18n:attributes="title"
+  >
+    <permission>Manage portal</permission>
+  </configlet>
+
+</object>
